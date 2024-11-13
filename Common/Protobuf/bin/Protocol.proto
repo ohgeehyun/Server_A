@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+package Protocol;
+import "google/protobuf/timestamp.proto";
+
+
+enum MsgId {
+  Person = 0;
+  C_chat = 1001;
+  S_chat = 1002;
+  S_Enter_Game = 1003;
+}
+
+message C_CHAT {
+  string context = 1;
+}
+
+message S_CHAT {
+  string context = 1;
+}
+
+message S_ENTER_GAME {
+  string context = 1;
+}
+
+message PERSON {
+  int32 packetHeader = 1;
+  string name = 2;
+  int32 id = 3;  // Unique ID number for this person.
+  string email = 4;
+
+  enum PHONETYPE {
+    MOBILE = 0;
+    HOME = 1;
+    WORK = 2;
+  }
+
+  message PHONENUMBER {
+    string number = 1;
+    PHONETYPE type = 2;
+  }
+
+  repeated PHONENUMBER phones = 5;
+  google.protobuf.Timestamp last_updated = 6;
+}
+
+// Our address book file is just one of these.
+message AddressBook {
+  repeated PERSON people = 1;
+}
+
