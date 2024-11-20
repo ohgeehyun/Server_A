@@ -5,47 +5,93 @@ import "google/protobuf/timestamp.proto";
 
 
 enum MsgId {
-  Person = 0;
-  C_chat = 1001;
-  S_chat = 1002;
-  S_Enter_Game = 1003;
+  Block_value = 0;
+  S_Enter_Game = 1001;
+  S_Leave_Game = 1002;
+  S_Spawn = 1003;
+  S_Despawn = 1004;
+  C_Move = 1005;
+  S_Move = 1006;
+  C_Skill = 1007;
+  S_Skill = 1008;
 }
 
-message C_CHAT {
-  string context = 1;
+ enum CreatureState
+ {
+      IDLE = 0;
+      MOVING = 1;
+      SKILL = 2;
+      Dead = 3;
+ }
+  enum MoveDir
+ {
+      None = 0;
+      UP = 1;
+      DOWN = 2;
+      LEFT = 3;
+      RIGHT = 4;
+ }
+
+
+message S_ENTER_GAME 
+{
+  PLAYER_INFO player =1;
 }
 
-message S_CHAT {
-  string context = 1;
+message S_LEAVE_GAME
+{
+   bool exit = 1;
 }
 
-message S_ENTER_GAME {
-  string context = 1;
+message S_SPAWN
+{
+    repeated PLAYER_INFO players = 1;
 }
 
-message PERSON {
-  int32 packetHeader = 1;
-  string name = 2;
-  int32 id = 3;  // Unique ID number for this person.
-  string email = 4;
-
-  enum PHONETYPE {
-    MOBILE = 0;
-    HOME = 1;
-    WORK = 2;
-  }
-
-  message PHONENUMBER {
-    string number = 1;
-    PHONETYPE type = 2;
-  }
-
-  repeated PHONENUMBER phones = 5;
-  google.protobuf.Timestamp last_updated = 6;
+message S_DESPAWN
+{
+    repeated int32 playerIds = 1;
 }
 
-// Our address book file is just one of these.
-message AddressBook {
-  repeated PERSON people = 1;
+message C_MOVE
+{
+    POSITIONINFO posInfo = 1;
 }
 
+message S_MOVE
+{
+    int32 PlayerId = 1;
+    POSITIONINFO posInfo = 2;
+}
+
+message C_SKILL
+{
+     SkillInfo info = 1;
+}
+
+message S_SKILL
+{
+    int32  playerId = 1;
+    SkillInfo info = 2;
+
+}
+
+message PLAYER_INFO 
+{
+    int32 playerId = 1; //플레이어 식별자
+    string name = 2;
+    POSITIONINFO posInfo =3;
+}
+
+message POSITIONINFO
+{
+    CreatureState state = 1;
+    MoveDir moveDir = 2;
+    int32 posX = 3;
+    int32 posY = 4;
+}
+
+message SkillInfo
+{
+    int32 skillId = 1;
+}

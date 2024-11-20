@@ -1,8 +1,10 @@
 #include "pch.h"
 #include "GameSession.h"
 #include "GameSessionManager.h"
-#include <iomanip>
 #include "ClientPacketHandler.h"
+#include "PlayerManager.h"
+#include "Player.h"
+#include "RoomManager.h"
 
 GameSessionManager* SessionManager;
 
@@ -10,16 +12,31 @@ void GameSession::OnConnected()
 {
     SessionManager->Add(static_pointer_cast<GameSession>(shared_from_this()));
     cout << "접속 인원 추가" << endl;
-    Protocol::S_CHAT Chat;
-    string text = u8"안녕하세요. 클라이언트";
+    
+    //세션에 누군가 할당이 되었는데 원래는 DB에서 플레이어의 정보를 긁어와야하는데..
+    
+    //세션도 해당 플레이어의 정보를 가지고 있는다.
+    PlayerManager& PlayerManager = PlayerManager::GetInstance();
+    _myplayer = PlayerManager.Add();
+    {
+        _myplayer->GetPlayerInfo().set_name("Player_"+ to_string(_myplayer->GetPlayerInfo().playerid()));
+        _myplayer->GetPlayerInfo().mutable_posinfo()->set_state(Protocol::CreatureState::IDLE);
+        _myplayer->GetPlayerInfo().mutable_posinfo()->set_movedir(Protocol::MoveDir::None);
+        _myplayer->GetPlayerInfo().mutable_posinfo()->set_posx(0);
+        _myplayer->GetPlayerInfo().mutable_posinfo()->set_posy(0);
+        _myplayer->SetSession(static_pointer_cast<GameSession>(shared_from_this()));
+    }
 
-    Chat.set_context(text);
-    auto sendBuffer = ClientPacketHandler::MakeSendBuffer(Chat);
-    SessionManager->Broadcast(sendBuffer);
+    RoomManager& RoomManager = RoomManager::GetInstance();
+    RoomManager.Find(1)->EnterGame(_myplayer);
+   
 }
 
 void GameSession::OnDisConnected()
 {
+    RoomManager& RoomManager = RoomManager::GetInstance();
+    RoomManager.Find(1)->LeaveGame(_myplayer->GetPlayerInfo().playerid());
+
     SessionManager->Remove(static_pointer_cast<GameSession>(shared_from_this()));
 }
 

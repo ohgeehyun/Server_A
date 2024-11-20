@@ -1,6 +1,7 @@
 #pragma once
 #include "pch.h"
 #include "GameSession.h"
+#include "RoomManager.h"
 #include "ClientPacketHandler.h"
 #include "GameSessionManager.h"
 #include <windows.h>
@@ -8,6 +9,9 @@
 int main()
 {
     SetConsoleOutputCP(CP_UTF8);
+
+    RoomManager& manager = RoomManager::GetInstance();
+    manager.Add();
 
     ClientPacketHandler::Init();
     SessionManager = new GameSessionManager();

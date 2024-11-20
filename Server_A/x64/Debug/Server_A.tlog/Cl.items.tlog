@@ -3,6 +3,10 @@ C:\Users\OG\source\repos\Server_A\Server_A\Enum.pb.cc;C:\Users\OG\source\repos\S
 C:\Users\OG\source\repos\Server_A\Server_A\GameSession.cpp;C:\Users\OG\source\repos\Server_A\Server_A\x64\Debug\GameSession.obj
 C:\Users\OG\source\repos\Server_A\Server_A\GameSessionManager.cpp;C:\Users\OG\source\repos\Server_A\Server_A\x64\Debug\GameSessionManager.obj
 C:\Users\OG\source\repos\Server_A\Server_A\pch.cpp;C:\Users\OG\source\repos\Server_A\Server_A\x64\Debug\pch.obj
+C:\Users\OG\source\repos\Server_A\Server_A\Player.cpp;C:\Users\OG\source\repos\Server_A\Server_A\x64\Debug\Player.obj
+C:\Users\OG\source\repos\Server_A\Server_A\PlayerManager.cpp;C:\Users\OG\source\repos\Server_A\Server_A\x64\Debug\PlayerManager.obj
 C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc;C:\Users\OG\source\repos\Server_A\Server_A\x64\Debug\Protocol.pb.obj
+C:\Users\OG\source\repos\Server_A\Server_A\Room.cpp;C:\Users\OG\source\repos\Server_A\Server_A\x64\Debug\Room.obj
+C:\Users\OG\source\repos\Server_A\Server_A\RoomManager.cpp;C:\Users\OG\source\repos\Server_A\Server_A\x64\Debug\RoomManager.obj
 C:\Users\OG\source\repos\Server_A\Server_A\Server.cpp;C:\Users\OG\source\repos\Server_A\Server_A\x64\Debug\Server.obj
 C:\Users\OG\source\repos\Server_A\Server_A\Struct.pb.cc;C:\Users\OG\source\repos\Server_A\Server_A\x64\Debug\Struct.pb.obj
