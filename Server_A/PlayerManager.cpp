@@ -9,7 +9,7 @@ PlayerRef& PlayerManager::Add()
 
     WRITE_LOCK
     {
-       player->GetPlayerInfo().set_playerid(_playerid);
+       player->GetObjectInfo().set_objectid(_playerid);
        _players[_playerid] = player;
        _playerid++;
     }

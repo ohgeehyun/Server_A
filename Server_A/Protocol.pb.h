@@ -62,9 +62,9 @@ extern C_MOVEDefaultTypeInternal _C_MOVE_default_instance_;
 class C_SKILL;
 struct C_SKILLDefaultTypeInternal;
 extern C_SKILLDefaultTypeInternal _C_SKILL_default_instance_;
-class PLAYER_INFO;
-struct PLAYER_INFODefaultTypeInternal;
-extern PLAYER_INFODefaultTypeInternal _PLAYER_INFO_default_instance_;
+class OBJECT_INFO;
+struct OBJECT_INFODefaultTypeInternal;
+extern OBJECT_INFODefaultTypeInternal _OBJECT_INFO_default_instance_;
 class POSITIONINFO;
 struct POSITIONINFODefaultTypeInternal;
 extern POSITIONINFODefaultTypeInternal _POSITIONINFO_default_instance_;
@@ -93,7 +93,7 @@ extern SkillInfoDefaultTypeInternal _SkillInfo_default_instance_;
 PROTOBUF_NAMESPACE_OPEN
 template<> ::Protocol::C_MOVE* Arena::CreateMaybeMessage<::Protocol::C_MOVE>(Arena*);
 template<> ::Protocol::C_SKILL* Arena::CreateMaybeMessage<::Protocol::C_SKILL>(Arena*);
-template<> ::Protocol::PLAYER_INFO* Arena::CreateMaybeMessage<::Protocol::PLAYER_INFO>(Arena*);
+template<> ::Protocol::OBJECT_INFO* Arena::CreateMaybeMessage<::Protocol::OBJECT_INFO>(Arena*);
 template<> ::Protocol::POSITIONINFO* Arena::CreateMaybeMessage<::Protocol::POSITIONINFO>(Arena*);
 template<> ::Protocol::S_DESPAWN* Arena::CreateMaybeMessage<::Protocol::S_DESPAWN>(Arena*);
 template<> ::Protocol::S_ENTER_GAME* Arena::CreateMaybeMessage<::Protocol::S_ENTER_GAME>(Arena*);
@@ -141,13 +141,13 @@ enum CreatureState : int {
   IDLE = 0,
   MOVING = 1,
   SKILL = 2,
-  Dead = 3,
+  DEAD = 3,
   CreatureState_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::min(),
   CreatureState_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::max()
 };
 bool CreatureState_IsValid(int value);
 constexpr CreatureState CreatureState_MIN = IDLE;
-constexpr CreatureState CreatureState_MAX = Dead;
+constexpr CreatureState CreatureState_MAX = DEAD;
 constexpr int CreatureState_ARRAYSIZE = CreatureState_MAX + 1;
 
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* CreatureState_descriptor();
@@ -165,16 +165,15 @@ inline bool CreatureState_Parse(
     CreatureState_descriptor(), name, value);
 }
 enum MoveDir : int {
-  None = 0,
-  UP = 1,
-  DOWN = 2,
-  LEFT = 3,
-  RIGHT = 4,
+  UP = 0,
+  DOWN = 1,
+  LEFT = 2,
+  RIGHT = 3,
   MoveDir_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::min(),
   MoveDir_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::max()
 };
 bool MoveDir_IsValid(int value);
-constexpr MoveDir MoveDir_MIN = None;
+constexpr MoveDir MoveDir_MIN = UP;
 constexpr MoveDir MoveDir_MAX = RIGHT;
 constexpr int MoveDir_ARRAYSIZE = MoveDir_MAX + 1;
 
@@ -191,6 +190,33 @@ inline bool MoveDir_Parse(
     ::PROTOBUF_NAMESPACE_ID::ConstStringParam name, MoveDir* value) {
   return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<MoveDir>(
     MoveDir_descriptor(), name, value);
+}
+enum GameObjectType : int {
+  NONE = 0,
+  PLAYER = 1,
+  MONSTER = 2,
+  PROJECTTILE = 3,
+  GameObjectType_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::min(),
+  GameObjectType_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::max()
+};
+bool GameObjectType_IsValid(int value);
+constexpr GameObjectType GameObjectType_MIN = NONE;
+constexpr GameObjectType GameObjectType_MAX = PROJECTTILE;
+constexpr int GameObjectType_ARRAYSIZE = GameObjectType_MAX + 1;
+
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* GameObjectType_descriptor();
+template<typename T>
+inline const std::string& GameObjectType_Name(T enum_t_value) {
+  static_assert(::std::is_same<T, GameObjectType>::value ||
+    ::std::is_integral<T>::value,
+    "Incorrect type passed to function GameObjectType_Name.");
+  return ::PROTOBUF_NAMESPACE_ID::internal::NameOfEnum(
+    GameObjectType_descriptor(), enum_t_value);
+}
+inline bool GameObjectType_Parse(
+    ::PROTOBUF_NAMESPACE_ID::ConstStringParam name, GameObjectType* value) {
+  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<GameObjectType>(
+    GameObjectType_descriptor(), name, value);
 }
 // ===================================================================
 
@@ -304,23 +330,23 @@ class S_ENTER_GAME final :
   enum : int {
     kPlayerFieldNumber = 1,
   };
-  // .Protocol.PLAYER_INFO player = 1;
+  // .Protocol.OBJECT_INFO player = 1;
   bool has_player() const;
   private:
   bool _internal_has_player() const;
   public:
   void clear_player();
-  const ::Protocol::PLAYER_INFO& player() const;
-  PROTOBUF_FUTURE_MUST_USE_RESULT ::Protocol::PLAYER_INFO* release_player();
-  ::Protocol::PLAYER_INFO* mutable_player();
-  void set_allocated_player(::Protocol::PLAYER_INFO* player);
+  const ::Protocol::OBJECT_INFO& player() const;
+  PROTOBUF_FUTURE_MUST_USE_RESULT ::Protocol::OBJECT_INFO* release_player();
+  ::Protocol::OBJECT_INFO* mutable_player();
+  void set_allocated_player(::Protocol::OBJECT_INFO* player);
   private:
-  const ::Protocol::PLAYER_INFO& _internal_player() const;
-  ::Protocol::PLAYER_INFO* _internal_mutable_player();
+  const ::Protocol::OBJECT_INFO& _internal_player() const;
+  ::Protocol::OBJECT_INFO* _internal_mutable_player();
   public:
   void unsafe_arena_set_allocated_player(
-      ::Protocol::PLAYER_INFO* player);
-  ::Protocol::PLAYER_INFO* unsafe_arena_release_player();
+      ::Protocol::OBJECT_INFO* player);
+  ::Protocol::OBJECT_INFO* unsafe_arena_release_player();
 
   // @@protoc_insertion_point(class_scope:Protocol.S_ENTER_GAME)
  private:
@@ -329,7 +355,7 @@ class S_ENTER_GAME final :
   template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
-  ::Protocol::PLAYER_INFO* player_;
+  ::Protocol::OBJECT_INFO* player_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_Protocol_2eproto;
 };
@@ -575,25 +601,25 @@ class S_SPAWN final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kPlayersFieldNumber = 1,
+    kObjectsFieldNumber = 1,
   };
-  // repeated .Protocol.PLAYER_INFO players = 1;
-  int players_size() const;
+  // repeated .Protocol.OBJECT_INFO objects = 1;
+  int objects_size() const;
   private:
-  int _internal_players_size() const;
+  int _internal_objects_size() const;
   public:
-  void clear_players();
-  ::Protocol::PLAYER_INFO* mutable_players(int index);
-  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::PLAYER_INFO >*
-      mutable_players();
+  void clear_objects();
+  ::Protocol::OBJECT_INFO* mutable_objects(int index);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::OBJECT_INFO >*
+      mutable_objects();
   private:
-  const ::Protocol::PLAYER_INFO& _internal_players(int index) const;
-  ::Protocol::PLAYER_INFO* _internal_add_players();
+  const ::Protocol::OBJECT_INFO& _internal_objects(int index) const;
+  ::Protocol::OBJECT_INFO* _internal_add_objects();
   public:
-  const ::Protocol::PLAYER_INFO& players(int index) const;
-  ::Protocol::PLAYER_INFO* add_players();
-  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::PLAYER_INFO >&
-      players() const;
+  const ::Protocol::OBJECT_INFO& objects(int index) const;
+  ::Protocol::OBJECT_INFO* add_objects();
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::OBJECT_INFO >&
+      objects() const;
 
   // @@protoc_insertion_point(class_scope:Protocol.S_SPAWN)
  private:
@@ -602,7 +628,7 @@ class S_SPAWN final :
   template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
-  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::PLAYER_INFO > players_;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::OBJECT_INFO > objects_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_Protocol_2eproto;
 };
@@ -1340,24 +1366,24 @@ class S_SKILL final :
 };
 // -------------------------------------------------------------------
 
-class PLAYER_INFO final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.PLAYER_INFO) */ {
+class OBJECT_INFO final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.OBJECT_INFO) */ {
  public:
-  inline PLAYER_INFO() : PLAYER_INFO(nullptr) {}
-  ~PLAYER_INFO() override;
-  explicit constexpr PLAYER_INFO(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+  inline OBJECT_INFO() : OBJECT_INFO(nullptr) {}
+  ~OBJECT_INFO() override;
+  explicit constexpr OBJECT_INFO(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
 
-  PLAYER_INFO(const PLAYER_INFO& from);
-  PLAYER_INFO(PLAYER_INFO&& from) noexcept
-    : PLAYER_INFO() {
+  OBJECT_INFO(const OBJECT_INFO& from);
+  OBJECT_INFO(OBJECT_INFO&& from) noexcept
+    : OBJECT_INFO() {
     *this = ::std::move(from);
   }
 
-  inline PLAYER_INFO& operator=(const PLAYER_INFO& from) {
+  inline OBJECT_INFO& operator=(const OBJECT_INFO& from) {
     CopyFrom(from);
     return *this;
   }
-  inline PLAYER_INFO& operator=(PLAYER_INFO&& from) noexcept {
+  inline OBJECT_INFO& operator=(OBJECT_INFO&& from) noexcept {
     if (this == &from) return *this;
     if (GetOwningArena() == from.GetOwningArena()) {
       InternalSwap(&from);
@@ -1376,20 +1402,20 @@ class PLAYER_INFO final :
   static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
     return default_instance().GetMetadata().reflection;
   }
-  static const PLAYER_INFO& default_instance() {
+  static const OBJECT_INFO& default_instance() {
     return *internal_default_instance();
   }
-  static inline const PLAYER_INFO* internal_default_instance() {
-    return reinterpret_cast<const PLAYER_INFO*>(
-               &_PLAYER_INFO_default_instance_);
+  static inline const OBJECT_INFO* internal_default_instance() {
+    return reinterpret_cast<const OBJECT_INFO*>(
+               &_OBJECT_INFO_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
     8;
 
-  friend void swap(PLAYER_INFO& a, PLAYER_INFO& b) {
+  friend void swap(OBJECT_INFO& a, OBJECT_INFO& b) {
     a.Swap(&b);
   }
-  inline void Swap(PLAYER_INFO* other) {
+  inline void Swap(OBJECT_INFO* other) {
     if (other == this) return;
     if (GetOwningArena() == other->GetOwningArena()) {
       InternalSwap(other);
@@ -1397,7 +1423,7 @@ class PLAYER_INFO final :
       ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
     }
   }
-  void UnsafeArenaSwap(PLAYER_INFO* other) {
+  void UnsafeArenaSwap(OBJECT_INFO* other) {
     if (other == this) return;
     GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
     InternalSwap(other);
@@ -1405,17 +1431,17 @@ class PLAYER_INFO final :
 
   // implements Message ----------------------------------------------
 
-  inline PLAYER_INFO* New() const final {
-    return new PLAYER_INFO();
+  inline OBJECT_INFO* New() const final {
+    return new OBJECT_INFO();
   }
 
-  PLAYER_INFO* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
-    return CreateMaybeMessage<PLAYER_INFO>(arena);
+  OBJECT_INFO* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<OBJECT_INFO>(arena);
   }
   void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
   void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
-  void CopyFrom(const PLAYER_INFO& from);
-  void MergeFrom(const PLAYER_INFO& from);
+  void CopyFrom(const OBJECT_INFO& from);
+  void MergeFrom(const OBJECT_INFO& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -1429,13 +1455,13 @@ class PLAYER_INFO final :
   void SharedCtor();
   void SharedDtor();
   void SetCachedSize(int size) const final;
-  void InternalSwap(PLAYER_INFO* other);
+  void InternalSwap(OBJECT_INFO* other);
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
   static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "Protocol.PLAYER_INFO";
+    return "Protocol.OBJECT_INFO";
   }
   protected:
-  explicit PLAYER_INFO(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  explicit OBJECT_INFO(::PROTOBUF_NAMESPACE_ID::Arena* arena);
   private:
   static void ArenaDtor(void* object);
   inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
@@ -1450,7 +1476,7 @@ class PLAYER_INFO final :
   enum : int {
     kNameFieldNumber = 2,
     kPosInfoFieldNumber = 3,
-    kPlayerIdFieldNumber = 1,
+    kObjectIdFieldNumber = 1,
   };
   // string name = 2;
   void clear_name();
@@ -1484,16 +1510,16 @@ class PLAYER_INFO final :
       ::Protocol::POSITIONINFO* posinfo);
   ::Protocol::POSITIONINFO* unsafe_arena_release_posinfo();
 
-  // int32 playerId = 1;
-  void clear_playerid();
-  ::PROTOBUF_NAMESPACE_ID::int32 playerid() const;
-  void set_playerid(::PROTOBUF_NAMESPACE_ID::int32 value);
+  // int32 objectId = 1;
+  void clear_objectid();
+  ::PROTOBUF_NAMESPACE_ID::int32 objectid() const;
+  void set_objectid(::PROTOBUF_NAMESPACE_ID::int32 value);
   private:
-  ::PROTOBUF_NAMESPACE_ID::int32 _internal_playerid() const;
-  void _internal_set_playerid(::PROTOBUF_NAMESPACE_ID::int32 value);
+  ::PROTOBUF_NAMESPACE_ID::int32 _internal_objectid() const;
+  void _internal_set_objectid(::PROTOBUF_NAMESPACE_ID::int32 value);
   public:
 
-  // @@protoc_insertion_point(class_scope:Protocol.PLAYER_INFO)
+  // @@protoc_insertion_point(class_scope:Protocol.OBJECT_INFO)
  private:
   class _Internal;
 
@@ -1502,7 +1528,7 @@ class PLAYER_INFO final :
   typedef void DestructorSkippable_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr name_;
   ::Protocol::POSITIONINFO* posinfo_;
-  ::PROTOBUF_NAMESPACE_ID::int32 playerid_;
+  ::PROTOBUF_NAMESPACE_ID::int32 objectid_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_Protocol_2eproto;
 };
@@ -1814,7 +1840,7 @@ class SkillInfo final :
 #endif  // __GNUC__
 // S_ENTER_GAME
 
-// .Protocol.PLAYER_INFO player = 1;
+// .Protocol.OBJECT_INFO player = 1;
 inline bool S_ENTER_GAME::_internal_has_player() const {
   return this != internal_default_instance() && player_ != nullptr;
 }
@@ -1827,17 +1853,17 @@ inline void S_ENTER_GAME::clear_player() {
   }
   player_ = nullptr;
 }
-inline const ::Protocol::PLAYER_INFO& S_ENTER_GAME::_internal_player() const {
-  const ::Protocol::PLAYER_INFO* p = player_;
-  return p != nullptr ? *p : reinterpret_cast<const ::Protocol::PLAYER_INFO&>(
-      ::Protocol::_PLAYER_INFO_default_instance_);
+inline const ::Protocol::OBJECT_INFO& S_ENTER_GAME::_internal_player() const {
+  const ::Protocol::OBJECT_INFO* p = player_;
+  return p != nullptr ? *p : reinterpret_cast<const ::Protocol::OBJECT_INFO&>(
+      ::Protocol::_OBJECT_INFO_default_instance_);
 }
-inline const ::Protocol::PLAYER_INFO& S_ENTER_GAME::player() const {
+inline const ::Protocol::OBJECT_INFO& S_ENTER_GAME::player() const {
   // @@protoc_insertion_point(field_get:Protocol.S_ENTER_GAME.player)
   return _internal_player();
 }
 inline void S_ENTER_GAME::unsafe_arena_set_allocated_player(
-    ::Protocol::PLAYER_INFO* player) {
+    ::Protocol::OBJECT_INFO* player) {
   if (GetArenaForAllocation() == nullptr) {
     delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(player_);
   }
@@ -1849,42 +1875,42 @@ inline void S_ENTER_GAME::unsafe_arena_set_allocated_player(
   }
   // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Protocol.S_ENTER_GAME.player)
 }
-inline ::Protocol::PLAYER_INFO* S_ENTER_GAME::release_player() {
+inline ::Protocol::OBJECT_INFO* S_ENTER_GAME::release_player() {
   
-  ::Protocol::PLAYER_INFO* temp = player_;
+  ::Protocol::OBJECT_INFO* temp = player_;
   player_ = nullptr;
   if (GetArenaForAllocation() != nullptr) {
     temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
   }
   return temp;
 }
-inline ::Protocol::PLAYER_INFO* S_ENTER_GAME::unsafe_arena_release_player() {
+inline ::Protocol::OBJECT_INFO* S_ENTER_GAME::unsafe_arena_release_player() {
   // @@protoc_insertion_point(field_release:Protocol.S_ENTER_GAME.player)
   
-  ::Protocol::PLAYER_INFO* temp = player_;
+  ::Protocol::OBJECT_INFO* temp = player_;
   player_ = nullptr;
   return temp;
 }
-inline ::Protocol::PLAYER_INFO* S_ENTER_GAME::_internal_mutable_player() {
+inline ::Protocol::OBJECT_INFO* S_ENTER_GAME::_internal_mutable_player() {
   
   if (player_ == nullptr) {
-    auto* p = CreateMaybeMessage<::Protocol::PLAYER_INFO>(GetArenaForAllocation());
+    auto* p = CreateMaybeMessage<::Protocol::OBJECT_INFO>(GetArenaForAllocation());
     player_ = p;
   }
   return player_;
 }
-inline ::Protocol::PLAYER_INFO* S_ENTER_GAME::mutable_player() {
+inline ::Protocol::OBJECT_INFO* S_ENTER_GAME::mutable_player() {
   // @@protoc_insertion_point(field_mutable:Protocol.S_ENTER_GAME.player)
   return _internal_mutable_player();
 }
-inline void S_ENTER_GAME::set_allocated_player(::Protocol::PLAYER_INFO* player) {
+inline void S_ENTER_GAME::set_allocated_player(::Protocol::OBJECT_INFO* player) {
   ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
   if (message_arena == nullptr) {
     delete player_;
   }
   if (player) {
     ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
-        ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper<::Protocol::PLAYER_INFO>::GetOwningArena(player);
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper<::Protocol::OBJECT_INFO>::GetOwningArena(player);
     if (message_arena != submessage_arena) {
       player = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
           message_arena, player, submessage_arena);
@@ -1925,43 +1951,43 @@ inline void S_LEAVE_GAME::set_exit(bool value) {
 
 // S_SPAWN
 
-// repeated .Protocol.PLAYER_INFO players = 1;
-inline int S_SPAWN::_internal_players_size() const {
-  return players_.size();
+// repeated .Protocol.OBJECT_INFO objects = 1;
+inline int S_SPAWN::_internal_objects_size() const {
+  return objects_.size();
 }
-inline int S_SPAWN::players_size() const {
-  return _internal_players_size();
+inline int S_SPAWN::objects_size() const {
+  return _internal_objects_size();
 }
-inline void S_SPAWN::clear_players() {
-  players_.Clear();
+inline void S_SPAWN::clear_objects() {
+  objects_.Clear();
 }
-inline ::Protocol::PLAYER_INFO* S_SPAWN::mutable_players(int index) {
-  // @@protoc_insertion_point(field_mutable:Protocol.S_SPAWN.players)
-  return players_.Mutable(index);
+inline ::Protocol::OBJECT_INFO* S_SPAWN::mutable_objects(int index) {
+  // @@protoc_insertion_point(field_mutable:Protocol.S_SPAWN.objects)
+  return objects_.Mutable(index);
 }
-inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::PLAYER_INFO >*
-S_SPAWN::mutable_players() {
-  // @@protoc_insertion_point(field_mutable_list:Protocol.S_SPAWN.players)
-  return &players_;
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::OBJECT_INFO >*
+S_SPAWN::mutable_objects() {
+  // @@protoc_insertion_point(field_mutable_list:Protocol.S_SPAWN.objects)
+  return &objects_;
 }
-inline const ::Protocol::PLAYER_INFO& S_SPAWN::_internal_players(int index) const {
-  return players_.Get(index);
+inline const ::Protocol::OBJECT_INFO& S_SPAWN::_internal_objects(int index) const {
+  return objects_.Get(index);
 }
-inline const ::Protocol::PLAYER_INFO& S_SPAWN::players(int index) const {
-  // @@protoc_insertion_point(field_get:Protocol.S_SPAWN.players)
-  return _internal_players(index);
+inline const ::Protocol::OBJECT_INFO& S_SPAWN::objects(int index) const {
+  // @@protoc_insertion_point(field_get:Protocol.S_SPAWN.objects)
+  return _internal_objects(index);
 }
-inline ::Protocol::PLAYER_INFO* S_SPAWN::_internal_add_players() {
-  return players_.Add();
+inline ::Protocol::OBJECT_INFO* S_SPAWN::_internal_add_objects() {
+  return objects_.Add();
 }
-inline ::Protocol::PLAYER_INFO* S_SPAWN::add_players() {
-  // @@protoc_insertion_point(field_add:Protocol.S_SPAWN.players)
-  return _internal_add_players();
+inline ::Protocol::OBJECT_INFO* S_SPAWN::add_objects() {
+  // @@protoc_insertion_point(field_add:Protocol.S_SPAWN.objects)
+  return _internal_add_objects();
 }
-inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::PLAYER_INFO >&
-S_SPAWN::players() const {
-  // @@protoc_insertion_point(field_list:Protocol.S_SPAWN.players)
-  return players_;
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::OBJECT_INFO >&
+S_SPAWN::objects() const {
+  // @@protoc_insertion_point(field_list:Protocol.S_SPAWN.objects)
+  return objects_;
 }
 
 // -------------------------------------------------------------------
@@ -2405,63 +2431,63 @@ inline void S_SKILL::set_allocated_info(::Protocol::SkillInfo* info) {
 
 // -------------------------------------------------------------------
 
-// PLAYER_INFO
+// OBJECT_INFO
 
-// int32 playerId = 1;
-inline void PLAYER_INFO::clear_playerid() {
-  playerid_ = 0;
+// int32 objectId = 1;
+inline void OBJECT_INFO::clear_objectid() {
+  objectid_ = 0;
 }
-inline ::PROTOBUF_NAMESPACE_ID::int32 PLAYER_INFO::_internal_playerid() const {
-  return playerid_;
+inline ::PROTOBUF_NAMESPACE_ID::int32 OBJECT_INFO::_internal_objectid() const {
+  return objectid_;
 }
-inline ::PROTOBUF_NAMESPACE_ID::int32 PLAYER_INFO::playerid() const {
-  // @@protoc_insertion_point(field_get:Protocol.PLAYER_INFO.playerId)
-  return _internal_playerid();
+inline ::PROTOBUF_NAMESPACE_ID::int32 OBJECT_INFO::objectid() const {
+  // @@protoc_insertion_point(field_get:Protocol.OBJECT_INFO.objectId)
+  return _internal_objectid();
 }
-inline void PLAYER_INFO::_internal_set_playerid(::PROTOBUF_NAMESPACE_ID::int32 value) {
+inline void OBJECT_INFO::_internal_set_objectid(::PROTOBUF_NAMESPACE_ID::int32 value) {
   
-  playerid_ = value;
+  objectid_ = value;
 }
-inline void PLAYER_INFO::set_playerid(::PROTOBUF_NAMESPACE_ID::int32 value) {
-  _internal_set_playerid(value);
-  // @@protoc_insertion_point(field_set:Protocol.PLAYER_INFO.playerId)
+inline void OBJECT_INFO::set_objectid(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  _internal_set_objectid(value);
+  // @@protoc_insertion_point(field_set:Protocol.OBJECT_INFO.objectId)
 }
 
 // string name = 2;
-inline void PLAYER_INFO::clear_name() {
+inline void OBJECT_INFO::clear_name() {
   name_.ClearToEmpty();
 }
-inline const std::string& PLAYER_INFO::name() const {
-  // @@protoc_insertion_point(field_get:Protocol.PLAYER_INFO.name)
+inline const std::string& OBJECT_INFO::name() const {
+  // @@protoc_insertion_point(field_get:Protocol.OBJECT_INFO.name)
   return _internal_name();
 }
 template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
-void PLAYER_INFO::set_name(ArgT0&& arg0, ArgT... args) {
+void OBJECT_INFO::set_name(ArgT0&& arg0, ArgT... args) {
  
  name_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:Protocol.PLAYER_INFO.name)
+  // @@protoc_insertion_point(field_set:Protocol.OBJECT_INFO.name)
 }
-inline std::string* PLAYER_INFO::mutable_name() {
-  // @@protoc_insertion_point(field_mutable:Protocol.PLAYER_INFO.name)
+inline std::string* OBJECT_INFO::mutable_name() {
+  // @@protoc_insertion_point(field_mutable:Protocol.OBJECT_INFO.name)
   return _internal_mutable_name();
 }
-inline const std::string& PLAYER_INFO::_internal_name() const {
+inline const std::string& OBJECT_INFO::_internal_name() const {
   return name_.Get();
 }
-inline void PLAYER_INFO::_internal_set_name(const std::string& value) {
+inline void OBJECT_INFO::_internal_set_name(const std::string& value) {
   
   name_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, value, GetArenaForAllocation());
 }
-inline std::string* PLAYER_INFO::_internal_mutable_name() {
+inline std::string* OBJECT_INFO::_internal_mutable_name() {
   
   return name_.Mutable(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, GetArenaForAllocation());
 }
-inline std::string* PLAYER_INFO::release_name() {
-  // @@protoc_insertion_point(field_release:Protocol.PLAYER_INFO.name)
+inline std::string* OBJECT_INFO::release_name() {
+  // @@protoc_insertion_point(field_release:Protocol.OBJECT_INFO.name)
   return name_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArenaForAllocation());
 }
-inline void PLAYER_INFO::set_allocated_name(std::string* name) {
+inline void OBJECT_INFO::set_allocated_name(std::string* name) {
   if (name != nullptr) {
     
   } else {
@@ -2469,32 +2495,32 @@ inline void PLAYER_INFO::set_allocated_name(std::string* name) {
   }
   name_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), name,
       GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set_allocated:Protocol.PLAYER_INFO.name)
+  // @@protoc_insertion_point(field_set_allocated:Protocol.OBJECT_INFO.name)
 }
 
 // .Protocol.POSITIONINFO posInfo = 3;
-inline bool PLAYER_INFO::_internal_has_posinfo() const {
+inline bool OBJECT_INFO::_internal_has_posinfo() const {
   return this != internal_default_instance() && posinfo_ != nullptr;
 }
-inline bool PLAYER_INFO::has_posinfo() const {
+inline bool OBJECT_INFO::has_posinfo() const {
   return _internal_has_posinfo();
 }
-inline void PLAYER_INFO::clear_posinfo() {
+inline void OBJECT_INFO::clear_posinfo() {
   if (GetArenaForAllocation() == nullptr && posinfo_ != nullptr) {
     delete posinfo_;
   }
   posinfo_ = nullptr;
 }
-inline const ::Protocol::POSITIONINFO& PLAYER_INFO::_internal_posinfo() const {
+inline const ::Protocol::POSITIONINFO& OBJECT_INFO::_internal_posinfo() const {
   const ::Protocol::POSITIONINFO* p = posinfo_;
   return p != nullptr ? *p : reinterpret_cast<const ::Protocol::POSITIONINFO&>(
       ::Protocol::_POSITIONINFO_default_instance_);
 }
-inline const ::Protocol::POSITIONINFO& PLAYER_INFO::posinfo() const {
-  // @@protoc_insertion_point(field_get:Protocol.PLAYER_INFO.posInfo)
+inline const ::Protocol::POSITIONINFO& OBJECT_INFO::posinfo() const {
+  // @@protoc_insertion_point(field_get:Protocol.OBJECT_INFO.posInfo)
   return _internal_posinfo();
 }
-inline void PLAYER_INFO::unsafe_arena_set_allocated_posinfo(
+inline void OBJECT_INFO::unsafe_arena_set_allocated_posinfo(
     ::Protocol::POSITIONINFO* posinfo) {
   if (GetArenaForAllocation() == nullptr) {
     delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(posinfo_);
@@ -2505,9 +2531,9 @@ inline void PLAYER_INFO::unsafe_arena_set_allocated_posinfo(
   } else {
     
   }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Protocol.PLAYER_INFO.posInfo)
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Protocol.OBJECT_INFO.posInfo)
 }
-inline ::Protocol::POSITIONINFO* PLAYER_INFO::release_posinfo() {
+inline ::Protocol::POSITIONINFO* OBJECT_INFO::release_posinfo() {
   
   ::Protocol::POSITIONINFO* temp = posinfo_;
   posinfo_ = nullptr;
@@ -2516,14 +2542,14 @@ inline ::Protocol::POSITIONINFO* PLAYER_INFO::release_posinfo() {
   }
   return temp;
 }
-inline ::Protocol::POSITIONINFO* PLAYER_INFO::unsafe_arena_release_posinfo() {
-  // @@protoc_insertion_point(field_release:Protocol.PLAYER_INFO.posInfo)
+inline ::Protocol::POSITIONINFO* OBJECT_INFO::unsafe_arena_release_posinfo() {
+  // @@protoc_insertion_point(field_release:Protocol.OBJECT_INFO.posInfo)
   
   ::Protocol::POSITIONINFO* temp = posinfo_;
   posinfo_ = nullptr;
   return temp;
 }
-inline ::Protocol::POSITIONINFO* PLAYER_INFO::_internal_mutable_posinfo() {
+inline ::Protocol::POSITIONINFO* OBJECT_INFO::_internal_mutable_posinfo() {
   
   if (posinfo_ == nullptr) {
     auto* p = CreateMaybeMessage<::Protocol::POSITIONINFO>(GetArenaForAllocation());
@@ -2531,11 +2557,11 @@ inline ::Protocol::POSITIONINFO* PLAYER_INFO::_internal_mutable_posinfo() {
   }
   return posinfo_;
 }
-inline ::Protocol::POSITIONINFO* PLAYER_INFO::mutable_posinfo() {
-  // @@protoc_insertion_point(field_mutable:Protocol.PLAYER_INFO.posInfo)
+inline ::Protocol::POSITIONINFO* OBJECT_INFO::mutable_posinfo() {
+  // @@protoc_insertion_point(field_mutable:Protocol.OBJECT_INFO.posInfo)
   return _internal_mutable_posinfo();
 }
-inline void PLAYER_INFO::set_allocated_posinfo(::Protocol::POSITIONINFO* posinfo) {
+inline void OBJECT_INFO::set_allocated_posinfo(::Protocol::POSITIONINFO* posinfo) {
   ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
   if (message_arena == nullptr) {
     delete posinfo_;
@@ -2552,7 +2578,7 @@ inline void PLAYER_INFO::set_allocated_posinfo(::Protocol::POSITIONINFO* posinfo
     
   }
   posinfo_ = posinfo;
-  // @@protoc_insertion_point(field_set_allocated:Protocol.PLAYER_INFO.posInfo)
+  // @@protoc_insertion_point(field_set_allocated:Protocol.OBJECT_INFO.posInfo)
 }
 
 // -------------------------------------------------------------------
@@ -2707,6 +2733,11 @@ template <> struct is_proto_enum< ::Protocol::MoveDir> : ::std::true_type {};
 template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::Protocol::MoveDir>() {
   return ::Protocol::MoveDir_descriptor();
+}
+template <> struct is_proto_enum< ::Protocol::GameObjectType> : ::std::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::Protocol::GameObjectType>() {
+  return ::Protocol::GameObjectType_descriptor();
 }
 
 PROTOBUF_NAMESPACE_CLOSE

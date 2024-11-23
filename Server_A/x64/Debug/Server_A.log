@@ -1,9 +1,8 @@
-﻿빌드 시작: 2024-11-21 오전 12:19:09
+﻿빌드 시작: 2024-11-23 오후 6:35:44
 로깅의 세부 정보 표시가 Normal(으)로 설정되었습니다.     1>2 노드의 "C:\Users\OG\source\repos\Server_A\Server_A\Server_A.vcxproj" 프로젝트(Build 대상)입니다.
      1>PrepareForBuild:
          구조적 출력을 사용할 수 있습니다. 컴파일러 진단의 서식은 오류 계층 구조를 반영합니다. 자세한 내용은 https://aka.ms/cpp/structured-output을 참조하세요.
        InitializeBuildStatus:
-         "AlwaysCreate"이(가) 지정되었기 때문에 "x64\Debug\Server_A.tlog\unsuccessfulbuild"을(를) 만들고 있습니다.
          "x64\Debug\Server_A.tlog\unsuccessfulbuild"에 연결(touching)하고 있습니다.
        PreBuildEvent:
          CALL C:\Users\OG\source\repos\Server_A\Common\Protobuf\bin\GenPackets.bat
@@ -105,34 +104,40 @@
          Press any key to continue . . . 
        ClCompile:
          모든 출력이 최신 상태입니다.
-         G:\visualstudio\VC\Tools\MSVC\14.41.34120\bin\HostX64\x64\CL.exe /c /ZI /JMC /nologo /W3 /WX- /diagnostics:column /sdl /Od /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /permissive- /Yu"pch.h" /Fp"x64\Debug\Server_A.pch" /Fo"x64\Debug\\" /Fd"x64\Debug\vc143.pdb" /external:W3 /Gd /TP /FC /errorReport:prompt ClientPacketHandler.cpp GameSession.cpp Player.cpp PlayerManager.cpp Room.cpp RoomManager.cpp Server.cpp
+         G:\visualstudio\VC\Tools\MSVC\14.41.34120\bin\HostX64\x64\CL.exe /c /ZI /JMC /nologo /W3 /WX- /diagnostics:column /sdl /Od /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /permissive- /Yu"pch.h" /Fp"x64\Debug\Server_A.pch" /Fo"x64\Debug\\" /Fd"x64\Debug\vc143.pdb" /external:W3 /Gd /TP /FC /errorReport:prompt ClientPacketHandler.cpp GameObject.cpp GameSession.cpp MapManager.cpp Player.cpp PlayerManager.cpp Room.cpp RoomManager.cpp Server.cpp
          ClientPacketHandler.cpp
+         GameObject.cpp
          GameSession.cpp
+         MapManager.cpp
          Player.cpp
          PlayerManager.cpp
          Room.cpp
          RoomManager.cpp
          Server.cpp
          코드를 생성하고 있습니다...
-     1>C:\Users\OG\source\repos\Server_A\Server_A\PlayerManager.cpp(17,1): warning C4172: 지역 변수 또는 임시 : player의 주소를 반환하는 중
      1>C:\Users\OG\source\repos\Server_A\Server_A\PlayerManager.cpp(38,1): warning C4172: 지역 변수 또는 임시 : player의 주소를 반환하는 중
+     1>C:\Users\OG\source\repos\Server_A\Server_A\PlayerManager.cpp(17,1): warning C4172: 지역 변수 또는 임시 : player의 주소를 반환하는 중
          G:\visualstudio\VC\Tools\MSVC\14.41.34120\bin\HostX64\x64\CL.exe /c /ZI /JMC /nologo /W3 /WX- /diagnostics:column /sdl /Od /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /permissive- /Fo"x64\Debug\\" /Fd"x64\Debug\vc143.pdb" /external:W3 /Gd /TP /FC /errorReport:prompt Enum.pb.cc Protocol.pb.cc Struct.pb.cc
          Enum.pb.cc
          Protocol.pb.cc
-     1>C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(1022,82): warning C4244: '인수': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(1444,70): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(1887,70): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(2133,70): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(2410,66): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(2417,66): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(2660,69): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(1038,82): warning C4244: '인수': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(1460,70): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(1903,70): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(2149,70): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(2426,66): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(2433,66): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(2676,69): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
          Struct.pb.cc
          코드를 생성하고 있습니다...
        Link:
-         G:\visualstudio\VC\Tools\MSVC\14.41.34120\bin\HostX64\x64\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\OG\source\repos\Server_A\Binary\Debug\Server_A.exe" /INCREMENTAL /ILK:"x64\Debug\Server_A.ilk" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\OG\source\repos\Server_A\Binary\Debug\Server_A.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\OG\source\repos\Server_A\Binary\Debug\Server_A.lib" /MACHINE:X64 x64\Debug\ClientPacketHandler.obj
+         G:\visualstudio\VC\Tools\MSVC\14.41.34120\bin\HostX64\x64\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\OG\source\repos\Server_A\Binary\Debug\Server_A.exe" /INCREMENTAL /ILK:"x64\Debug\Server_A.ilk" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\OG\source\repos\Server_A\Binary\Debug\Server_A.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\OG\source\repos\Server_A\Binary\Debug\Server_A.lib" /MACHINE:X64 x64\Debug\Arrow.obj
+         x64\Debug\ClientPacketHandler.obj
          x64\Debug\Enum.pb.obj
+         x64\Debug\GameObject.obj
          x64\Debug\GameSession.obj
          x64\Debug\GameSessionManager.obj
+         x64\Debug\MapManager.obj
+         x64\Debug\Monster.obj
          x64\Debug\pch.obj
          x64\Debug\Player.obj
          x64\Debug\PlayerManager.obj
@@ -156,20 +161,20 @@
 
        "C:\Users\OG\source\repos\Server_A\Server_A\Server_A.vcxproj"(Build 대상)(1) ->
        (ClCompile 대상) -> 
-         C:\Users\OG\source\repos\Server_A\Server_A\PlayerManager.cpp(17,1): warning C4172: 지역 변수 또는 임시 : player의 주소를 반환하는 중
          C:\Users\OG\source\repos\Server_A\Server_A\PlayerManager.cpp(38,1): warning C4172: 지역 변수 또는 임시 : player의 주소를 반환하는 중
+         C:\Users\OG\source\repos\Server_A\Server_A\PlayerManager.cpp(17,1): warning C4172: 지역 변수 또는 임시 : player의 주소를 반환하는 중
 
 
        "C:\Users\OG\source\repos\Server_A\Server_A\Server_A.vcxproj"(Build 대상)(1) ->
-         C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(1022,82): warning C4244: '인수': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-         C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(1444,70): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-         C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(1887,70): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-         C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(2133,70): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-         C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(2410,66): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-         C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(2417,66): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-         C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(2660,69): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+         C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(1038,82): warning C4244: '인수': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+         C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(1460,70): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+         C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(1903,70): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+         C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(2149,70): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+         C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(2426,66): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+         C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(2433,66): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+         C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(2676,69): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
 
     경고 10개
     오류 0개
 
-경과 시간: 00:00:09.90
+경과 시간: 00:00:11.60

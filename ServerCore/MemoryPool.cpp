@@ -22,7 +22,6 @@ void MemoryPool::Push(MemoryHeader* ptr)
 {
 
     ptr->allocSize = 0;
-    //pool¿¡ ¸Þ¸ð¸® ¹Ý³³
     InterlockedPushEntrySList(&_header, static_cast<PSLIST_ENTRY>(ptr));
 
     _useCount.fetch_sub(1);

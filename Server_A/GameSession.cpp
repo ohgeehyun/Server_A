@@ -19,11 +19,11 @@ void GameSession::OnConnected()
     PlayerManager& PlayerManager = PlayerManager::GetInstance();
     _myplayer = PlayerManager.Add();
     {
-        _myplayer->GetPlayerInfo().set_name("Player_"+ to_string(_myplayer->GetPlayerInfo().playerid()));
-        _myplayer->GetPlayerInfo().mutable_posinfo()->set_state(Protocol::CreatureState::IDLE);
-        _myplayer->GetPlayerInfo().mutable_posinfo()->set_movedir(Protocol::MoveDir::None);
-        _myplayer->GetPlayerInfo().mutable_posinfo()->set_posx(0);
-        _myplayer->GetPlayerInfo().mutable_posinfo()->set_posy(0);
+        _myplayer->GetObjectInfo().set_name("Player_"+ to_string(_myplayer->GetObjectInfo().objectid()));
+        _myplayer->GetObjectInfo().mutable_posinfo()->set_state(Protocol::CreatureState::IDLE);
+        _myplayer->GetObjectInfo().mutable_posinfo()->set_movedir(Protocol::MoveDir::UP);
+        _myplayer->GetObjectInfo().mutable_posinfo()->set_posx(0);
+        _myplayer->GetObjectInfo().mutable_posinfo()->set_posy(0);
         _myplayer->SetSession(static_pointer_cast<GameSession>(shared_from_this()));
     }
 
@@ -35,7 +35,7 @@ void GameSession::OnConnected()
 void GameSession::OnDisConnected()
 {
     RoomManager& RoomManager = RoomManager::GetInstance();
-    RoomManager.Find(1)->LeaveGame(_myplayer->GetPlayerInfo().playerid());
+    RoomManager.Find(1)->LeaveGame(_myplayer->GetObjectInfo().objectid());
 
     SessionManager->Remove(static_pointer_cast<GameSession>(shared_from_this()));
 }

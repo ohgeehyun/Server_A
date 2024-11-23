@@ -6,12 +6,13 @@
 #include "GameSessionManager.h"
 #include <windows.h>
 
+
 int main()
 {
     SetConsoleOutputCP(CP_UTF8);
 
     RoomManager& manager = RoomManager::GetInstance();
-    manager.Add();
+    manager.Add(1);
 
     ClientPacketHandler::Init();
     SessionManager = new GameSessionManager();
@@ -34,5 +35,4 @@ int main()
         });
     }
     GThreadManager->Join();
-
 }

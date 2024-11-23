@@ -4,9 +4,10 @@
 
 
 
-RoomRef RoomManager::Add()
+RoomRef RoomManager::Add(int32 mapId)
 {
     RoomRef gameRoom = Make_Shared<Room>();
+    gameRoom->Init(mapId);
 
     WRITE_LOCK
     {

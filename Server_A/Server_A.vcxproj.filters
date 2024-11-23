@@ -13,6 +13,12 @@
     <Filter Include="Main\Game">
       <UniqueIdentifier>{2800dc33-e3ee-42a0-a477-3f4005ab9050}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Main\Game\Room">
+      <UniqueIdentifier>{c0b218de-f6f1-490d-a75d-0f6795e2f978}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Game\Object">
+      <UniqueIdentifier>{64bf7f13-7e62-4911-bdd3-8ebc8ba37233}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -39,17 +45,29 @@
     <ClCompile Include="Struct.pb.cc">
       <Filter>Protocol</Filter>
     </ClCompile>
-    <ClCompile Include="PlayerManager.cpp">
-      <Filter>Main\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>Main\Game</Filter>
-    </ClCompile>
     <ClCompile Include="RoomManager.cpp">
-      <Filter>Main\Game</Filter>
+      <Filter>Main\Game\Room</Filter>
     </ClCompile>
     <ClCompile Include="Room.cpp">
-      <Filter>Main\Game</Filter>
+      <Filter>Main\Game\Room</Filter>
+    </ClCompile>
+    <ClCompile Include="Arrow.cpp">
+      <Filter>Main\Game\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>Main\Game\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Monster.cpp">
+      <Filter>Main\Game\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Main\Game\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerManager.cpp">
+      <Filter>Main\Game\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="MapManager.cpp">
+      <Filter>Main\Game\Room</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -74,17 +92,29 @@
     <ClInclude Include="Struct.pb.h">
       <Filter>Protocol</Filter>
     </ClInclude>
-    <ClInclude Include="PlayerManager.h">
-      <Filter>Main\Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>Main\Game</Filter>
+    <ClInclude Include="Room.h">
+      <Filter>Main\Game\Room</Filter>
     </ClInclude>
     <ClInclude Include="RoomManager.h">
-      <Filter>Main\Game</Filter>
+      <Filter>Main\Game\Room</Filter>
     </ClInclude>
-    <ClInclude Include="Room.h">
-      <Filter>Main\Game</Filter>
+    <ClInclude Include="MapManager.h">
+      <Filter>Main\Game\Room</Filter>
+    </ClInclude>
+    <ClInclude Include="Arrow.h">
+      <Filter>Main\Game\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>Main\Game\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Monster.h">
+      <Filter>Main\Game\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Main\Game\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerManager.h">
+      <Filter>Main\Game\Object</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

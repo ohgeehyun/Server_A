@@ -1,7 +1,11 @@
+C:\Users\OG\source\repos\Server_A\Server_A\Arrow.cpp;C:\Users\OG\source\repos\Server_A\Server_A\x64\Debug\Arrow.obj
 C:\Users\OG\source\repos\Server_A\Server_A\ClientPacketHandler.cpp;C:\Users\OG\source\repos\Server_A\Server_A\x64\Debug\ClientPacketHandler.obj
 C:\Users\OG\source\repos\Server_A\Server_A\Enum.pb.cc;C:\Users\OG\source\repos\Server_A\Server_A\x64\Debug\Enum.pb.obj
+C:\Users\OG\source\repos\Server_A\Server_A\GameObject.cpp;C:\Users\OG\source\repos\Server_A\Server_A\x64\Debug\GameObject.obj
 C:\Users\OG\source\repos\Server_A\Server_A\GameSession.cpp;C:\Users\OG\source\repos\Server_A\Server_A\x64\Debug\GameSession.obj
 C:\Users\OG\source\repos\Server_A\Server_A\GameSessionManager.cpp;C:\Users\OG\source\repos\Server_A\Server_A\x64\Debug\GameSessionManager.obj
+C:\Users\OG\source\repos\Server_A\Server_A\MapManager.cpp;C:\Users\OG\source\repos\Server_A\Server_A\x64\Debug\MapManager.obj
+C:\Users\OG\source\repos\Server_A\Server_A\Monster.cpp;C:\Users\OG\source\repos\Server_A\Server_A\x64\Debug\Monster.obj
 C:\Users\OG\source\repos\Server_A\Server_A\pch.cpp;C:\Users\OG\source\repos\Server_A\Server_A\x64\Debug\pch.obj
 C:\Users\OG\source\repos\Server_A\Server_A\Player.cpp;C:\Users\OG\source\repos\Server_A\Server_A\x64\Debug\Player.obj
 C:\Users\OG\source\repos\Server_A\Server_A\PlayerManager.cpp;C:\Users\OG\source\repos\Server_A\Server_A\x64\Debug\PlayerManager.obj
