@@ -2,7 +2,7 @@
 #include "GameSession.h"
 #include "GameSessionManager.h"
 #include "ClientPacketHandler.h"
-#include "PlayerManager.h"
+#include "ObjectManager.h"
 #include "Player.h"
 #include "RoomManager.h"
 
@@ -16,8 +16,8 @@ void GameSession::OnConnected()
     //세션에 누군가 할당이 되었는데 원래는 DB에서 플레이어의 정보를 긁어와야하는데..
     
     //세션도 해당 플레이어의 정보를 가지고 있는다.
-    PlayerManager& PlayerManager = PlayerManager::GetInstance();
-    _myplayer = PlayerManager.Add();
+    ObjectManager& ObjectManager = ObjectManager::GetInstance();
+    _myplayer = ObjectManager.Add<Player>();
     {
         _myplayer->GetObjectInfo().set_name("Player_"+ to_string(_myplayer->GetObjectInfo().objectid()));
         _myplayer->GetObjectInfo().mutable_posinfo()->set_state(Protocol::CreatureState::IDLE);
@@ -28,7 +28,7 @@ void GameSession::OnConnected()
     }
 
     RoomManager& RoomManager = RoomManager::GetInstance();
-    RoomManager.Find(1)->EnterGame(_myplayer);
+    RoomManager.Find(1)->EnterGame(static_pointer_cast<GameObject>(_myplayer));
    
 }
 

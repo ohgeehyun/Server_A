@@ -4,6 +4,7 @@
 
 Player::Player()
 {
+    SetGameObjectType(Protocol::PLAYER);
 }
 
 Player::~Player()

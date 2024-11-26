@@ -1,5 +1,11 @@
 #pragma once
-class Monster
+#include "GameObject.h"
+
+class Monster : public GameObject 
 {
+public:
+    Monster();
+    ~Monster();
+
 };
 

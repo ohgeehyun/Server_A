@@ -16,7 +16,7 @@ bool MapManager::CanGo(Vector2Int cellPos ,bool checkObject)
     int32 x = cellPos.posx - _MinX;
     int32 y = _MaxY - cellPos.posy;
 
-    return !_collision[y][x] && (!checkObject || _players[y][x] == nullptr);
+    return !_collision[y][x] && (!checkObject || _objects[y][x] == nullptr);
 }
 
 void MapManager::LoadMap(int32 mapId)
@@ -46,7 +46,7 @@ void MapManager::LoadMap(int32 mapId)
 
     // _collision 배열 초기화
     _collision.resize(yCount, Vector<bool>(xCount, false));
-    _players.resize(yCount,Vector<PlayerRef>(xCount));
+    _objects.resize(yCount,Vector<GameObjectRef>(xCount));
 
     // 파일에서 충돌 데이터를 읽어들임
     for (int y = 0; y < yCount; ++y) {
@@ -61,7 +61,7 @@ void MapManager::LoadMap(int32 mapId)
     
 }
 
-PlayerRef MapManager::Find(Vector2Int cellPos)
+GameObjectRef MapManager::Find(Vector2Int cellPos)
 {
     if (cellPos.posx < _MinX || cellPos.posx > _MaxX)
         return nullptr;
@@ -70,40 +70,48 @@ PlayerRef MapManager::Find(Vector2Int cellPos)
 
     int32 x = cellPos.posx - _MinX;
     int32 y = _MaxY - cellPos.posy;
-    return _players[y][x];
+    return _objects[y][x];
 }
 
-bool MapManager::ApplyMove(PlayerRef& player, Vector2Int dest)
+bool MapManager::ApplyMove(const GameObjectRef& gameobject, Vector2Int dest)
 {
-    Protocol::POSITIONINFO* posInfo = player->GetObjectInfo().mutable_posinfo();
+    ApplyLeave(gameobject);
 
-    if (posInfo->posx() < _MinX || posInfo->posx() > _MaxX)
-        return false;
-    if (posInfo->posy() < _MinY || posInfo->posy() > _MaxY)
-        return false;
+    Protocol::POSITIONINFO* posInfo = gameobject->GetObjectInfo().mutable_posinfo();
 
     if (CanGo(dest, true) == false)
         return false;
-    {
-        int32 x = posInfo->posx() - _MinX;
-        int32 y = _MaxY - posInfo->posy();
-        if (_players[y][x] == player) 
-        {
-            cout << "위치 삭제된 플레이어  id :" << _players[y][x]->GetObjectInfo().objectid();
-            cout << "위치 삭제된 플레이어 위치:" << _players[y][x]->GetObjectInfo().posinfo().posx() << "," << _players[y][x]->GetObjectInfo().posinfo().posy() << endl;
-            _players[y][x] = nullptr;
-        }
-    }
+ 
     {
         int32 x = dest.posx - _MinX;
         int32 y = _MaxY - dest.posy;
-        _players[y][x] = player;
+        _objects[y][x] = gameobject;
 
     }
     //실제 좌표 이동 
     posInfo->set_posx(dest.posx);
     posInfo->set_posy(dest.posy);
     
+    return true;
+}
+
+bool MapManager::ApplyLeave(const GameObjectRef& gameObject)
+{
+    Protocol::POSITIONINFO* posInfo = gameObject->GetObjectInfo().mutable_posinfo();
+
+    if (posInfo->posx() < _MinX || posInfo->posx() > _MaxX)
+        return false;
+    if (posInfo->posy() < _MinY || posInfo->posy() > _MaxY)
+        return false;
+
+    int32 x = posInfo->posx() - _MinX;
+    int32 y = _MaxY - posInfo->posy();
+    if (_objects[y][x] == gameObject)
+    {
+        cout << "위치 삭제된 오브젝트 id :" << _objects[y][x]->GetObjectInfo().objectid();
+        cout << "위치 삭제된 오브젝트 위치:" << _objects[y][x]->GetObjectInfo().posinfo().posx() << "," << _objects[y][x]->GetObjectInfo().posinfo().posy() << endl;
+        _objects[y][x] = nullptr;
+    }
     return true;
 }
 

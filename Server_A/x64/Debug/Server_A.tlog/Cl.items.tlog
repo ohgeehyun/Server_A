@@ -8,7 +8,8 @@ C:\Users\OG\source\repos\Server_A\Server_A\MapManager.cpp;C:\Users\OG\source\rep
 C:\Users\OG\source\repos\Server_A\Server_A\Monster.cpp;C:\Users\OG\source\repos\Server_A\Server_A\x64\Debug\Monster.obj
 C:\Users\OG\source\repos\Server_A\Server_A\pch.cpp;C:\Users\OG\source\repos\Server_A\Server_A\x64\Debug\pch.obj
 C:\Users\OG\source\repos\Server_A\Server_A\Player.cpp;C:\Users\OG\source\repos\Server_A\Server_A\x64\Debug\Player.obj
-C:\Users\OG\source\repos\Server_A\Server_A\PlayerManager.cpp;C:\Users\OG\source\repos\Server_A\Server_A\x64\Debug\PlayerManager.obj
+C:\Users\OG\source\repos\Server_A\Server_A\ObjectManager.cpp;C:\Users\OG\source\repos\Server_A\Server_A\x64\Debug\ObjectManager.obj
+C:\Users\OG\source\repos\Server_A\Server_A\ProjectTile.cpp;C:\Users\OG\source\repos\Server_A\Server_A\x64\Debug\ProjectTile.obj
 C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc;C:\Users\OG\source\repos\Server_A\Server_A\x64\Debug\Protocol.pb.obj
 C:\Users\OG\source\repos\Server_A\Server_A\Room.cpp;C:\Users\OG\source\repos\Server_A\Server_A\x64\Debug\Room.obj
 C:\Users\OG\source\repos\Server_A\Server_A\RoomManager.cpp;C:\Users\OG\source\repos\Server_A\Server_A\x64\Debug\RoomManager.obj

@@ -1,4 +1,4 @@
-﻿빌드 시작: 2024-11-20 오후 2:45:56
+﻿빌드 시작: 2024-11-24 오후 3:16:03
 로깅의 세부 정보 표시가 Normal(으)로 설정되었습니다.     1>2 노드의 "C:\Users\OG\source\repos\Server_A\ServerCore\ServerCore.vcxproj" 프로젝트(Build 대상)입니다.
      1>PrepareForBuild:
          구조적 출력을 사용할 수 있습니다. 컴파일러 진단의 서식은 오류 계층 구조를 반영합니다. 자세한 내용은 https://aka.ms/cpp/structured-output을 참조하세요.
@@ -6,29 +6,9 @@
          "AlwaysCreate"이(가) 지정되었기 때문에 "x64\Debug\ServerCore.tlog\unsuccessfulbuild"을(를) 만들고 있습니다.
          "x64\Debug\ServerCore.tlog\unsuccessfulbuild"에 연결(touching)하고 있습니다.
        ClCompile:
-         G:\visualstudio\VC\Tools\MSVC\14.41.34120\bin\HostX64\x64\CL.exe /c /ZI /JMC /nologo /W3 /WX- /diagnostics:column /sdl /Od /D _DEBUG /D _LIB /D _UNICODE /D UNICODE /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /permissive- /Yc"pch.h" /Fp"x64\Debug\ServerCore.pch" /Fo"x64\Debug\\" /Fd"C:\Users\OG\source\repos\Server_A\Libraries\Libs\ServerCore\Debug\ServerCore.pdb" /external:W3 /Gd /TP /FC /errorReport:prompt pch.cpp
-         pch.cpp
-         G:\visualstudio\VC\Tools\MSVC\14.41.34120\bin\HostX64\x64\CL.exe /c /ZI /JMC /nologo /W3 /WX- /diagnostics:column /sdl /Od /D _DEBUG /D _LIB /D _UNICODE /D UNICODE /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /permissive- /Yu"pch.h" /Fp"x64\Debug\ServerCore.pch" /Fo"x64\Debug\\" /Fd"C:\Users\OG\source\repos\Server_A\Libraries\Libs\ServerCore\Debug\ServerCore.pdb" /external:W3 /Gd /TP /FC /errorReport:prompt Allocator.cpp CoreGlobal.cpp CorePch.cpp CoreTLS.cpp DeadLockProfiler.cpp IocpCore.cpp IocpEvent.cpp Listener.cpp Lock.cpp Memory.cpp MemoryPool.cpp NetAddress.cpp RecvBuffer.cpp SendBuffer.cpp Service.cpp Session.cpp SocketUtils.cpp ThreadManager.cpp
-         Allocator.cpp
-         CoreGlobal.cpp
-         CorePch.cpp
-         CoreTLS.cpp
-         DeadLockProfiler.cpp
-         IocpCore.cpp
-         IocpEvent.cpp
-         Listener.cpp
-         Lock.cpp
-         Memory.cpp
+         모든 출력이 최신 상태입니다.
+         G:\visualstudio\VC\Tools\MSVC\14.41.34120\bin\HostX64\x64\CL.exe /c /ZI /JMC /nologo /W3 /WX- /diagnostics:column /sdl /Od /D _DEBUG /D _LIB /D _UNICODE /D UNICODE /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /permissive- /Yu"pch.h" /Fp"x64\Debug\ServerCore.pch" /Fo"x64\Debug\\" /Fd"C:\Users\OG\source\repos\Server_A\Libraries\Libs\ServerCore\Debug\ServerCore.pdb" /external:W3 /Gd /TP /FC /errorReport:prompt MemoryPool.cpp
          MemoryPool.cpp
-         NetAddress.cpp
-         RecvBuffer.cpp
-         SendBuffer.cpp
-         Service.cpp
-         Session.cpp
-         SocketUtils.cpp
-         ThreadManager.cpp
-         코드를 생성하고 있습니다...
-     1>C:\Users\OG\source\repos\Server_A\ServerCore\Session.cpp(108,1): warning C4715: 'Session::RegisterConnect': 모든 제어 경로에서 값을 반환하지는 않습니다.
        Lib:
          G:\visualstudio\VC\Tools\MSVC\14.41.34120\bin\HostX64\x64\Lib.exe /OUT:"C:\Users\OG\source\repos\Server_A\Libraries\Libs\ServerCore\Debug\ServerCore.lib" /NOLOGO /MACHINE:X64 x64\Debug\Allocator.obj
          x64\Debug\CoreGlobal.obj
@@ -56,12 +36,7 @@
      1>"C:\Users\OG\source\repos\Server_A\ServerCore\ServerCore.vcxproj" 프로젝트를 빌드했습니다(Build 대상).
 
 빌드했습니다.
-
-       "C:\Users\OG\source\repos\Server_A\ServerCore\ServerCore.vcxproj"(Build 대상)(1) ->
-       (ClCompile 대상) -> 
-         C:\Users\OG\source\repos\Server_A\ServerCore\Session.cpp(108,1): warning C4715: 'Session::RegisterConnect': 모든 제어 경로에서 값을 반환하지는 않습니다.
-
-    경고 1개
+    경고 0개
     오류 0개
 
-경과 시간: 00:00:05.23
+경과 시간: 00:00:01.47

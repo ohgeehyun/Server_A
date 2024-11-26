@@ -63,11 +63,14 @@
     <ClCompile Include="Player.cpp">
       <Filter>Main\Game\Object</Filter>
     </ClCompile>
-    <ClCompile Include="PlayerManager.cpp">
+    <ClCompile Include="ObjectManager.cpp">
       <Filter>Main\Game\Object</Filter>
     </ClCompile>
     <ClCompile Include="MapManager.cpp">
       <Filter>Main\Game\Room</Filter>
+    </ClCompile>
+    <ClCompile Include="ProjectTile.cpp">
+      <Filter>Main\Game\Object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -113,7 +116,10 @@
     <ClInclude Include="Player.h">
       <Filter>Main\Game\Object</Filter>
     </ClInclude>
-    <ClInclude Include="PlayerManager.h">
+    <ClInclude Include="ObjectManager.h">
+      <Filter>Main\Game\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="ProjectTile.h">
       <Filter>Main\Game\Object</Filter>
     </ClInclude>
   </ItemGroup>

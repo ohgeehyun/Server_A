@@ -742,29 +742,29 @@ class S_DESPAWN final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kPlayerIdsFieldNumber = 1,
+    kObjectIdsFieldNumber = 1,
   };
-  // repeated int32 playerIds = 1;
-  int playerids_size() const;
+  // repeated int32 objectIds = 1;
+  int objectids_size() const;
   private:
-  int _internal_playerids_size() const;
+  int _internal_objectids_size() const;
   public:
-  void clear_playerids();
+  void clear_objectids();
   private:
-  ::PROTOBUF_NAMESPACE_ID::int32 _internal_playerids(int index) const;
+  ::PROTOBUF_NAMESPACE_ID::int32 _internal_objectids(int index) const;
   const ::PROTOBUF_NAMESPACE_ID::RepeatedField< ::PROTOBUF_NAMESPACE_ID::int32 >&
-      _internal_playerids() const;
-  void _internal_add_playerids(::PROTOBUF_NAMESPACE_ID::int32 value);
+      _internal_objectids() const;
+  void _internal_add_objectids(::PROTOBUF_NAMESPACE_ID::int32 value);
   ::PROTOBUF_NAMESPACE_ID::RepeatedField< ::PROTOBUF_NAMESPACE_ID::int32 >*
-      _internal_mutable_playerids();
+      _internal_mutable_objectids();
   public:
-  ::PROTOBUF_NAMESPACE_ID::int32 playerids(int index) const;
-  void set_playerids(int index, ::PROTOBUF_NAMESPACE_ID::int32 value);
-  void add_playerids(::PROTOBUF_NAMESPACE_ID::int32 value);
+  ::PROTOBUF_NAMESPACE_ID::int32 objectids(int index) const;
+  void set_objectids(int index, ::PROTOBUF_NAMESPACE_ID::int32 value);
+  void add_objectids(::PROTOBUF_NAMESPACE_ID::int32 value);
   const ::PROTOBUF_NAMESPACE_ID::RepeatedField< ::PROTOBUF_NAMESPACE_ID::int32 >&
-      playerids() const;
+      objectids() const;
   ::PROTOBUF_NAMESPACE_ID::RepeatedField< ::PROTOBUF_NAMESPACE_ID::int32 >*
-      mutable_playerids();
+      mutable_objectids();
 
   // @@protoc_insertion_point(class_scope:Protocol.S_DESPAWN)
  private:
@@ -773,8 +773,8 @@ class S_DESPAWN final :
   template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
-  ::PROTOBUF_NAMESPACE_ID::RepeatedField< ::PROTOBUF_NAMESPACE_ID::int32 > playerids_;
-  mutable std::atomic<int> _playerids_cached_byte_size_;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< ::PROTOBUF_NAMESPACE_ID::int32 > objectids_;
+  mutable std::atomic<int> _objectids_cached_byte_size_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_Protocol_2eproto;
 };
@@ -1030,7 +1030,7 @@ class S_MOVE final :
 
   enum : int {
     kPosInfoFieldNumber = 2,
-    kPlayerIdFieldNumber = 1,
+    kObjectIdFieldNumber = 1,
   };
   // .Protocol.POSITIONINFO posInfo = 2;
   bool has_posinfo() const;
@@ -1050,13 +1050,13 @@ class S_MOVE final :
       ::Protocol::POSITIONINFO* posinfo);
   ::Protocol::POSITIONINFO* unsafe_arena_release_posinfo();
 
-  // int32 PlayerId = 1;
-  void clear_playerid();
-  ::PROTOBUF_NAMESPACE_ID::int32 playerid() const;
-  void set_playerid(::PROTOBUF_NAMESPACE_ID::int32 value);
+  // int32 objectId = 1;
+  void clear_objectid();
+  ::PROTOBUF_NAMESPACE_ID::int32 objectid() const;
+  void set_objectid(::PROTOBUF_NAMESPACE_ID::int32 value);
   private:
-  ::PROTOBUF_NAMESPACE_ID::int32 _internal_playerid() const;
-  void _internal_set_playerid(::PROTOBUF_NAMESPACE_ID::int32 value);
+  ::PROTOBUF_NAMESPACE_ID::int32 _internal_objectid() const;
+  void _internal_set_objectid(::PROTOBUF_NAMESPACE_ID::int32 value);
   public:
 
   // @@protoc_insertion_point(class_scope:Protocol.S_MOVE)
@@ -1067,7 +1067,7 @@ class S_MOVE final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   ::Protocol::POSITIONINFO* posinfo_;
-  ::PROTOBUF_NAMESPACE_ID::int32 playerid_;
+  ::PROTOBUF_NAMESPACE_ID::int32 objectid_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_Protocol_2eproto;
 };
@@ -1323,7 +1323,7 @@ class S_SKILL final :
 
   enum : int {
     kInfoFieldNumber = 2,
-    kPlayerIdFieldNumber = 1,
+    kObjectIdFieldNumber = 1,
   };
   // .Protocol.SkillInfo info = 2;
   bool has_info() const;
@@ -1343,13 +1343,13 @@ class S_SKILL final :
       ::Protocol::SkillInfo* info);
   ::Protocol::SkillInfo* unsafe_arena_release_info();
 
-  // int32 playerId = 1;
-  void clear_playerid();
-  ::PROTOBUF_NAMESPACE_ID::int32 playerid() const;
-  void set_playerid(::PROTOBUF_NAMESPACE_ID::int32 value);
+  // int32 objectId = 1;
+  void clear_objectid();
+  ::PROTOBUF_NAMESPACE_ID::int32 objectid() const;
+  void set_objectid(::PROTOBUF_NAMESPACE_ID::int32 value);
   private:
-  ::PROTOBUF_NAMESPACE_ID::int32 _internal_playerid() const;
-  void _internal_set_playerid(::PROTOBUF_NAMESPACE_ID::int32 value);
+  ::PROTOBUF_NAMESPACE_ID::int32 _internal_objectid() const;
+  void _internal_set_objectid(::PROTOBUF_NAMESPACE_ID::int32 value);
   public:
 
   // @@protoc_insertion_point(class_scope:Protocol.S_SKILL)
@@ -1360,7 +1360,7 @@ class S_SKILL final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   ::Protocol::SkillInfo* info_;
-  ::PROTOBUF_NAMESPACE_ID::int32 playerid_;
+  ::PROTOBUF_NAMESPACE_ID::int32 objectid_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_Protocol_2eproto;
 };
@@ -1994,51 +1994,51 @@ S_SPAWN::objects() const {
 
 // S_DESPAWN
 
-// repeated int32 playerIds = 1;
-inline int S_DESPAWN::_internal_playerids_size() const {
-  return playerids_.size();
+// repeated int32 objectIds = 1;
+inline int S_DESPAWN::_internal_objectids_size() const {
+  return objectids_.size();
 }
-inline int S_DESPAWN::playerids_size() const {
-  return _internal_playerids_size();
+inline int S_DESPAWN::objectids_size() const {
+  return _internal_objectids_size();
 }
-inline void S_DESPAWN::clear_playerids() {
-  playerids_.Clear();
+inline void S_DESPAWN::clear_objectids() {
+  objectids_.Clear();
 }
-inline ::PROTOBUF_NAMESPACE_ID::int32 S_DESPAWN::_internal_playerids(int index) const {
-  return playerids_.Get(index);
+inline ::PROTOBUF_NAMESPACE_ID::int32 S_DESPAWN::_internal_objectids(int index) const {
+  return objectids_.Get(index);
 }
-inline ::PROTOBUF_NAMESPACE_ID::int32 S_DESPAWN::playerids(int index) const {
-  // @@protoc_insertion_point(field_get:Protocol.S_DESPAWN.playerIds)
-  return _internal_playerids(index);
+inline ::PROTOBUF_NAMESPACE_ID::int32 S_DESPAWN::objectids(int index) const {
+  // @@protoc_insertion_point(field_get:Protocol.S_DESPAWN.objectIds)
+  return _internal_objectids(index);
 }
-inline void S_DESPAWN::set_playerids(int index, ::PROTOBUF_NAMESPACE_ID::int32 value) {
-  playerids_.Set(index, value);
-  // @@protoc_insertion_point(field_set:Protocol.S_DESPAWN.playerIds)
+inline void S_DESPAWN::set_objectids(int index, ::PROTOBUF_NAMESPACE_ID::int32 value) {
+  objectids_.Set(index, value);
+  // @@protoc_insertion_point(field_set:Protocol.S_DESPAWN.objectIds)
 }
-inline void S_DESPAWN::_internal_add_playerids(::PROTOBUF_NAMESPACE_ID::int32 value) {
-  playerids_.Add(value);
+inline void S_DESPAWN::_internal_add_objectids(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  objectids_.Add(value);
 }
-inline void S_DESPAWN::add_playerids(::PROTOBUF_NAMESPACE_ID::int32 value) {
-  _internal_add_playerids(value);
-  // @@protoc_insertion_point(field_add:Protocol.S_DESPAWN.playerIds)
-}
-inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< ::PROTOBUF_NAMESPACE_ID::int32 >&
-S_DESPAWN::_internal_playerids() const {
-  return playerids_;
+inline void S_DESPAWN::add_objectids(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  _internal_add_objectids(value);
+  // @@protoc_insertion_point(field_add:Protocol.S_DESPAWN.objectIds)
 }
 inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< ::PROTOBUF_NAMESPACE_ID::int32 >&
-S_DESPAWN::playerids() const {
-  // @@protoc_insertion_point(field_list:Protocol.S_DESPAWN.playerIds)
-  return _internal_playerids();
+S_DESPAWN::_internal_objectids() const {
+  return objectids_;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< ::PROTOBUF_NAMESPACE_ID::int32 >&
+S_DESPAWN::objectids() const {
+  // @@protoc_insertion_point(field_list:Protocol.S_DESPAWN.objectIds)
+  return _internal_objectids();
 }
 inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< ::PROTOBUF_NAMESPACE_ID::int32 >*
-S_DESPAWN::_internal_mutable_playerids() {
-  return &playerids_;
+S_DESPAWN::_internal_mutable_objectids() {
+  return &objectids_;
 }
 inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< ::PROTOBUF_NAMESPACE_ID::int32 >*
-S_DESPAWN::mutable_playerids() {
-  // @@protoc_insertion_point(field_mutable_list:Protocol.S_DESPAWN.playerIds)
-  return _internal_mutable_playerids();
+S_DESPAWN::mutable_objectids() {
+  // @@protoc_insertion_point(field_mutable_list:Protocol.S_DESPAWN.objectIds)
+  return _internal_mutable_objectids();
 }
 
 // -------------------------------------------------------------------
@@ -2132,24 +2132,24 @@ inline void C_MOVE::set_allocated_posinfo(::Protocol::POSITIONINFO* posinfo) {
 
 // S_MOVE
 
-// int32 PlayerId = 1;
-inline void S_MOVE::clear_playerid() {
-  playerid_ = 0;
+// int32 objectId = 1;
+inline void S_MOVE::clear_objectid() {
+  objectid_ = 0;
 }
-inline ::PROTOBUF_NAMESPACE_ID::int32 S_MOVE::_internal_playerid() const {
-  return playerid_;
+inline ::PROTOBUF_NAMESPACE_ID::int32 S_MOVE::_internal_objectid() const {
+  return objectid_;
 }
-inline ::PROTOBUF_NAMESPACE_ID::int32 S_MOVE::playerid() const {
-  // @@protoc_insertion_point(field_get:Protocol.S_MOVE.PlayerId)
-  return _internal_playerid();
+inline ::PROTOBUF_NAMESPACE_ID::int32 S_MOVE::objectid() const {
+  // @@protoc_insertion_point(field_get:Protocol.S_MOVE.objectId)
+  return _internal_objectid();
 }
-inline void S_MOVE::_internal_set_playerid(::PROTOBUF_NAMESPACE_ID::int32 value) {
+inline void S_MOVE::_internal_set_objectid(::PROTOBUF_NAMESPACE_ID::int32 value) {
   
-  playerid_ = value;
+  objectid_ = value;
 }
-inline void S_MOVE::set_playerid(::PROTOBUF_NAMESPACE_ID::int32 value) {
-  _internal_set_playerid(value);
-  // @@protoc_insertion_point(field_set:Protocol.S_MOVE.PlayerId)
+inline void S_MOVE::set_objectid(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  _internal_set_objectid(value);
+  // @@protoc_insertion_point(field_set:Protocol.S_MOVE.objectId)
 }
 
 // .Protocol.POSITIONINFO posInfo = 2;
@@ -2326,24 +2326,24 @@ inline void C_SKILL::set_allocated_info(::Protocol::SkillInfo* info) {
 
 // S_SKILL
 
-// int32 playerId = 1;
-inline void S_SKILL::clear_playerid() {
-  playerid_ = 0;
+// int32 objectId = 1;
+inline void S_SKILL::clear_objectid() {
+  objectid_ = 0;
 }
-inline ::PROTOBUF_NAMESPACE_ID::int32 S_SKILL::_internal_playerid() const {
-  return playerid_;
+inline ::PROTOBUF_NAMESPACE_ID::int32 S_SKILL::_internal_objectid() const {
+  return objectid_;
 }
-inline ::PROTOBUF_NAMESPACE_ID::int32 S_SKILL::playerid() const {
-  // @@protoc_insertion_point(field_get:Protocol.S_SKILL.playerId)
-  return _internal_playerid();
+inline ::PROTOBUF_NAMESPACE_ID::int32 S_SKILL::objectid() const {
+  // @@protoc_insertion_point(field_get:Protocol.S_SKILL.objectId)
+  return _internal_objectid();
 }
-inline void S_SKILL::_internal_set_playerid(::PROTOBUF_NAMESPACE_ID::int32 value) {
+inline void S_SKILL::_internal_set_objectid(::PROTOBUF_NAMESPACE_ID::int32 value) {
   
-  playerid_ = value;
+  objectid_ = value;
 }
-inline void S_SKILL::set_playerid(::PROTOBUF_NAMESPACE_ID::int32 value) {
-  _internal_set_playerid(value);
-  // @@protoc_insertion_point(field_set:Protocol.S_SKILL.playerId)
+inline void S_SKILL::set_objectid(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  _internal_set_objectid(value);
+  // @@protoc_insertion_point(field_set:Protocol.S_SKILL.objectId)
 }
 
 // .Protocol.SkillInfo info = 2;

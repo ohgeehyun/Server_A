@@ -5,6 +5,7 @@
 #include "ClientPacketHandler.h"
 #include "GameSessionManager.h"
 #include <windows.h>
+#include "Room.h"
 
 
 int main()
@@ -34,5 +35,13 @@ int main()
             }
         });
     }
+
+    GThreadManager->Launch([]() {
+        while (true)
+        {
+            RoomManager::GetInstance().Find(1)->TileUpdate();
+            this_thread::sleep_for(chrono::milliseconds(10));
+        }
+    });
     GThreadManager->Join();
 }

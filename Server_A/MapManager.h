@@ -72,9 +72,10 @@ public:
     bool CanGo(Vector2Int cellPos, bool checkObject = true);
     void  LoadMap(int32 mapId);
 
-    PlayerRef Find(Vector2Int cellPos);
+    GameObjectRef Find(Vector2Int cellPos);
 
-    bool ApplyMove(PlayerRef& player, Vector2Int dest);
+    bool ApplyMove(const GameObjectRef& gameobject, Vector2Int dest);
+    bool ApplyLeave(const GameObjectRef& gameObject);
 
     Vector<Vector2Int> FindPath(Vector2Int startCellPos, Vector2Int destCellPos, bool ignoreDestCollision = false);
 
@@ -87,7 +88,7 @@ private:
     int32  _sizeY;
 
     Vector<Vector<bool>> _collision;
-    Vector<Vector<PlayerRef>> _players;
+    Vector<Vector<GameObjectRef>> _objects;
     Pos Cell2Pos(const Vector2Int& cell) const;
     Vector2Int Pos2Cell(const Pos& pos) const;
     Vector<Vector2Int> CalcCellPathFromParent(const Vector<Vector<Pos>>& parent, const Pos& dest);

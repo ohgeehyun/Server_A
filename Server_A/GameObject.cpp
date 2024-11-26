@@ -3,6 +3,11 @@
 
 
 
+GameObject::GameObject()
+{
+    SetObjectId(0); // 기본값 설정 (필요 시 나중에 변경)
+}
+
 Vector2Int GameObject::GetFrontCellPos(Protocol::MoveDir dir)
 {
     Vector2Int cellPos = GetCellPos();
@@ -24,4 +29,9 @@ Vector2Int GameObject::GetFrontCellPos(Protocol::MoveDir dir)
     }
 
     return cellPos;
+}
+
+Vector2Int GameObject::GetFrontCellPos()
+{
+    return GetFrontCellPos(GetMoveDir());
 }
