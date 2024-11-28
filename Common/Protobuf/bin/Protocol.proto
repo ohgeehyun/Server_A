@@ -33,10 +33,17 @@ enum MsgId {
 
  enum GameObjectType
  {
-     NONE =0;
-     PLAYER =1;
-     MONSTER =2;
-     PROJECTTILE =3;
+     NONE = 0;
+     PLAYER = 1;
+     MONSTER = 2;
+     PROJECTTILE = 3;
+ }
+
+ enum SkillType
+ {
+     SKILL_NONE = 0;
+     SKILL_AUTO = 1;
+     SKILL_PROJECTILE= 2;
  }
 
 
@@ -88,6 +95,7 @@ message OBJECT_INFO
     int32 objectId = 1; //플레이어 식별자
     string name = 2;
     POSITIONINFO posInfo =3;
+    STATINFO statinfo = 4;
 }
 
 message POSITIONINFO
@@ -96,6 +104,11 @@ message POSITIONINFO
     MoveDir moveDir = 2;
     int32 posX = 3;
     int32 posY = 4;
+}
+message STATINFO{
+    int32 hp = 1;
+    int32 maxHp = 2;
+    float speed = 3;
 }
 
 message SkillInfo

@@ -35,3 +35,8 @@ Vector2Int GameObject::GetFrontCellPos()
 {
     return GetFrontCellPos(GetMoveDir());
 }
+
+void GameObject::OnDamaged(GameObjectRef attacker,int damege)
+{
+
+}

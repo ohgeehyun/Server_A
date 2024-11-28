@@ -1,5 +1,8 @@
 C:\Users\OG\source\repos\Server_A\Server_A\Arrow.cpp;C:\Users\OG\source\repos\Server_A\Server_A\x64\Debug\Arrow.obj
 C:\Users\OG\source\repos\Server_A\Server_A\ClientPacketHandler.cpp;C:\Users\OG\source\repos\Server_A\Server_A\x64\Debug\ClientPacketHandler.obj
+C:\Users\OG\source\repos\Server_A\Server_A\ConfigManager.cpp;C:\Users\OG\source\repos\Server_A\Server_A\x64\Debug\ConfigManager.obj
+C:\Users\OG\source\repos\Server_A\Server_A\DataContent.cpp;C:\Users\OG\source\repos\Server_A\Server_A\x64\Debug\DataContent.obj
+C:\Users\OG\source\repos\Server_A\Server_A\DataManager.cpp;C:\Users\OG\source\repos\Server_A\Server_A\x64\Debug\DataManager.obj
 C:\Users\OG\source\repos\Server_A\Server_A\Enum.pb.cc;C:\Users\OG\source\repos\Server_A\Server_A\x64\Debug\Enum.pb.obj
 C:\Users\OG\source\repos\Server_A\Server_A\GameObject.cpp;C:\Users\OG\source\repos\Server_A\Server_A\x64\Debug\GameObject.obj
 C:\Users\OG\source\repos\Server_A\Server_A\GameSession.cpp;C:\Users\OG\source\repos\Server_A\Server_A\x64\Debug\GameSession.obj

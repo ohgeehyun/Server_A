@@ -9,7 +9,7 @@
 #include "ObjectManager.h"
 #include "Arrow.h"
 #include "Monster.h"
-
+#include "DataManager.h"
 Room::Room()
 {
     
@@ -273,34 +273,49 @@ void Room::HandleSkill(PlayerRef& player, Protocol::C_SKILL& pkt)
         auto resSkillPacketBuffer = ClientPacketHandler::MakeSendBuffer(skill);
         Broadcast(resSkillPacketBuffer);
 
-        // 현재는 스킬이 2가지 바께 없어서if로 분기하지만 스킬이많아진다면 새로 클래스를 만들어서 분기해야할듯하다.
-        if (pkt.info().skillid() == 1)
-        {
-            //평타 데미지 판정
-            Vector2Int skillPos = player->GetFrontCellPos(info.posinfo().movedir());
-            GameObjectRef target = _map.Find(skillPos);
-            if (target != nullptr)
-            {
-                cout << "Hit GameObject !" << endl;
-            }
-        }
-        else if (pkt.info().skillid() == 2)
-        {
-            //TODO : Arrow
-            ArrowRef arrow = ObjectManager::GetInstance().Add<Arrow>();
-            Vector2Int skillPos = player->GetFrontCellPos(info.posinfo().movedir());
-            if (arrow == nullptr)
-                return;
+        // TODO : c++는 unordered map에 반복자를 기본적으로 지원하지않는다.. 나중에 함수로 뺴서 기능 구현 미리 해놓는게 좋을듯.
+        auto it = std::find_if(DataManager::GetInstance().GetSkillDict().begin(), DataManager::GetInstance().GetSkillDict().end(),
+            [pkt](const std::pair<const int32, Skill>& pair) {
+            return pair.first == pkt.info().skillid();
+        });
 
-            //posinfo가아닌 object의 info의 posinfo에서 봐야함  
-            arrow->SetOwner(player);
-            arrow->GetObjectInfo().mutable_posinfo()->set_state(Protocol::MOVING);
-            arrow->GetObjectInfo().mutable_posinfo()->set_movedir(player->GetMoveDir());
-            arrow->GetObjectInfo().mutable_posinfo()->set_posx(skillPos.posx);
-            arrow->GetObjectInfo().mutable_posinfo()->set_posy(skillPos.posy);
-           
-            GameObjectRef gameObject = static_pointer_cast<GameObject>(arrow);
-            EnterGame(gameObject);
+        if (it == DataManager::GetInstance().GetSkillDict().end())
+            return;
+
+        Skill skillData = it->second;
+
+        switch (skillData.skillType)
+        {
+            case Protocol::SKILL_AUTO:
+                {
+                    Vector2Int skillPos = player->GetFrontCellPos(info.posinfo().movedir());
+                    GameObjectRef target = _map.Find(skillPos);
+                    if (target != nullptr)
+                    {
+                        cout << "Hit GameObject !" << endl;
+                    }
+                }
+            break;
+            case Protocol::SKILL_PROJECTILE:
+                {
+                    ArrowRef arrow = ObjectManager::GetInstance().Add<Arrow>();
+                    Vector2Int skillPos = player->GetFrontCellPos(info.posinfo().movedir());
+                    if (arrow == nullptr)
+                        return;
+
+                    //posinfo가아닌 object의 info의 posinfo에서 봐야함  
+                    arrow->SetOwner(player);
+                    arrow->SetSkillData(skillData);
+                    arrow->GetObjectInfo().mutable_posinfo()->set_state(Protocol::MOVING);
+                    arrow->GetObjectInfo().mutable_posinfo()->set_movedir(player->GetMoveDir());
+                    arrow->GetObjectInfo().mutable_posinfo()->set_posx(skillPos.posx);
+                    arrow->GetObjectInfo().mutable_posinfo()->set_posy(skillPos.posy);
+                    arrow->SetSpeed(skillData.projectile.speed);
+
+                    GameObjectRef gameObject = static_pointer_cast<GameObject>(arrow);
+                    EnterGame(gameObject);
+                }
+            break;
         }
     }
 }

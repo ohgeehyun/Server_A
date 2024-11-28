@@ -19,6 +19,9 @@
     <Filter Include="Main\Game\Object">
       <UniqueIdentifier>{64bf7f13-7e62-4911-bdd3-8ebc8ba37233}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Data">
+      <UniqueIdentifier>{2cf978f4-16d7-4f8d-89eb-3584347eada2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -72,6 +75,15 @@
     <ClCompile Include="ProjectTile.cpp">
       <Filter>Main\Game\Object</Filter>
     </ClCompile>
+    <ClCompile Include="DataManager.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="ConfigManager.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="DataContent.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -121,6 +133,15 @@
     </ClInclude>
     <ClInclude Include="ProjectTile.h">
       <Filter>Main\Game\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="DataManager.h">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="ConfigManager.h">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="DataContent.h">
+      <Filter>Data</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

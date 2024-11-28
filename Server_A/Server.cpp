@@ -4,13 +4,19 @@
 #include "RoomManager.h"
 #include "ClientPacketHandler.h"
 #include "GameSessionManager.h"
-#include <windows.h>
+#include "ConfigManager.h"
+#include "DataManager.h"
 #include "Room.h"
 
 
 int main()
 {
     SetConsoleOutputCP(CP_UTF8);
+
+    ConfigManager::GetInstance().LoadConfig();
+  
+    auto  stat = DataManager::GetInstance().GetStatDict();
+    auto  skill = DataManager::GetInstance().GetSkillDict();
 
     RoomManager& manager = RoomManager::GetInstance();
     manager.Add(1);
@@ -40,7 +46,7 @@ int main()
         while (true)
         {
             RoomManager::GetInstance().Find(1)->TileUpdate();
-            this_thread::sleep_for(chrono::milliseconds(10));
+            //this_thread::sleep_for(chrono::milliseconds(10));
         }
     });
     GThreadManager->Join();

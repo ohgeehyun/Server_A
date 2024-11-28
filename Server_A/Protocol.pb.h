@@ -48,7 +48,7 @@ struct TableStruct_Protocol_2eproto {
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::AuxiliaryParseTableField aux[]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
-  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[11]
+  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[12]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::FieldMetadata field_metadata[];
   static const ::PROTOBUF_NAMESPACE_ID::internal::SerializationTable serialization_table[];
@@ -68,6 +68,9 @@ extern OBJECT_INFODefaultTypeInternal _OBJECT_INFO_default_instance_;
 class POSITIONINFO;
 struct POSITIONINFODefaultTypeInternal;
 extern POSITIONINFODefaultTypeInternal _POSITIONINFO_default_instance_;
+class STATINFO;
+struct STATINFODefaultTypeInternal;
+extern STATINFODefaultTypeInternal _STATINFO_default_instance_;
 class S_DESPAWN;
 struct S_DESPAWNDefaultTypeInternal;
 extern S_DESPAWNDefaultTypeInternal _S_DESPAWN_default_instance_;
@@ -95,6 +98,7 @@ template<> ::Protocol::C_MOVE* Arena::CreateMaybeMessage<::Protocol::C_MOVE>(Are
 template<> ::Protocol::C_SKILL* Arena::CreateMaybeMessage<::Protocol::C_SKILL>(Arena*);
 template<> ::Protocol::OBJECT_INFO* Arena::CreateMaybeMessage<::Protocol::OBJECT_INFO>(Arena*);
 template<> ::Protocol::POSITIONINFO* Arena::CreateMaybeMessage<::Protocol::POSITIONINFO>(Arena*);
+template<> ::Protocol::STATINFO* Arena::CreateMaybeMessage<::Protocol::STATINFO>(Arena*);
 template<> ::Protocol::S_DESPAWN* Arena::CreateMaybeMessage<::Protocol::S_DESPAWN>(Arena*);
 template<> ::Protocol::S_ENTER_GAME* Arena::CreateMaybeMessage<::Protocol::S_ENTER_GAME>(Arena*);
 template<> ::Protocol::S_LEAVE_GAME* Arena::CreateMaybeMessage<::Protocol::S_LEAVE_GAME>(Arena*);
@@ -217,6 +221,32 @@ inline bool GameObjectType_Parse(
     ::PROTOBUF_NAMESPACE_ID::ConstStringParam name, GameObjectType* value) {
   return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<GameObjectType>(
     GameObjectType_descriptor(), name, value);
+}
+enum SkillType : int {
+  SKILL_NONE = 0,
+  SKILL_AUTO = 1,
+  SKILL_PROJECTILE = 2,
+  SkillType_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::min(),
+  SkillType_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::max()
+};
+bool SkillType_IsValid(int value);
+constexpr SkillType SkillType_MIN = SKILL_NONE;
+constexpr SkillType SkillType_MAX = SKILL_PROJECTILE;
+constexpr int SkillType_ARRAYSIZE = SkillType_MAX + 1;
+
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* SkillType_descriptor();
+template<typename T>
+inline const std::string& SkillType_Name(T enum_t_value) {
+  static_assert(::std::is_same<T, SkillType>::value ||
+    ::std::is_integral<T>::value,
+    "Incorrect type passed to function SkillType_Name.");
+  return ::PROTOBUF_NAMESPACE_ID::internal::NameOfEnum(
+    SkillType_descriptor(), enum_t_value);
+}
+inline bool SkillType_Parse(
+    ::PROTOBUF_NAMESPACE_ID::ConstStringParam name, SkillType* value) {
+  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<SkillType>(
+    SkillType_descriptor(), name, value);
 }
 // ===================================================================
 
@@ -1476,6 +1506,7 @@ class OBJECT_INFO final :
   enum : int {
     kNameFieldNumber = 2,
     kPosInfoFieldNumber = 3,
+    kStatinfoFieldNumber = 4,
     kObjectIdFieldNumber = 1,
   };
   // string name = 2;
@@ -1510,6 +1541,24 @@ class OBJECT_INFO final :
       ::Protocol::POSITIONINFO* posinfo);
   ::Protocol::POSITIONINFO* unsafe_arena_release_posinfo();
 
+  // .Protocol.STATINFO statinfo = 4;
+  bool has_statinfo() const;
+  private:
+  bool _internal_has_statinfo() const;
+  public:
+  void clear_statinfo();
+  const ::Protocol::STATINFO& statinfo() const;
+  PROTOBUF_FUTURE_MUST_USE_RESULT ::Protocol::STATINFO* release_statinfo();
+  ::Protocol::STATINFO* mutable_statinfo();
+  void set_allocated_statinfo(::Protocol::STATINFO* statinfo);
+  private:
+  const ::Protocol::STATINFO& _internal_statinfo() const;
+  ::Protocol::STATINFO* _internal_mutable_statinfo();
+  public:
+  void unsafe_arena_set_allocated_statinfo(
+      ::Protocol::STATINFO* statinfo);
+  ::Protocol::STATINFO* unsafe_arena_release_statinfo();
+
   // int32 objectId = 1;
   void clear_objectid();
   ::PROTOBUF_NAMESPACE_ID::int32 objectid() const;
@@ -1528,6 +1577,7 @@ class OBJECT_INFO final :
   typedef void DestructorSkippable_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr name_;
   ::Protocol::POSITIONINFO* posinfo_;
+  ::Protocol::STATINFO* statinfo_;
   ::PROTOBUF_NAMESPACE_ID::int32 objectid_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_Protocol_2eproto;
@@ -1699,6 +1749,160 @@ class POSITIONINFO final :
 };
 // -------------------------------------------------------------------
 
+class STATINFO final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.STATINFO) */ {
+ public:
+  inline STATINFO() : STATINFO(nullptr) {}
+  ~STATINFO() override;
+  explicit constexpr STATINFO(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  STATINFO(const STATINFO& from);
+  STATINFO(STATINFO&& from) noexcept
+    : STATINFO() {
+    *this = ::std::move(from);
+  }
+
+  inline STATINFO& operator=(const STATINFO& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline STATINFO& operator=(STATINFO&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const STATINFO& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const STATINFO* internal_default_instance() {
+    return reinterpret_cast<const STATINFO*>(
+               &_STATINFO_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    10;
+
+  friend void swap(STATINFO& a, STATINFO& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(STATINFO* other) {
+    if (other == this) return;
+    if (GetOwningArena() == other->GetOwningArena()) {
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(STATINFO* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline STATINFO* New() const final {
+    return new STATINFO();
+  }
+
+  STATINFO* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<STATINFO>(arena);
+  }
+  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void CopyFrom(const STATINFO& from);
+  void MergeFrom(const STATINFO& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::PROTOBUF_NAMESPACE_ID::uint8* _InternalSerialize(
+      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(STATINFO* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "Protocol.STATINFO";
+  }
+  protected:
+  explicit STATINFO(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kHpFieldNumber = 1,
+    kMaxHpFieldNumber = 2,
+    kSpeedFieldNumber = 3,
+  };
+  // int32 hp = 1;
+  void clear_hp();
+  ::PROTOBUF_NAMESPACE_ID::int32 hp() const;
+  void set_hp(::PROTOBUF_NAMESPACE_ID::int32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::int32 _internal_hp() const;
+  void _internal_set_hp(::PROTOBUF_NAMESPACE_ID::int32 value);
+  public:
+
+  // int32 maxHp = 2;
+  void clear_maxhp();
+  ::PROTOBUF_NAMESPACE_ID::int32 maxhp() const;
+  void set_maxhp(::PROTOBUF_NAMESPACE_ID::int32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::int32 _internal_maxhp() const;
+  void _internal_set_maxhp(::PROTOBUF_NAMESPACE_ID::int32 value);
+  public:
+
+  // float speed = 3;
+  void clear_speed();
+  float speed() const;
+  void set_speed(float value);
+  private:
+  float _internal_speed() const;
+  void _internal_set_speed(float value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:Protocol.STATINFO)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::int32 hp_;
+  ::PROTOBUF_NAMESPACE_ID::int32 maxhp_;
+  float speed_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_Protocol_2eproto;
+};
+// -------------------------------------------------------------------
+
 class SkillInfo final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.SkillInfo) */ {
  public:
@@ -1743,7 +1947,7 @@ class SkillInfo final :
                &_SkillInfo_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    10;
+    11;
 
   friend void swap(SkillInfo& a, SkillInfo& b) {
     a.Swap(&b);
@@ -2581,6 +2785,89 @@ inline void OBJECT_INFO::set_allocated_posinfo(::Protocol::POSITIONINFO* posinfo
   // @@protoc_insertion_point(field_set_allocated:Protocol.OBJECT_INFO.posInfo)
 }
 
+// .Protocol.STATINFO statinfo = 4;
+inline bool OBJECT_INFO::_internal_has_statinfo() const {
+  return this != internal_default_instance() && statinfo_ != nullptr;
+}
+inline bool OBJECT_INFO::has_statinfo() const {
+  return _internal_has_statinfo();
+}
+inline void OBJECT_INFO::clear_statinfo() {
+  if (GetArenaForAllocation() == nullptr && statinfo_ != nullptr) {
+    delete statinfo_;
+  }
+  statinfo_ = nullptr;
+}
+inline const ::Protocol::STATINFO& OBJECT_INFO::_internal_statinfo() const {
+  const ::Protocol::STATINFO* p = statinfo_;
+  return p != nullptr ? *p : reinterpret_cast<const ::Protocol::STATINFO&>(
+      ::Protocol::_STATINFO_default_instance_);
+}
+inline const ::Protocol::STATINFO& OBJECT_INFO::statinfo() const {
+  // @@protoc_insertion_point(field_get:Protocol.OBJECT_INFO.statinfo)
+  return _internal_statinfo();
+}
+inline void OBJECT_INFO::unsafe_arena_set_allocated_statinfo(
+    ::Protocol::STATINFO* statinfo) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(statinfo_);
+  }
+  statinfo_ = statinfo;
+  if (statinfo) {
+    
+  } else {
+    
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Protocol.OBJECT_INFO.statinfo)
+}
+inline ::Protocol::STATINFO* OBJECT_INFO::release_statinfo() {
+  
+  ::Protocol::STATINFO* temp = statinfo_;
+  statinfo_ = nullptr;
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+  return temp;
+}
+inline ::Protocol::STATINFO* OBJECT_INFO::unsafe_arena_release_statinfo() {
+  // @@protoc_insertion_point(field_release:Protocol.OBJECT_INFO.statinfo)
+  
+  ::Protocol::STATINFO* temp = statinfo_;
+  statinfo_ = nullptr;
+  return temp;
+}
+inline ::Protocol::STATINFO* OBJECT_INFO::_internal_mutable_statinfo() {
+  
+  if (statinfo_ == nullptr) {
+    auto* p = CreateMaybeMessage<::Protocol::STATINFO>(GetArenaForAllocation());
+    statinfo_ = p;
+  }
+  return statinfo_;
+}
+inline ::Protocol::STATINFO* OBJECT_INFO::mutable_statinfo() {
+  // @@protoc_insertion_point(field_mutable:Protocol.OBJECT_INFO.statinfo)
+  return _internal_mutable_statinfo();
+}
+inline void OBJECT_INFO::set_allocated_statinfo(::Protocol::STATINFO* statinfo) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete statinfo_;
+  }
+  if (statinfo) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper<::Protocol::STATINFO>::GetOwningArena(statinfo);
+    if (message_arena != submessage_arena) {
+      statinfo = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, statinfo, submessage_arena);
+    }
+    
+  } else {
+    
+  }
+  statinfo_ = statinfo;
+  // @@protoc_insertion_point(field_set_allocated:Protocol.OBJECT_INFO.statinfo)
+}
+
 // -------------------------------------------------------------------
 
 // POSITIONINFO
@@ -2667,6 +2954,70 @@ inline void POSITIONINFO::set_posy(::PROTOBUF_NAMESPACE_ID::int32 value) {
 
 // -------------------------------------------------------------------
 
+// STATINFO
+
+// int32 hp = 1;
+inline void STATINFO::clear_hp() {
+  hp_ = 0;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 STATINFO::_internal_hp() const {
+  return hp_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 STATINFO::hp() const {
+  // @@protoc_insertion_point(field_get:Protocol.STATINFO.hp)
+  return _internal_hp();
+}
+inline void STATINFO::_internal_set_hp(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  
+  hp_ = value;
+}
+inline void STATINFO::set_hp(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  _internal_set_hp(value);
+  // @@protoc_insertion_point(field_set:Protocol.STATINFO.hp)
+}
+
+// int32 maxHp = 2;
+inline void STATINFO::clear_maxhp() {
+  maxhp_ = 0;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 STATINFO::_internal_maxhp() const {
+  return maxhp_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 STATINFO::maxhp() const {
+  // @@protoc_insertion_point(field_get:Protocol.STATINFO.maxHp)
+  return _internal_maxhp();
+}
+inline void STATINFO::_internal_set_maxhp(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  
+  maxhp_ = value;
+}
+inline void STATINFO::set_maxhp(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  _internal_set_maxhp(value);
+  // @@protoc_insertion_point(field_set:Protocol.STATINFO.maxHp)
+}
+
+// float speed = 3;
+inline void STATINFO::clear_speed() {
+  speed_ = 0;
+}
+inline float STATINFO::_internal_speed() const {
+  return speed_;
+}
+inline float STATINFO::speed() const {
+  // @@protoc_insertion_point(field_get:Protocol.STATINFO.speed)
+  return _internal_speed();
+}
+inline void STATINFO::_internal_set_speed(float value) {
+  
+  speed_ = value;
+}
+inline void STATINFO::set_speed(float value) {
+  _internal_set_speed(value);
+  // @@protoc_insertion_point(field_set:Protocol.STATINFO.speed)
+}
+
+// -------------------------------------------------------------------
+
 // SkillInfo
 
 // int32 skillId = 1;
@@ -2692,6 +3043,8 @@ inline void SkillInfo::set_skillid(::PROTOBUF_NAMESPACE_ID::int32 value) {
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------
@@ -2738,6 +3091,11 @@ template <> struct is_proto_enum< ::Protocol::GameObjectType> : ::std::true_type
 template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::Protocol::GameObjectType>() {
   return ::Protocol::GameObjectType_descriptor();
+}
+template <> struct is_proto_enum< ::Protocol::SkillType> : ::std::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::Protocol::SkillType>() {
+  return ::Protocol::SkillType_descriptor();
 }
 
 PROTOBUF_NAMESPACE_CLOSE

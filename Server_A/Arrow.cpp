@@ -5,6 +5,7 @@
 
 Arrow::Arrow()
 {
+
 }
 
 Arrow::~Arrow()
@@ -13,13 +14,13 @@ Arrow::~Arrow()
 
 void Arrow::Update() 
 {
-    if (_owner == nullptr || GetRoom() == nullptr)
+    if (GetSkillData().id == 0 || _owner == nullptr || GetRoom() == nullptr)
         return;
 
     if (_nextMoveTick >= GetTickCount64())
         return;
-
-    _nextMoveTick = GetTickCount64() + 50;
+    long tick = (long)(1000 / GetSkillData().projectile.speed);
+    _nextMoveTick = GetTickCount64() + tick;
 
     Vector2Int destPos = GetFrontCellPos();
     if (GetRoom()->GetMap().CanGo(destPos))
@@ -44,6 +45,7 @@ void Arrow::Update()
         if (target != nullptr)
         {
             // TODO :  피격 판정
+            target->OnDamaged(shared_from_this(), GetSkillData().damege);
         }
 
         //소멸
