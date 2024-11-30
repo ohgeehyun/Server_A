@@ -19,17 +19,24 @@ public:
     void SetObjectInfo(Protocol::OBJECT_INFO& info) { _info = info; }
     
     Protocol::MoveDir GetMoveDir() { return _info.posinfo().movedir();}
+    void SetMoveDir(Protocol::MoveDir movedir) { _info.mutable_posinfo()->set_movedir(movedir); }
     
     int32 GetPosx() { return _info.posinfo().posx();}
+    void  SetPosx(int32 posx) { _info.mutable_posinfo()->set_posx(posx); }
     int32 GetPosy() { return _info.posinfo().posy(); }
+    void  SetPosy(int32 posy) { _info.mutable_posinfo()->set_posy(posy); }
     
     Protocol::CreatureState GetState() { return _info.posinfo().state();}
+    void SetState(Protocol::CreatureState state) { _info.mutable_posinfo()->set_state(state); }
 
     int32 GetObjectId() { return _info.objectid(); }
     void SetObjectId(int32 id) { _info.set_objectid(id); }
 
-    Protocol::STATINFO GetObjectStat() const { return _info.statinfo(); }
-    void SetObjectStat(Protocol::STATINFO& stat) { _info.mutable_statinfo()->CopyFrom(stat);}
+    Protocol::STATINFO GetObjectStat() { return _info.statinfo(); }
+    void SetObjectStat(Protocol::STATINFO stat) { _info.mutable_statinfo()->CopyFrom(stat);}
+
+    int32 GetHp() const { return _info.statinfo().hp(); }
+    void SetHp(int32 hp) { _info.mutable_statinfo()->set_hp(hp); }
 
     float GetSpped() { return _info.statinfo().speed();};
     void SetSpeed(float speed) { _info.mutable_statinfo()->set_speed(speed);};
@@ -40,7 +47,8 @@ public:
     Vector2Int GetCellPos() { return  Vector2Int(GetPosx(), GetPosy()); }
     void SetCellPos(int32 posx, int32 posy) { _info.mutable_posinfo()->set_posx(posx); _info.mutable_posinfo()->set_posy(posy); }
 
-    virtual void OnDamaged(GameObjectRef attacker, int damage);
+    virtual void OnDameged(GameObjectRef attacker, int damage);
+    virtual void OnDead(GameObjectRef attacker);
 protected:
     void SetGameObjectType(Protocol::GameObjectType objectType) { _objectType = objectType; }
 private:

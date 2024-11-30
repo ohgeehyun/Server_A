@@ -5,16 +5,23 @@
 Player::Player()
 {
     SetGameObjectType(Protocol::PLAYER);
-    SetSpeed(20.0f);
 }
 
 Player::~Player()
 {
 }
 
-void Player::OnDamaged(GameObjectRef attacker, int damege)
+void Player::OnDameged(GameObjectRef attacker, int damege) 
 {
-    cout <<"TODO : damege :"<< damege << endl;
+    GameObject::OnDameged(attacker, damege);
+    
+    cout << "TODO : Playerdamege :" << damege << endl;
+}
+
+void Player::OnDead(GameObjectRef attacker)
+{
+    GameObject::OnDead(attacker);
+    cout << "TODO : Object Dead" << endl;
 }
 
 

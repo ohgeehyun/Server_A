@@ -1,21 +1,31 @@
 #include "pch.h"
 #include "DataContent.h"
+#include "Protocol.pb.h"
+#include <google/protobuf/util/json_util.h>
 
-HashMap<int, Stat> StatData::MakeDict()  
+HashMap<int, Protocol::STATINFO> StatData::MakeDict()
 {
-    HashMap<int, Stat> dict;
+    HashMap<int, Protocol::STATINFO> dict;
 
-    for (const auto& stat : stats)
+    for (auto& stat : stats)
     {
-        dict[stat.level] = stat;
+        stat.set_hp(stat.maxhp());
+        dict[stat.level()] = stat;
     }
     return dict;
 }
 
 void StatData::Deserialize(const nlohmann::json& j) {
     for (const auto& statJson : j["stats"]) {
-        Stat stat;
-        stat.Deserialize(statJson);
+        
+        Protocol::STATINFO stat;
+
+        std::string jsonString = statJson.dump();
+
+        auto status = google::protobuf::util::JsonStringToMessage(jsonString, &stat);
+        if (!status.ok()) {
+            throw std::runtime_error("Failed to parse JSON to Protobuf: " + status.message().as_string());
+        }
         stats.push_back(stat);
     }
 }

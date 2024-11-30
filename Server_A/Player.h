@@ -12,8 +12,8 @@ public:
 public:
     GameSessionRef& GetSession() { return _session; }
     void SetSession(GameSessionRef session) { _session = session; }
-    void OnDamaged(GameObjectRef attacker, int damege) override;
-   
+    void OnDameged(GameObjectRef attacker, int damege) override;
+    void OnDead(GameObjectRef attacker) override;
 
 private:
     GameSessionRef _session;

@@ -54,6 +54,7 @@ void Room::EnterGame(GameObjectRef gameObject)
                 _players.insert(make_pair(player->GetObjectId(), player));
                 player->SetRoom(shared_from_this());
 
+                _map.ApplyMove(static_pointer_cast<GameObject>(player), Vector2Int(player->GetPosx(), player->GetPosy()));
                 //본인에게 본인 정보 및 현재 룸에 있는 인원 전송 
                 {
                     //본인정보 전송
@@ -61,7 +62,6 @@ void Room::EnterGame(GameObjectRef gameObject)
                     Protocol::OBJECT_INFO playerInfo = player->GetObjectInfo();
 
                     *enterPacket.mutable_player() = playerInfo;
-
 
                     auto enterPacketBuffer = ClientPacketHandler::MakeSendBuffer(enterPacket);
                     player->GetSession()->Send(enterPacketBuffer);
@@ -78,6 +78,21 @@ void Room::EnterGame(GameObjectRef gameObject)
                         }
 
                     }
+
+                    for (const auto& monsterPair : _monsters)
+                    {
+                        const MonsterRef& p = monsterPair.second;
+                        Protocol::OBJECT_INFO* monstersInfo = SpawnPacket.add_objects();
+                        *monstersInfo = p->GetObjectInfo();
+                    }
+
+                    for (const auto& tilepair : _projectTiles)
+                    {
+                        const ProjectTileRef& p = tilepair.second;
+                        Protocol::OBJECT_INFO* tilesInfo = SpawnPacket.add_objects();
+                        *tilesInfo = p->GetObjectInfo();
+                    }
+
                     auto SpawnPacketBuffer = ClientPacketHandler::MakeSendBuffer(SpawnPacket);
                     player->GetSession()->Send(SpawnPacketBuffer);
                 }
@@ -88,6 +103,8 @@ void Room::EnterGame(GameObjectRef gameObject)
                 MonsterRef monster = dynamic_pointer_cast<Monster>(gameObject);
                 _monsters.insert(make_pair(monster->GetObjectId(), monster));
                 monster->SetRoom(shared_from_this());
+
+                _map.ApplyMove(static_pointer_cast<GameObject>(monster), Vector2Int(monster->GetPosx(), monster->GetPosy()));
             }
             break;
             case Protocol::PROJECTTILE :

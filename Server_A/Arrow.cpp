@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Arrow.h"
 #include "Room.h"
+#include "GameObject.h"
 #include "ClientPacketHandler.h"
 
 Arrow::Arrow()
@@ -45,7 +46,7 @@ void Arrow::Update()
         if (target != nullptr)
         {
             // TODO :  피격 판정
-            target->OnDamaged(shared_from_this(), GetSkillData().damege);
+            target->OnDameged(shared_from_this(), GetSkillData().damege + GetOwner()->GetObjectStat().attack());
         }
 
         //소멸

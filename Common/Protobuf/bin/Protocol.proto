@@ -14,6 +14,8 @@ enum MsgId {
   S_Move = 1006;
   C_Skill = 1007;
   S_Skill = 1008;
+  S_Cangehp = 1009;
+  S_Die = 1010;
 }
 
  enum CreatureState
@@ -90,6 +92,17 @@ message S_SKILL
 
 }
 
+message S_CHANGEHP
+{
+    int32 objectId = 1;
+    int32 hp = 2; //계산이후의 hp
+}
+
+message S_DIE {
+    int32 objectId = 1;
+    int32 attackerId= 2;
+}
+
 message OBJECT_INFO 
 {
     int32 objectId = 1; //플레이어 식별자
@@ -106,9 +119,12 @@ message POSITIONINFO
     int32 posY = 4;
 }
 message STATINFO{
-    int32 hp = 1;
-    int32 maxHp = 2;
-    float speed = 3;
+    int32 level = 1;
+    int32 hp = 2;
+    int32 maxHp = 3;
+    int32 attack = 4;
+    float speed = 5;
+    int32 totalExp = 6;
 }
 
 message SkillInfo

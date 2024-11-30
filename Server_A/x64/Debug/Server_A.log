@@ -1,8 +1,9 @@
-﻿빌드 시작: 2024-11-28 오후 7:35:05
+﻿빌드 시작: 2024-11-29 오후 7:35:44
 로깅의 세부 정보 표시가 Normal(으)로 설정되었습니다.     1>2 노드의 "C:\Users\OG\source\repos\Server_A\Server_A\Server_A.vcxproj" 프로젝트(Build 대상)입니다.
      1>PrepareForBuild:
          구조적 출력을 사용할 수 있습니다. 컴파일러 진단의 서식은 오류 계층 구조를 반영합니다. 자세한 내용은 https://aka.ms/cpp/structured-output을 참조하세요.
        InitializeBuildStatus:
+         "AlwaysCreate"이(가) 지정되었기 때문에 "x64\Debug\Server_A.tlog\unsuccessfulbuild"을(를) 만들고 있습니다.
          "x64\Debug\Server_A.tlog\unsuccessfulbuild"에 연결(touching)하고 있습니다.
        PreBuildEvent:
          CALL C:\Users\OG\source\repos\Server_A\Common\Protobuf\bin\GenPackets.bat
@@ -24,6 +25,8 @@
          	PKT_S_MOVE = 1006,
          	PKT_C_SKILL = 1007,
          	PKT_S_SKILL = 1008,
+         	PKT_S_CHANGEHP = 1009,
+         	PKT_S_DIE = 1010,
          };
          
          // Custom Handlers
@@ -53,6 +56,8 @@
          	static SendBufferRef MakeSendBuffer(Protocol::S_DESPAWN& pkt) { return MakeSendBuffer(pkt, PKT_S_DESPAWN); }
          	static SendBufferRef MakeSendBuffer(Protocol::S_MOVE& pkt) { return MakeSendBuffer(pkt, PKT_S_MOVE); }
          	static SendBufferRef MakeSendBuffer(Protocol::S_SKILL& pkt) { return MakeSendBuffer(pkt, PKT_S_SKILL); }
+         	static SendBufferRef MakeSendBuffer(Protocol::S_CHANGEHP& pkt) { return MakeSendBuffer(pkt, PKT_S_CHANGEHP); }
+         	static SendBufferRef MakeSendBuffer(Protocol::S_DIE& pkt) { return MakeSendBuffer(pkt, PKT_S_DIE); }
          
          private:
          	template<typename PacketType, typename ProcessFunc>
@@ -104,9 +109,9 @@
          Press any key to continue . . . 
        ClCompile:
          모든 출력이 최신 상태입니다.
-         G:\visualstudio\VC\Tools\MSVC\14.41.34120\bin\HostX64\x64\CL.exe /c /ZI /JMC /nologo /W3 /WX- /diagnostics:column /sdl /Od /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /permissive- /Yu"pch.h" /Fp"x64\Debug\Server_A.pch" /Fo"x64\Debug\\" /Fd"x64\Debug\vc143.pdb" /external:W3 /Gd /TP /FC /errorReport:prompt Arrow.cpp ClientPacketHandler.cpp ConfigManager.cpp DataContent.cpp DataManager.cpp GameObject.cpp GameSession.cpp MapManager.cpp Monster.cpp Player.cpp ObjectManager.cpp ProjectTile.cpp Room.cpp RoomManager.cpp Server.cpp
+         G:\visualstudio\VC\Tools\MSVC\14.41.34120\bin\HostX64\x64\CL.exe /c /ZI /JMC /nologo /W3 /WX- /diagnostics:column /sdl /Od /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /permissive- /Yu"pch.h" /Fp"x64\Debug\Server_A.pch" /Fo"x64\Debug\\" /Fd"x64\Debug\vc143.pdb" /external:W3 /Gd /TP /FC /errorReport:prompt Arrow.cpp ClientPacketHandler.cpp ConfigManager.cpp DataContent.cpp DataManager.cpp GameObject.cpp GameSession.cpp MapManager.cpp Monster.cpp ObjectManager.cpp Player.cpp ProjectTile.cpp Room.cpp RoomManager.cpp Server.cpp
          Arrow.cpp
-     1>C:\Users\OG\source\repos\Server_A\Server_A\Arrow.cpp(23,38): warning C4244: '=': 'ULONGLONG'에서 'uint32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>C:\Users\OG\source\repos\Server_A\Server_A\Arrow.cpp(24,38): warning C4244: '=': 'ULONGLONG'에서 'uint32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
          (소스 파일 '/Arrow.cpp'을(를) 컴파일하는 중)
          
          ClientPacketHandler.cpp
@@ -117,8 +122,8 @@
          GameSession.cpp
          MapManager.cpp
          Monster.cpp
-         Player.cpp
          ObjectManager.cpp
+         Player.cpp
          ProjectTile.cpp
          Room.cpp
          RoomManager.cpp
@@ -127,15 +132,22 @@
          G:\visualstudio\VC\Tools\MSVC\14.41.34120\bin\HostX64\x64\CL.exe /c /ZI /JMC /nologo /W3 /WX- /diagnostics:column /sdl /Od /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /permissive- /Fo"x64\Debug\\" /Fd"x64\Debug\vc143.pdb" /external:W3 /Gd /TP /FC /errorReport:prompt Enum.pb.cc Protocol.pb.cc Struct.pb.cc
          Enum.pb.cc
          Protocol.pb.cc
-     1>C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(1083,82): warning C4244: '인수': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(1505,70): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(1948,70): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(2209,70): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(2511,66): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(2518,66): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(2768,64): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(2775,67): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(3007,69): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(1139,82): warning C4244: '인수': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(1561,70): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(2004,70): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(2231,70): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(2238,64): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(2456,70): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(2463,72): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(2715,70): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(3017,66): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(3024,66): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(3274,67): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(3281,64): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(3288,67): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(3295,68): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(3309,70): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(3582,69): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
          Struct.pb.cc
          코드를 생성하고 있습니다...
        Link:
@@ -174,21 +186,28 @@
 
        "C:\Users\OG\source\repos\Server_A\Server_A\Server_A.vcxproj"(Build 대상)(1) ->
        (ClCompile 대상) -> 
-         C:\Users\OG\source\repos\Server_A\Server_A\Arrow.cpp(23,38): warning C4244: '=': 'ULONGLONG'에서 'uint32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+         C:\Users\OG\source\repos\Server_A\Server_A\Arrow.cpp(24,38): warning C4244: '=': 'ULONGLONG'에서 'uint32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
 
 
        "C:\Users\OG\source\repos\Server_A\Server_A\Server_A.vcxproj"(Build 대상)(1) ->
-         C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(1083,82): warning C4244: '인수': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-         C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(1505,70): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-         C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(1948,70): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-         C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(2209,70): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-         C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(2511,66): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-         C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(2518,66): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-         C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(2768,64): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-         C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(2775,67): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-         C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(3007,69): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+         C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(1139,82): warning C4244: '인수': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+         C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(1561,70): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+         C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(2004,70): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+         C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(2231,70): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+         C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(2238,64): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+         C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(2456,70): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+         C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(2463,72): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+         C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(2715,70): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+         C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(3017,66): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+         C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(3024,66): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+         C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(3274,67): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+         C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(3281,64): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+         C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(3288,67): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+         C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(3295,68): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+         C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(3309,70): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+         C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc(3582,69): warning C4244: '=': 'google::protobuf::uint64'에서 'google::protobuf::int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
 
-    경고 11개
+    경고 18개
     오류 0개
 
-경과 시간: 00:00:21.17
+경과 시간: 00:00:21.94

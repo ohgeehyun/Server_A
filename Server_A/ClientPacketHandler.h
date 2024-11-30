@@ -14,6 +14,8 @@ enum : uint16
 	PKT_S_MOVE = 1006,
 	PKT_C_SKILL = 1007,
 	PKT_S_SKILL = 1008,
+	PKT_S_CHANGEHP = 1009,
+	PKT_S_DIE = 1010,
 };
 
 // Custom Handlers
@@ -43,6 +45,8 @@ public:
 	static SendBufferRef MakeSendBuffer(Protocol::S_DESPAWN& pkt) { return MakeSendBuffer(pkt, PKT_S_DESPAWN); }
 	static SendBufferRef MakeSendBuffer(Protocol::S_MOVE& pkt) { return MakeSendBuffer(pkt, PKT_S_MOVE); }
 	static SendBufferRef MakeSendBuffer(Protocol::S_SKILL& pkt) { return MakeSendBuffer(pkt, PKT_S_SKILL); }
+	static SendBufferRef MakeSendBuffer(Protocol::S_CHANGEHP& pkt) { return MakeSendBuffer(pkt, PKT_S_CHANGEHP); }
+	static SendBufferRef MakeSendBuffer(Protocol::S_DIE& pkt) { return MakeSendBuffer(pkt, PKT_S_DIE); }
 
 private:
 	template<typename PacketType, typename ProcessFunc>

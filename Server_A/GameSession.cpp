@@ -5,6 +5,7 @@
 #include "ObjectManager.h"
 #include "Player.h"
 #include "RoomManager.h"
+#include "DataManager.h"
 
 GameSessionManager* SessionManager;
 
@@ -20,11 +21,20 @@ void GameSession::OnConnected()
     _myplayer = ObjectManager.Add<Player>();
     {
         _myplayer->GetObjectInfo().set_name("Player_"+ to_string(_myplayer->GetObjectInfo().objectid()));
-        _myplayer->GetObjectInfo().mutable_posinfo()->set_state(Protocol::CreatureState::IDLE);
-        _myplayer->GetObjectInfo().mutable_posinfo()->set_movedir(Protocol::MoveDir::UP);
-        _myplayer->GetObjectInfo().mutable_posinfo()->set_posx(0);
-        _myplayer->GetObjectInfo().mutable_posinfo()->set_posy(0);
+        _myplayer->SetState(Protocol::CreatureState::IDLE);
+        _myplayer->SetMoveDir(Protocol::MoveDir::DOWN);
+        _myplayer->SetPosx(0);
+        _myplayer->SetPosy(0);
         _myplayer->SetSession(static_pointer_cast<GameSession>(shared_from_this()));
+
+        auto it = std::find_if(DataManager::GetInstance().GetStatDict().begin(), DataManager::GetInstance().GetStatDict().end(), 
+            [](const std::pair<const int32, Protocol::STATINFO>& pair) {
+            return pair.second.level() == 1;
+        });
+
+        if (it == DataManager::GetInstance().GetStatDict().end())
+            return;
+        _myplayer->SetObjectStat(it->second);
     }
 
     RoomManager& RoomManager = RoomManager::GetInstance();

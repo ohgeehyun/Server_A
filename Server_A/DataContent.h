@@ -11,31 +11,16 @@ public:
 /*------------------------------------------
 *                   stat
 --------------------------------------------*/
-class Stat
-{
-public:
-    int32 level;
-    int32 maxHp;
-    int32 attack;
-    int32 totalExp;
 
-    void Deserialize(const nlohmann::json& j) {
-        level = j.at("level").get<int32>();
-        maxHp = j.at("maxHp").get<int32>();
-        attack = j.at("attack").get<int32>();
-        totalExp = j.at("totalExp").get<int32>();
-    }
-};
-
-class StatData : public ILoader<int, Stat>
+class StatData : public ILoader<int, Protocol::STATINFO>
 {
 
 public:
-    HashMap<int, Stat> MakeDict() override;
+    HashMap<int, Protocol::STATINFO> MakeDict() override;
     void Deserialize(const nlohmann::json& j);
 
 public:
-    List<Stat> stats;
+    List<Protocol::STATINFO> stats;
  
 };
 
