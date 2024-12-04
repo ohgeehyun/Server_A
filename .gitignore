@@ -1,3 +1,3 @@
 /.vs
-/Binary/Debug/*
-/Server_A/x64/Debug/*
+/Binary/Debug/
+/Server_A/x64/Debug/
