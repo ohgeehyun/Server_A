@@ -45,8 +45,8 @@ int main()
     GThreadManager->Launch([]() {
         while (true)
         {
-            RoomManager::GetInstance().Find(1)->TileUpdate();
-            //this_thread::sleep_for(chrono::milliseconds(10));
+            RoomManager::GetInstance().Find(1)->Update();
+            //this_thread::sleep_for(chrono::milliseconds(100));
         }
     });
     GThreadManager->Join();

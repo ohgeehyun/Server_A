@@ -15,7 +15,7 @@ struct PQNode {
     int32 X;
 
     bool operator<(const PQNode& other) const {
-        return F < other.F;
+        return F > other.F;
     }
 };
 
@@ -38,18 +38,25 @@ public:
    Vector2Int operator+(const Vector2Int& other) const {
        return Vector2Int(posx + other.posx, posy + other.posy);
    }
+   Vector2Int operator-(const Vector2Int& other) const {
+       return Vector2Int(posx - other.posx, posy - other.posy);
+   }
    Vector2Int& operator+=(const Vector2Int& other) {
        posx += other.posx;
        posy += other.posy;
        return *this;
    }
+
+   float Magnitude() const { return std::sqrt(sqrMagnitude());}
+   int sqrMagnitude() const { return posx * posx + posy * posy; }
+   int cellDistFromZero() const { return std::abs(posx) + std::abs(posy);}
 };
 
 class MapManager
 {
 public:
 
-    MapManager() {};
+    MapManager() { LoadMap(1);};
     ~MapManager() {};
 
     int32 GetMinX() { return _MinX; }
@@ -77,15 +84,19 @@ public:
     bool ApplyMove(const GameObjectRef& gameobject, Vector2Int dest);
     bool ApplyLeave(const GameObjectRef& gameObject);
 
-    Vector<Vector2Int> FindPath(Vector2Int startCellPos, Vector2Int destCellPos, bool ignoreDestCollision = false);
+    void PrintObjectsState() const;
 
+    Vector<Vector<GameObjectRef>>& GetObjects() { return _objects; };
+    Vector<Vector2Int> FindPath(Vector2Int startCellPos, Vector2Int destCellPos, bool checkObjects);
+
+    
 private:
     int32  _MinX;
     int32  _MaxX;
     int32  _MinY;
     int32  _MaxY;
-    int32  _sizeX;
-    int32  _sizeY;
+    int32  _sizeX=0;
+    int32  _sizeY=0;
 
     Vector<Vector<bool>> _collision;
     Vector<Vector<GameObjectRef>> _objects;

@@ -24,7 +24,7 @@ void Arrow::Update()
     _nextMoveTick = GetTickCount64() + tick;
 
     Vector2Int destPos = GetFrontCellPos();
-    if (GetRoom()->GetMap().CanGo(destPos))
+    if (GetRoom()->GetMap().CanGo(destPos,true))
     {
         SetCellPos(destPos.posx, destPos.posy);
 

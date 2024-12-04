@@ -15,13 +15,13 @@ void Player::OnDameged(GameObjectRef attacker, int damege)
 {
     GameObject::OnDameged(attacker, damege);
     
-    cout << "TODO : Playerdamege :" << damege << endl;
+    cout << "Playerdamege :" << damege << endl;
 }
 
 void Player::OnDead(GameObjectRef attacker)
 {
     GameObject::OnDead(attacker);
-    cout << "TODO : Object Dead" << endl;
+    cout << "Object Dead" << endl;
 }
 
 

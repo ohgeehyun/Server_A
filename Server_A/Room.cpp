@@ -12,7 +12,7 @@
 #include "DataManager.h"
 Room::Room()
 {
-    
+
 }
 
 Room::~Room()
@@ -22,9 +22,14 @@ Room::~Room()
 void Room::Init(int32 mapId)
 {
     _map.LoadMap(mapId);
+
+    // TEMP 몬스터 소환
+    MonsterRef monster = ObjectManager::GetInstance().Add<Monster>();
+    monster->SetCellPos(5,5);
+    EnterGame(monster);
 }
 
-void Room::TileUpdate()
+void Room::Update()
 {
     WRITE_LOCK
     {
@@ -32,7 +37,21 @@ void Room::TileUpdate()
         {
             pair.second->Update();
         }
+        for (const auto& pair : _monsters)
+        {
+            pair.second->Update();
+        }
     }
+}
+
+PlayerRef Room::FindPlayer(std::function<bool(const GameObjectRef&)> condition)
+{
+    for (const auto& pair : _players)
+    {
+        if (std::invoke(condition,pair.second))
+            return pair.second;
+    }
+    return nullptr;
 }
 
 

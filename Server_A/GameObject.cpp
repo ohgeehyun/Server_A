@@ -36,6 +36,18 @@ Vector2Int GameObject::GetFrontCellPos()
     return GetFrontCellPos(GetMoveDir());
 }
 
+Protocol::MoveDir GameObject::GetDirFromVec(Vector2Int dir)
+{
+    if (dir.posx > 0)
+        return Protocol::MoveDir::RIGHT;
+    else if (dir.posx < 0)
+        return Protocol::MoveDir::LEFT;
+    else if (dir.posy > 0)
+        return Protocol::MoveDir::UP;
+    else
+        return Protocol::MoveDir::DOWN;
+}
+
 void GameObject::OnDameged(GameObjectRef attacker,int damege)
 {
     int32 objectHp = GetHp();
@@ -77,6 +89,10 @@ void GameObject::OnDead(GameObjectRef attacker)
 
    
     room->EnterGame(static_pointer_cast<GameObject>(shared_from_this()));
+}
+
+void GameObject::Update()
+{
 }
 
 

@@ -4,6 +4,8 @@
 #include "Player.h"
 #include <fstream>
 #include <string>
+#include "ObjectManager.h"
+
 
 
 bool MapManager::CanGo(Vector2Int cellPos ,bool checkObject)
@@ -41,18 +43,20 @@ void MapManager::LoadMap(int32 mapId)
     file >> _MinX >> _MaxX >> _MinY >> _MaxY;
 
     // xCount와 yCount 계산
-    int xCount = _MaxX - _MinX + 1;
-    int yCount = _MaxY - _MinY + 1;
+    int32 xCount = _MaxX - _MinX + 1;
+    int32 yCount = _MaxY - _MinY + 1;
+    _sizeX = xCount;
+    _sizeY = yCount;
 
     // _collision 배열 초기화
     _collision.resize(yCount, Vector<bool>(xCount, false));
     _objects.resize(yCount,Vector<GameObjectRef>(xCount));
 
     // 파일에서 충돌 데이터를 읽어들임
-    for (int y = 0; y < yCount; ++y) {
+    for (int32 y = 0; y < yCount; ++y) {
         std::string line;
         file >> line; // 한 줄 읽기
-        for (int x = 0; x < xCount; ++x) {
+        for (int32 x = 0; x < xCount; ++x) {
             _collision[y][x] = (line[x] == '1');
         }
     }
@@ -76,27 +80,27 @@ GameObjectRef MapManager::Find(Vector2Int cellPos)
 bool MapManager::ApplyMove(const GameObjectRef& gameobject, Vector2Int dest)
 {
     ApplyLeave(gameobject);
-
+    
     Protocol::POSITIONINFO* posInfo = gameobject->GetObjectInfo().mutable_posinfo();
 
     if (CanGo(dest, true) == false)
         return false;
- 
     {
         int32 x = dest.posx - _MinX;
         int32 y = _MaxY - dest.posy;
         _objects[y][x] = gameobject;
-
     }
     //실제 좌표 이동 
     posInfo->set_posx(dest.posx);
     posInfo->set_posy(dest.posy);
-    
+    cout << __FUNCTION__ << " "<< endl;
+    PrintObjectsState();
     return true;
 }
 
 bool MapManager::ApplyLeave(const GameObjectRef& gameObject)
 {
+    cout << __FUNCTION__ << " " << endl;
     Protocol::POSITIONINFO* posInfo = gameObject->GetObjectInfo().mutable_posinfo();
 
     if (posInfo->posx() < _MinX || posInfo->posx() > _MaxX)
@@ -104,7 +108,7 @@ bool MapManager::ApplyLeave(const GameObjectRef& gameObject)
     if (posInfo->posy() < _MinY || posInfo->posy() > _MaxY)
         return false;
 
-    int32 x = posInfo->posx() - _MinX;
+    int32 x = posInfo->posx() - _MinX;  
     int32 y = _MaxY - posInfo->posy();
     if (_objects[y][x] == gameObject)
     {
@@ -112,11 +116,27 @@ bool MapManager::ApplyLeave(const GameObjectRef& gameObject)
         cout << "위치 삭제된 오브젝트 위치:" << _objects[y][x]->GetObjectInfo().posinfo().posx() << "," << _objects[y][x]->GetObjectInfo().posinfo().posy() << endl;
         _objects[y][x] = nullptr;
     }
+    PrintObjectsState();
     return true;
 }
 
+void MapManager::PrintObjectsState() const
+{
+    cout << "[_objects state]" << endl;
+    for (int y = 0; y < _objects.size(); ++y) {
+        for (int x = 0; x < _objects[y].size(); ++x) {
+            if (_objects[y][x] != nullptr) {
+                int32 posy = _MaxY - y;
+                int32 posx = x + _MinX;
+                cout << "Object at " << posy << "," << posx
+                    << " (ID: " << _objects[y][x]->GetObjectId() << ")" << endl;
+            }
+        }
+    }
+}
 
-Vector<Vector2Int> MapManager::FindPath(Vector2Int startCellPos, Vector2Int destCellPos, bool ignoreDestCollision) {
+
+Vector<Vector2Int> MapManager::FindPath(Vector2Int startCellPos, Vector2Int destCellPos, bool checkObjects) {
     const int32 _deltaY[] = { 1, -1, 0, 0 }; // U D
     const int32 _deltaX[] = { 0, 0, -1, 1 }; // L R
     const int32 _cost[] = { 10, 10, 10, 10 };
@@ -149,8 +169,8 @@ Vector<Vector2Int> MapManager::FindPath(Vector2Int startCellPos, Vector2Int dest
         for (int32 i = 0; i < 4; ++i) {
             Pos next(node.Y + _deltaY[i], node.X + _deltaX[i]);
 
-            if (!ignoreDestCollision || (next.Y != dest.Y || next.X != dest.X)) {
-                if (!CanGo(Pos2Cell(next)))
+            if (next.Y != dest.Y || next.X != dest.X) {
+                if (!CanGo(Pos2Cell(next), checkObjects))
                     continue;
             }
 
@@ -158,7 +178,7 @@ Vector<Vector2Int> MapManager::FindPath(Vector2Int startCellPos, Vector2Int dest
                 continue;
 
             int32 g = node.G + _cost[i];
-            int32 h = 10 * ((dest.Y - next.Y) * (dest.Y - next.Y) + (dest.X - next.X) * (dest.X - next.X));
+            int32 h = 10 * abs(dest.Y - next.Y) + abs(dest.X - next.X);
 
             if (open[next.Y][next.X] <= g + h)
                 continue;
@@ -187,7 +207,8 @@ Vector2Int MapManager::Pos2Cell(const Pos& pos) const
 Vector<Vector2Int> MapManager::CalcCellPathFromParent(const Vector<Vector<Pos>>& parent, const Pos& dest) {
     Vector<Vector2Int> cells;
 
-    int32 y = dest.Y, x = dest.X;
+    int32 y = dest.Y;
+    int32 x = dest.X;
     while (parent[y][x].Y != y || parent[y][x].X != x) {
         cells.push_back(Pos2Cell({ y, x }));
         Pos p = parent[y][x];

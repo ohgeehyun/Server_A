@@ -15,17 +15,21 @@ public:
     void HandleSkill(PlayerRef& player, Protocol::C_SKILL& pkt);
     void Init(int32 mapId);
 
-    MapManager GetMap() { return _map; }
+    MapManager& GetMap() { return _map; }
 
     int32 GetRoomId() { return _roomId; }
     void SetRoomId(int32 RoomId) { _roomId = RoomId; }
-    void TileUpdate();
+    void Update();
+
+    PlayerRef FindPlayer(std::function<bool(const GameObjectRef&)>condition);
+  
 
 private:
     int32 _roomId;
+    MapManager _map;
     USE_LOCK;
     HashMap<int32,PlayerRef> _players;
     HashMap<int32,MonsterRef> _monsters;
     HashMap<int32,ProjectTileRef> _projectTiles;
-    MapManager _map;
+    
 };

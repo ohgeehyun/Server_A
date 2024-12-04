@@ -27,7 +27,7 @@ bool Handle_C_MOVE(PacketSessionRef& session, Protocol::C_MOVE& pkt)
     
     cout << "C_MOVE : " << pkt.posinfo().posx() <<","<< pkt.posinfo().posy()<< endl;
     
-    //바로 if문에서 player정보를 체크해도 되지만 멀티스레드환경에서 과연 안전 하지 못 하다.
+    //바로 if문에서 player정보를 체크해도 되지만 멀티스레드환경에서 안전 하지 못 하다.
     PlayerRef player = gameSession->GetPlayer();
     if (player == nullptr)
         return false;
