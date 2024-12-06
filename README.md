@@ -5,7 +5,7 @@
 
 - ## 테스트 영상 링크
  
-  ##### https://youtu.be/ouMp5Gto1_s
+  https://youtu.be/ouMp5Gto1_s
 ------------------------------------------------------------------
 
 - ### 주요 Directory 
@@ -22,7 +22,25 @@
   
 -------------------------------------------------------------------
 
-- ### SeverCore 
+- ### SeverCore
+  - Main : GameServer에서 공통으로 사용하는 파일들
+    - Types.h : 자주 사용하게 되는 타입 및 정의를 namespace로 묶어 둔 파일
+    - pch : CorePch를 참조 파일
+    - CorePch : GameServer 및 ServerCore에서 자주 사용하게 될 헤더 파일
+    - CoreMacro : 자주 사용하게 될 Lock 과 의도적인 CRASH 및 ASSERT_CRASH를 사용하여 디버그 환경에서 조건에 따라 CRASH를 사용 매크로 정의 파일
+    - CoreGlobal : 전역으로 사용하게 될 글로벌 객체들의 정의 파일
+      - 전체 스레드를 관리하는 GThreadManager
+      
+      - 데이터의 할당 및 해제를 관리하는 GMemory
+      
+      - SendBuffer를 chunk 방식을 사용하여 SendBuffer를 사용하는 GSendBufferManager
+      
+      - 디버그 환경에서 데드락이 발생할 요소가있는 부분을 관리하는 GDeadLockProfiler
+      
+      - 논블락 비동기 소켓 통신시 런타임때  미리 받아와야 할 connect , disconnect, accept 등을 초기화하는 SocketUtils::init();
+  - Memory
+        
+      
 
 
 
