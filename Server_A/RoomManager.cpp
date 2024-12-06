@@ -7,8 +7,12 @@
 RoomRef RoomManager::Add(int32 mapId)
 {
     RoomRef gameRoom = Make_Shared<Room>();
-    gameRoom->Init(mapId);
-
+   
+    std::function<void(int32)> job = [gameRoom](int32 mapId) {
+        gameRoom->Init(mapId);
+    };
+    gameRoom->Push(job,mapId);
+   
     WRITE_LOCK
     {
        gameRoom->SetRoomId(_roomid);

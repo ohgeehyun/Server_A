@@ -18,3 +18,4 @@ using ArrowRef = shared_ptr<class Arrow>;
 using MonsterRef = shared_ptr<class Monster>;
 using GameObjectRef = shared_ptr<class GameObject>;
 using ProjectTileRef = shared_ptr<class ProjectTile>;
+using IJopRef = shared_ptr<class IJob>;

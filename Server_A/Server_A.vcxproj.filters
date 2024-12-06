@@ -22,6 +22,9 @@
     <Filter Include="Data">
       <UniqueIdentifier>{2cf978f4-16d7-4f8d-89eb-3584347eada2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Main\Game\Job">
+      <UniqueIdentifier>{8845723d-85bb-4297-9380-0dc8d1a1bcf1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -84,6 +87,12 @@
     <ClCompile Include="DataContent.cpp">
       <Filter>Data</Filter>
     </ClCompile>
+    <ClCompile Include="Job.cpp">
+      <Filter>Main\Game\Job</Filter>
+    </ClCompile>
+    <ClCompile Include="JobSerializer.cpp">
+      <Filter>Main\Game\Job</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -142,6 +151,12 @@
     </ClInclude>
     <ClInclude Include="DataContent.h">
       <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Job.h">
+      <Filter>Main\Game\Job</Filter>
+    </ClInclude>
+    <ClInclude Include="JobSerializer.h">
+      <Filter>Main\Game\Job</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

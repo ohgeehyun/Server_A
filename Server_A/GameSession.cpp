@@ -37,15 +37,21 @@ void GameSession::OnConnected()
         _myplayer->SetObjectStat(it->second);
     }
 
-    RoomManager& RoomManager = RoomManager::GetInstance();
-    RoomManager.Find(1)->EnterGame(static_pointer_cast<GameObject>(_myplayer));
-   
+    RoomRef room = RoomManager::GetInstance().Find(1);
+    std::function<void(GameObjectRef)> job = [room](GameObjectRef object) {
+        room->EnterGame(object);
+    };
+    room->Push(job,static_pointer_cast<GameObject>(_myplayer));
 }
 
 void GameSession::OnDisConnected()
 {
-    RoomManager& RoomManager = RoomManager::GetInstance();
-    RoomManager.Find(1)->LeaveGame(_myplayer->GetObjectInfo().objectid());
+    
+    RoomRef room = RoomManager::GetInstance().Find(1); 
+    std::function<void(int32)> job_LeaveGame = [room](int32 objectid) {
+        room->LeaveGame(objectid);
+    };
+    room->Push(job_LeaveGame, _myplayer->GetObjectInfo().objectid());
 
     SessionManager->Remove(static_pointer_cast<GameSession>(shared_from_this()));
 }

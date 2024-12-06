@@ -80,6 +80,9 @@ GameObjectRef MapManager::Find(Vector2Int cellPos)
 bool MapManager::ApplyMove(const GameObjectRef& gameobject, Vector2Int dest)
 {
     ApplyLeave(gameobject);
+
+    if (gameobject->GetRoom() == nullptr)
+        return false;
     
     Protocol::POSITIONINFO* posInfo = gameobject->GetObjectInfo().mutable_posinfo();
 
@@ -100,7 +103,9 @@ bool MapManager::ApplyMove(const GameObjectRef& gameobject, Vector2Int dest)
 
 bool MapManager::ApplyLeave(const GameObjectRef& gameObject)
 {
-    cout << __FUNCTION__ << " " << endl;
+    if (gameObject->GetRoom() == nullptr)
+        return false;
+   
     Protocol::POSITIONINFO* posInfo = gameObject->GetObjectInfo().mutable_posinfo();
 
     if (posInfo->posx() < _MinX || posInfo->posx() > _MaxX)

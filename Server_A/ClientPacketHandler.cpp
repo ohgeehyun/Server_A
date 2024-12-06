@@ -37,8 +37,11 @@ bool Handle_C_MOVE(PacketSessionRef& session, Protocol::C_MOVE& pkt)
         return false;
 
     //TODO : 원래라면 클라이언트의 신용을 검증할 필요 가 있음. 나중에 기반 마련되면 수정
-    
-    room->HandleMove(player,pkt);
+    std::function<void(PlayerRef&,Protocol::C_MOVE&)> job_Handlemove = [room](PlayerRef& player, Protocol::C_MOVE& pkt) 
+    {
+        room->HandleMove(player,pkt);
+    };
+    room->Push(job_Handlemove,player,pkt);
    
     return true;
 }
@@ -55,7 +58,12 @@ bool Handle_C_SKILL(PacketSessionRef& session, Protocol::C_SKILL& pkt)
     if (room == nullptr)
         return false;
 
-    room->HandleSkill(player, pkt);
+    std::function<void(PlayerRef&, Protocol::C_SKILL&)> job_HandleSkill = [room](PlayerRef& player, Protocol::C_SKILL& pkt)
+    {
+        room->HandleSkill(player, pkt);
+    };
+    
+    room->Push(job_HandleSkill,player, pkt);
 
     return true;
 }

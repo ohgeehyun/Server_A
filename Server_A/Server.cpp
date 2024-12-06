@@ -45,8 +45,12 @@ int main()
     GThreadManager->Launch([]() {
         while (true)
         {
-            RoomManager::GetInstance().Find(1)->Update();
-            //this_thread::sleep_for(chrono::milliseconds(100));
+            RoomRef room = RoomManager::GetInstance().Find(1);
+            std::function<void()> job = [room]() {
+                room->Update();
+            };
+            room->Push(job);
+            this_thread::sleep_for(chrono::milliseconds(100));
         }
     });
     GThreadManager->Join();

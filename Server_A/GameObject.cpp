@@ -50,6 +50,9 @@ Protocol::MoveDir GameObject::GetDirFromVec(Vector2Int dir)
 
 void GameObject::OnDameged(GameObjectRef attacker,int damege)
 {
+    if (GetRoom() == nullptr)
+        return;
+
     int32 objectHp = GetHp();
     objectHp -= damege;
     SetHp(objectHp);
@@ -72,6 +75,9 @@ void GameObject::OnDameged(GameObjectRef attacker,int damege)
 
 void GameObject::OnDead(GameObjectRef attacker)
 {
+    if (GetRoom() == nullptr)
+        return;
+
     Protocol::S_DIE diePacket;
     diePacket.set_objectid(GetObjectId());
     diePacket.set_attackerid(attacker->GetObjectId());
@@ -80,16 +86,15 @@ void GameObject::OnDead(GameObjectRef attacker)
 
     RoomRef room = GetRoom();
     GetRoom()->LeaveGame(GetObjectId());
-
+  
     SetHp(GetObjectStat().maxhp());
     SetState(Protocol::CreatureState::IDLE);
     SetMoveDir(Protocol::MoveDir::DOWN);
     SetPosx(0);
     SetPosy(0);
 
-   
-    room->EnterGame(static_pointer_cast<GameObject>(shared_from_this()));
-}
+    room->EnterGame(shared_from_this());   
+}  
 
 void GameObject::Update()
 {

@@ -50,6 +50,9 @@ void Arrow::Update()
         }
 
         //소멸
-        GetRoom()->LeaveGame(GetObjectId());
+        std::function<void(int32)> job_LeaveGame = [this](int32 objectid) {
+            this->GetRoom()->LeaveGame(objectid);
+        };
+        GetRoom()->Push(job_LeaveGame, GetObjectId());
     }
 }
