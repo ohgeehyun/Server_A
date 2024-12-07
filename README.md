@@ -24,26 +24,27 @@
 
 - ### SeverCore
   - Main : GameServer에서 공통으로 사용하는 파일들
+    
     - Types.h : 자주 사용하게 되는 타입 및 정의를 별칭으로 묶어 둔 파일
     - pch : CorePch를 참조 파일
     - CorePch : GameServer 및 ServerCore에서 자주 사용하게 될 헤더 파일
-    - CoreMacro : 자주 사용하게 될 Lock 과 의도적인 CRASH 및 ASSERT_CRASH를 사용하여 디버그 환경에서 조건에 따라 CRASH를 사용 매크로 정의 파일
+    - CoreMacro : 자주 사용하게 될 Lock 과 의도적인 CRASH 및 ASSERT_CRASH를 사용하여 디버그 환경에서 조건에 따라 CRASH를 사용 매크로 정의 
     - CoreGlobal : 전역으로 사용하게 될 글로벌 객체들의 정의 파일
-      - 전체 스레드를 관리하는 GThreadManager
-      
+      - 전체 스레드를 관리하는 GThreadManager     
       - 데이터의 할당 및 해제를 관리하는 GMemory
-      
       - SendBuffer를 chunk 방식을 사용하여 SendBuffer를 관리하는 사용하는 GSendBufferManager
-      
-      - 디버그 환경에서 데드락이 발생할 요소가있는 부분을 관리하는 GDeadLockProfiler
-      
+      - 디버그 환경에서 데드락이 발생할 요소가있는 부분을 관리하는 GDeadLockProfiler 
       - 논블락 비동기 소켓 통신시 런타임때  미리 받아와야 할 connect , disconnect, accept 등을 초기화하는 SocketUtils::init();
+      - 
   - Memory
-      - Allocator : 기본 heap메모리 할당 해제 , virtualAlloc 및 virtualFree 사용한 할당과 해제 , MemoryPool을 사용하는 할당과 해제, 멀티스레드 환경에서 STL의 할당과 해제 등의 정의 파일.
+      - Allocator : 기본 heap메모리 할당 해제 , virtualAlloc 및 virtualFree 사용한 할당과 해제 , MemoryPool을 사용하는 할당과 해제, 멀티스레드 환경에서 STL의 할당과 해제 등의 정의 
       - Container.h : C++ 표준 stL의 오버로딩 된 것을 이용하여 해당 STL을 할당 및 해제할때 사용할 할당 및 소멸을 지정하는 별칭으로 사용을 정의한 파일.
       - Memory :  메모리 풀 을 사용하여 할당과 해제를 메모리풀에서 할당과 해제를 하게 사용 전역변수의 GMemory에서 객체의 할당과 해제를 로직을 정의한 파일
       - MemoryPool : Memory에서 MemoryPool에서 정의 된 push pop을 이용하여 지정된 크기의 할당 및 해제는 바로 할당 및 해제하는 것이 아닌 빈번하게 일어날경우를 대비하여 미리 준비해둔 공간에 할당 및 해제
-      
+   - Thread
+      - lock : 표준 lock을 사용하는 것이아닌 Atomic type을 이용하여 만든 writelock 과 readlock을 정의 한 파일 만들어 사용하는 lock이기에 정책또한 정의되어있음 ex) W->R (O) R->W (X) 결론적으로 lock이 아닌 atomic으로 사용하기 위한 커스텀 lock
+   - ThreadManager : 전역으로 사용할 스레드를 관리하는 매니저 정의
+   - DeadLockProfiler : 스레드 로컬 저장소의 LLockStack을 이용하여 Debug단계에서 그래프의 DFS깊이 우선 탐색 알고리즘을 이용하여 데드락 발생 가능성이 있을시 CRASH를 호출
 
 
 
