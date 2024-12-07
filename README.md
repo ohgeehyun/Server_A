@@ -76,7 +76,7 @@ IOCP 기반 소켓 통신을 위한 뼈대 라이브러리 구현 폴더입니�
 IOCP 기반 네트워크 통신:
 - **`NetAddress`**: IP/Port 정보를 `sockaddr_in` 형식으로 변환하여 관리.
 - **`SocketUtils`**: 비동기 소켓 통신을 위한 설정 및 초기화.
-- **`IocpCore`**: IOCP Core 및 Key/Value 매핑 클래스.
+- **`IocpCore`**: IOCP Core CreateIoCompletionPort 관리 및  CreateIoCompletionPort 및 키 값과 overlapped를 상속받을 클래스 정의
 - **`IocpEvent`**: **`OVERLAPPED`**를 상속받아 IOCP 이벤트 처리.
 - **`Listener`**: 클라이언트 접속 요청 처리.
 - **`ServerService`**: 세션 및 소켓 관리, 서버 상태 정보 제공.
