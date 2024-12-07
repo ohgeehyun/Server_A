@@ -89,7 +89,7 @@ IOCP 기반 네트워크 통신:
 ---
 
 ## 📝 개발 환경
-- **언어**: C++, Python 3.9
+- **언어**: C++ 14, Python 3.9
 - **네트워크 모델**: IOCP (I/O Completion Port)
 - **프로토콜 자동화**: Google Protocol Buffers
 - **클라이언트**: Unity
