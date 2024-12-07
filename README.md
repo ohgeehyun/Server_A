@@ -43,8 +43,19 @@
       - MemoryPool : Memory에서 MemoryPool에서 정의 된 push pop을 이용하여 지정된 크기의 할당 및 해제는 바로 할당 및 해제하는 것이 아닌 빈번하게 일어날경우를 대비하여 미리 준비해둔 공간에 할당 및 해제
    - Thread
       - lock : 표준 lock을 사용하는 것이아닌 Atomic type을 이용하여 만든 writelock 과 readlock을 정의 한 파일 만들어 사용하는 lock이기에 정책또한 정의되어있음 ex) W->R (O) R->W (X) 결론적으로 lock이 아닌 atomic으로 사용하기 위한 커스텀 lock
-   - ThreadManager : 전역으로 사용할 스레드를 관리하는 매니저 정의
-   - DeadLockProfiler : 스레드 로컬 저장소의 LLockStack을 이용하여 Debug단계에서 그래프의 DFS깊이 우선 탐색 알고리즘을 이용하여 데드락 발생 가능성이 있을시 CRASH를 호출
+      - ThreadManager : 전역으로 사용할 스레드를 관리하는 매니저 정의
+      - DeadLockProfiler : 스레드 로컬 저장소의 LLockStack을 이용하여 Debug단계에서 그래프의 DFS깊이 우선 탐색 알고리즘을 역방향 간선을 찾아 이용하여 데드락 발생 가능성이 있을시 CRASH를 호출
+  - Network
+      - NetAddress : IP 및 port를 windows socekt에서 사용하기위한 sockaddr_in 구조체로 바꾸어 관리  
+      - SocketUtils : 논블락 비동기 통신 소켓을 위한 설정 및 소켓이벤트 정의 및 특정 이벤트 비동기로 사용하기위한 함수포인터 정의
+      - IocpCore : createIOCompletionPort의 키 값을 만들어 줄 IocpObject 클래스와 CreateIoCompletionPort를 가지고있을 IocpCore를 가지고 있을 클래스 정의
+      - IocpEvent : OVERLAPPED를 상속받은 IocpEvent 클래스 정의
+      - Listenr : 클라이언트의 접속 요청을 처리해줄 Listener 소켓 정의 
+      - ServerService : 메인 Server가 되어 session , Listener 소켓 관리 및 서버의 상태정보를 관리
+      - Session : 클라이언트 의 정보 및 클라이언트 와 통신(recv,send)을 주고받는 소켓을 들고있는 클래스 
+      - RecvBuffer : 클라이언트가 전송한 데이터를 담아 둘 RecvBuffer 정의 클래스
+      - SendBuffer :  클라이언트에게 데이터를 보내기위한 버퍼 정의 클래스. (각 스레드마다 들고있는 Sendbufferchunk에서 메모리를 조금식 할당받아 사용 전역으로 선언된 SendBufferManager에서 관리)
+        
 
 
 
