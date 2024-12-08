@@ -85,9 +85,58 @@ IOCP 기반 네트워크 통신:
 - **`SendBuffer`**:
   - Chunk 방식의 전송 버퍼.
   - 각 스레드에서 스레드 로컬 저장소로 독립적chunk를 가지고있으며, 전역 **`SendBufferManager`**로 통합 관리.
-
+ 
+## 🛠️ GameServer 주요 구성 요소
+### **1. Uthis**
+`Server_A`프로젝트에서 공통으로 사용할 기능 정의:
+- **`pch`**: 자주 사용하는 타입 및 정의된 별칭 포함. serverCore 및 GoogleProtobuf 라이브러리 path 지정
 ---
+### **2. Protocol**
+`Google Protobuf`관련 패킷정의 파일 및 GoogleProtubuf 파일:
+- **`Protocol.proto`**: Protobuf 패킷 정의 파일
+- **`GenPackets.bat`**: Protobuf 패킷 정의 파일 및 Pyhon PactketGenerator파일을 이용하여 패킷관련 소스 자동화 batch파일(클라이언트가 C#이기 때문에 C#용 패킷파일도 같이 만들어 클라이언트 경로에도 추가)
+- **`Protocol.pb.*`**: protobufc.exe파일로 생성된 Protobuf 헤더파일과 구현파일
+---
+### **3. Data**
+서버와 클라이언트 공용으로 사용할 데이터 추출: nlohmann/json 라이브러리  사용
+- **`DataManager`**: 몬스터 데이터 및 스킬 데이터 json으로 읽기,쓰기 및 외부클래스에 제공
+- **`DataContent`**: json에서 읽은 몬스터 및 스킬데이터 를 담아 둘 객체 정의
+- **`ConfigManager`**: 외부에서 미리 들고와야 할 json 및 파일들의 경로를 저장해둔 json파일을 가저와 설정
+---
+### **4. Main **
+실질적으로 서비스를 오픈해 클라이언트와 소통을  하게 될 서버관련 파일
+- **`server.cpp`**: Main 함수 , 프로그램의 시작점 
+- **`GameSession`**: 현재 서비스에 필요한 세션의 기능을 ServerCore의 Packetsession을 상속 받아 정의 
+- **`GameSessionManager`**: GameSession을 전역으로 관리할 매니저
+- **`ClientPacketHandler`**: Protobuf 패킷을 사용하여 송수신 패킷들을 처리해주는 패킷자동화소스 파일 (python PacketGeneragor 에 의해 GenPackets.bat실행시 파일 자동 수정)
+---
+### **5. Game  **
+  게임 컨텐츠 관련 파일
+  #### **5.1 Object  **
+  게임에서 사용 될 오브젝트 정의 
+  - **`GameObject`**: Object들의 부모 클래스
+  - **`ObjectManager`**: Object의 생성 및 삭제 또는상태 관리 등을 하는 매니저
+  - **`Player`**: GameObject를 상속받은 Player 클래스
+  - **`Monster`**: GameObject를 상속받은 Monster 클래스
+  - **`ProtjectTile`**: GameObject를 상속받은 ProjectTile(투사체) 클래스
+  - **`Arrow`**: ProjectTile를 상속받은 Arrow 클래스
+  #### **5.2 Room  **
+  사용자 및 게임 오브젝트가 생성되어 활동하게 될 Room 관련 클래스
+  - **`Room`**: 사용자 및 게임 오브젝트가 생성되어 활동하게 될 Room 클래스
+  - **`RoomManager`**: 여러개의 Room을 관리하게 될 클래스
+  - **`MapManager`**: 클라이언트 와 같이 사용하는 타일맵의 데이터를 저장하고 Map에서 일어나는 일 들을 구현하는 클래스
+  #### **5.3 Job  **
+  서버에서 일어나는 일 들을 전부 Lock으로 처리시 일어나는 성능저하 및 상호배제로 인해 하나의 Job으로 만들어 비동기식으로 queue에 넣어 관리
+  
+  -- 진행중입니다. 현재 job queue를 이용하여 event등록 처리중--
+  
+---
+## 🛠️ PacketGenerator 주요 구성 요소
 
+  ### **PacketGenerator**
+  - **`PacketGenerator`**: 템플릿을 읽어 ProtoParser에 의해 파싱된 데이터를 사용하여 템플릿을 만들어주는 파일
+  - **`ProtoParser`**: .proto파일을 읽어 파싱해 줄 파일
+---
 ## 📝 개발 환경
 - **언어**: C++ 14, Python 3.9
 - **네트워크 모델**: IOCP (I/O Completion Port)
