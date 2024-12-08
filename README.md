@@ -84,7 +84,7 @@ IOCP 기반 네트워크 통신:
 - **`RecvBuffer`**: 클라이언트로부터 데이터를 수신하는 버퍼.
 - **`SendBuffer`**:
   - Chunk 방식의 전송 버퍼.
-  - 각 스레드에서 독립적으로 관리하며, 전역 **`SendBufferManager`**로 통합 관리.
+  - 각 스레드에서 스레드 로컬 저장소로 독립적chunk를 가지고있으며, 전역 **`SendBufferManager`**로 통합 관리.
 
 ---
 
