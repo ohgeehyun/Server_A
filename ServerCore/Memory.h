@@ -23,7 +23,7 @@ public:
 
 private:
     vector<MemoryPool*>_pools;
-    //메모리 크기 <-> 메모리 풀
+    //메모리 크기 <-> 메모리 풀 둘의 크기는 같다 거울? 생각
     //0(1)의 복잡도를 위해 테이블
     MemoryPool* _poolTable[MAX_ALLOC_SIZE + 1];
 
@@ -49,5 +49,5 @@ void xdelete(Type* obj)
 template<typename Type, typename...Args>
 shared_ptr<Type> Make_Shared(Args&&... args)
 {
-    return shared_ptr<Type>{xnew<Type>(forward<Args>(args)...), xdelete<Type>};
+    return shared_ptr<Type>{xnew<Type>(std::forward<Args>(args)...), xdelete<Type>};
 }

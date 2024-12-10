@@ -48,7 +48,7 @@ public:
 private:
     SLIST_HEADER _header;
     int32 _allocsize = 0;
-    atomic<int32> _useCount = 0;//메모리의 갯수 Pool의 카운터아님.
+    atomic<int32> _useCount = 0;//메모리의 갯수
     atomic<int32> _reserveCount = 0;
 
 };

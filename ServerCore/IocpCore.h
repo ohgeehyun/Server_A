@@ -24,7 +24,7 @@ public:
     HANDLE GetHandle() { return _iocpHandle; }
 
     bool Register(IocpObjectRef iocpObject);
-    bool Dispatch(uint32 timeoutMs = INFINITE); //상황에 따라 GetQueueCompletionStatusㅎ 호출
+    bool Dispatch(uint32 timeoutMs = INFINITE); //상황에 따른 GetQueueCompletionStatus 호출
 
 private:
     HANDLE _iocpHandle;

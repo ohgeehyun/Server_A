@@ -287,7 +287,7 @@ void Room::HandleSkill(PlayerRef& player, Protocol::C_SKILL& pkt)
     //외부에서 다른 곳에서  playerinfo가수정이될수도있기때문에 미리 정보를 받아둠
     Protocol::OBJECT_INFO info = player->GetObjectInfo();
     if (info.posinfo().state() != Protocol::CreatureState::IDLE)
-    return;
+        return;
 
     // TODO : 스킬 사용 가능 여부 체크
         

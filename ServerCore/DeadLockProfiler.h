@@ -29,6 +29,7 @@ private:
 
     //정점들이 어느 정점으로 간지 기록
     map <int32, set<int32> > _lockHistory;
+
     Mutex					 _lock;
 private:
     vector<int32>	_discoveredOrder;//정점이 발견된 순서를 기록

@@ -65,13 +65,15 @@ void SendBufferChunk::Close(uint32 writeSize)
 
 SendBufferRef SendBufferManager::Open(uint32 size)
 {
+    //LSendBufferChunk가 가지고있는 chunkr가없다면
     if (LSendBufferChunk == nullptr)
     {
         LSendBufferChunk = Pop();
-        LSendBufferChunk->Reset();
+        LSendBufferChunk->Reset(); //WRITE_LOCK;
     }
     ASSERT_CRASH(LSendBufferChunk->IsOpen() == false);
 
+    // 다 썼으면 버리고 교체
     if (LSendBufferChunk->FreeSize() < size)
     {
         LSendBufferChunk = Pop();
@@ -92,6 +94,7 @@ SendBufferChunkRef SendBufferManager::Pop()
             return sendBufferChunk;
         }
     }
+    //shared ptr로 포인터와 커스텀삭제자를 넣어 다사용되고 삭제될떄 PushGlobal을 호출하여 vector의 끝에 다시 추가
     return SendBufferChunkRef(xnew<SendBufferChunk>(), PushGlobal);
 }
 
