@@ -8,7 +8,7 @@
 
 
 
-bool MapManager::CanGo(Vector2Int cellPos ,bool checkObject)
+bool MapManager::CanGo(Vector2Int cellPos, bool checkObject)
 {
     if (cellPos.posx < _MinX || cellPos.posx > _MaxX)
         return false;
@@ -27,13 +27,13 @@ void MapManager::LoadMap(int32 mapId)
     // 맵 이름 생성
     std::string mapName = "Map_" +
         (mapId < 10 ? std::string("00") :
-        (mapId < 100 ? std::string("0") : std::string(""))) +
-         std::to_string(mapId);
+            (mapId < 100 ? std::string("0") : std::string(""))) +
+        std::to_string(mapId);
 
     string pathPrefix = "../Common/MapData";
 
     // 파일 읽기
-    ifstream file(pathPrefix +"/" + mapName + ".txt");
+    ifstream file(pathPrefix + "/" + mapName + ".txt");
     if (!file.is_open()) {
         std::cerr << "Error: Could not open file.\n";
         return;
@@ -50,7 +50,7 @@ void MapManager::LoadMap(int32 mapId)
 
     // _collision 배열 초기화
     _collision.resize(yCount, Vector<bool>(xCount, false));
-    _objects.resize(yCount,Vector<GameObjectRef>(xCount));
+    _objects.resize(yCount, Vector<GameObjectRef>(xCount));
 
     // 파일에서 충돌 데이터를 읽어들임
     for (int32 y = 0; y < yCount; ++y) {
@@ -62,7 +62,6 @@ void MapManager::LoadMap(int32 mapId)
     }
 
     file.close();
-    
 }
 
 GameObjectRef MapManager::Find(Vector2Int cellPos)
@@ -79,22 +78,25 @@ GameObjectRef MapManager::Find(Vector2Int cellPos)
 
 bool MapManager::ApplyMove(const GameObjectRef& gameobject, Vector2Int dest)
 {
-    ApplyLeave(gameobject);
-    
-    Protocol::POSITIONINFO* posInfo = gameobject->GetObjectInfo().mutable_posinfo();
-
     if (CanGo(dest, true) == false)
         return false;
+
+    ApplyLeave(gameobject);
+
     {
         int32 x = dest.posx - _MinX;
         int32 y = _MaxY - dest.posy;
         _objects[y][x] = gameobject;
+
+        if (gameobject->GetGameObjectType() == Protocol::MONSTER)
+        {
+            cout << "현재 Monster : " << y << "," << x << "\n";
+        }
     }
     //실제 좌표 이동 
-    posInfo->set_posx(dest.posx);
-    posInfo->set_posy(dest.posy);
-    cout << __FUNCTION__ << " "<< endl;
-    PrintObjectsState();
+    gameobject->SetPosx(dest.posx);
+    gameobject->SetPosy(dest.posy);
+
     return true;
 }
 
@@ -102,41 +104,24 @@ bool MapManager::ApplyLeave(const GameObjectRef& gameObject)
 {
     if (gameObject->GetRoom() == nullptr)
         return false;
-   
+
     Protocol::POSITIONINFO* posInfo = gameObject->GetObjectInfo().mutable_posinfo();
 
-    if (posInfo->posx() < _MinX || posInfo->posx() > _MaxX)
+    if (gameObject->GetPosx() < _MinX || gameObject->GetPosx() > _MaxX)
         return false;
-    if (posInfo->posy() < _MinY || posInfo->posy() > _MaxY)
+    if (gameObject->GetPosy() < _MinY || gameObject->GetPosy() > _MaxY)
         return false;
 
-    int32 x = posInfo->posx() - _MinX;  
-    int32 y = _MaxY - posInfo->posy();
+    int32 x = gameObject->GetPosx() - _MinX;
+    int32 y = _MaxY - gameObject->GetPosy();
     if (_objects[y][x] == gameObject)
     {
-        cout << "위치 삭제된 오브젝트 id :" << _objects[y][x]->GetObjectInfo().objectid();
-        cout << "위치 삭제된 오브젝트 위치:" << _objects[y][x]->GetObjectInfo().posinfo().posx() << "," << _objects[y][x]->GetObjectInfo().posinfo().posy() << endl;
+        cout << "위치 삭제된 오브젝트 id :" << _objects[y][x]->GetObjectId();
+        cout << "  오브젝트 위치:" << _objects[y][x]->GetPosx() << "," << _objects[y][x]->GetPosy() << "\n";
         _objects[y][x] = nullptr;
     }
-    PrintObjectsState();
     return true;
 }
-
-void MapManager::PrintObjectsState() const
-{
-    cout << "[_objects state]" << endl;
-    for (int y = 0; y < _objects.size(); ++y) {
-        for (int x = 0; x < _objects[y].size(); ++x) {
-            if (_objects[y][x] != nullptr) {
-                int32 posy = _MaxY - y;
-                int32 posx = x + _MinX;
-                cout << "Object at " << posy << "," << posx
-                    << " (ID: " << _objects[y][x]->GetObjectId() << ")" << endl;
-            }
-        }
-    }
-}
-
 
 Vector<Vector2Int> MapManager::FindPath(Vector2Int startCellPos, Vector2Int destCellPos, bool checkObjects) {
     const int32 _deltaY[] = { 1, -1, 0, 0 }; // U D

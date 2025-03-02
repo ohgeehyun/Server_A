@@ -4,7 +4,7 @@
 ProjectTile::ProjectTile()
 {
     SetGameObjectType(Protocol::PROJECTTILE);
-    _skillData.id = 0;
+    //_skillData.id = 0;
 }
 
 ProjectTile::~ProjectTile()

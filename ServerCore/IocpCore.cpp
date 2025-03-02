@@ -50,3 +50,7 @@ bool IocpCore::Dispatch(uint32 timeoutMs)
 
     return true;
 }
+
+IocpObject::~IocpObject()
+{
+}

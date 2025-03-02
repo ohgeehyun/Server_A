@@ -2,32 +2,26 @@
 #include "GameSession.h"
 #include "GameSessionManager.h"
 #include "ClientPacketHandler.h"
-#include "ObjectManager.h"
 #include "Player.h"
+#include "ObjectManager.h"
 #include "RoomManager.h"
 #include "DataManager.h"
+#include "RedisConnection.h"
 
 GameSessionManager* SessionManager;
 
-void GameSession::OnConnected()
+void GameSession::InitPlayer()
 {
-    SessionManager->Add(static_pointer_cast<GameSession>(shared_from_this()));
-    cout << "접속 인원 추가" << endl;
-    
-    //세션에 누군가 할당이 되었는데 원래는 DB에서 플레이어의 정보를 긁어와야하는데..
-    
-    //세션도 해당 플레이어의 정보를 가지고 있는다.
-    ObjectManager& ObjectManager = ObjectManager::GetInstance();
-    _myplayer = ObjectManager.Add<Player>();
+    _myplayer = ObjectManager::GetInstance().Add<Player>();
     {
-        _myplayer->GetObjectInfo().set_name("Player_"+ to_string(_myplayer->GetObjectInfo().objectid()));
+        _myplayer->GetObjectInfo().set_name("Player_"+to_string(_myplayer->GetObjectInfo().objectid()));
         _myplayer->SetState(Protocol::CreatureState::IDLE);
         _myplayer->SetMoveDir(Protocol::MoveDir::DOWN);
         _myplayer->SetPosx(0);
         _myplayer->SetPosy(0);
         _myplayer->SetSession(static_pointer_cast<GameSession>(shared_from_this()));
 
-        auto it = std::find_if(DataManager::GetInstance().GetStatDict().begin(), DataManager::GetInstance().GetStatDict().end(), 
+        auto it = std::find_if(DataManager::GetInstance().GetStatDict().begin(), DataManager::GetInstance().GetStatDict().end(),
             [](const std::pair<const int32, Protocol::STATINFO>& pair) {
             return pair.second.level() == 1;
         });
@@ -36,31 +30,39 @@ void GameSession::OnConnected()
             return;
         _myplayer->SetObjectStat(it->second);
     }
+}
 
+void GameSession::OnConnected()
+{
+    SessionManager->Add(static_pointer_cast<GameSession>(shared_from_this()));
+    cout << "클라이언트 소켓 연결 완료 " <<endl;
+
+    InitPlayer();
     RoomRef room = RoomManager::GetInstance().Find(1);
-    std::function<void(GameObjectRef)> job = [room](GameObjectRef object) {
-        room->EnterGame(object);
-    };
-    room->Push(job,static_pointer_cast<GameObject>(_myplayer));
+    room->EnterGame(_myplayer);
+
 }
 
 void GameSession::OnDisConnected()
 {
-    
-    RoomRef room = RoomManager::GetInstance().Find(1); 
-    std::function<void(int32)> job_LeaveGame = [room](int32 objectid) {
-        room->LeaveGame(objectid);
-    };
-    room->Push(job_LeaveGame, _myplayer->GetObjectInfo().objectid());
 
-    SessionManager->Remove(static_pointer_cast<GameSession>(shared_from_this()));
+    RoomRef room = RoomManager::GetInstance().Find(1);
+    room->DoAsync(&Room::LeaveGame,_myplayer->GetObjectId());
+
+    redisAsyncCommand(GRedisConnection->GetContext(), [](redisAsyncContext* context, void* reply, void* privdata)
+    {
+        RedisUtils::replyResponseHandler(reply,"Redis delete active user : ");
+
+    }, nullptr, "HDEL active_user %s", _userid.c_str());
+
+    _myplayer = nullptr;
 }
 
 void GameSession::OnRecvPacket(BYTE* buffer, int32 len)
 {
     PacketSessionRef session = GetPacketSessionRef();
-    PacketHeader* header = reinterpret_cast<PacketHeader*>(buffer);
+    RecvPacketHeader* header = reinterpret_cast<RecvPacketHeader*>(buffer);
 
-    //TODO : 클라이언트 패킷 핸들러 작성
+    //TODO : 만약 jwt토큰 검증이 패킷을조립전에 해야한다면 여기서 할 것 
     ClientPacketHandler::HandlePacket(session, buffer, len);
 }

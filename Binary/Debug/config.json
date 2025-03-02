@@ -1,4 +1,6 @@
 {
   "statPath": "G:/unity/My project/Assets/Resources/Data/StatData",
-  "skillPath": "G:/unity/My project/Assets/Resources/Data/SkillData"
+  "skillPath": "G:/unity/My project/Assets/Resources/Data/SkillData",
+  "configPath": "G:/unity/My project/Assets/Resources/Data/ConfigData",
+  "keyPath":    "G:/unity/NodeServer_A/.env"
 }

@@ -86,7 +86,13 @@ private:
     PacketSession
 -------------------*/
 
-struct PacketHeader
+struct RecvPacketHeader
+{
+    uint16 size;
+    uint16 id;
+    uint16 jwtsize;
+};
+struct SendPacketHeader
 {
     uint16 size;
     uint16 id;
@@ -99,8 +105,8 @@ public:
     virtual ~PacketSession();
 
     PacketSessionRef GetPacketSessionRef() { return static_pointer_cast<PacketSession>(shared_from_this()); }
-
 protected:
     virtual int32 OnRecv(BYTE* buffer, int32 len) final;
     virtual void OnRecvPacket(BYTE* buffer, int32 len)abstract;
+
 };

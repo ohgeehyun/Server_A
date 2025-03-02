@@ -33,7 +33,7 @@ public:
 
 	static bool HandlePacket(PacketSessionRef& session, BYTE* buffer, int32 len)
 	{
-		PacketHeader* header = reinterpret_cast<PacketHeader*>(buffer);
+		RecvPacketHeader* header = reinterpret_cast<RecvPacketHeader*>(buffer);
 		return GPacketHandler[header->id](session, buffer, len);
 	}
 
@@ -46,9 +46,9 @@ private:
 	static bool HandlePacket(ProcessFunc func, PacketSessionRef& session, BYTE* buffer, int32 len)
 	{
 		PacketType pkt;
-		if (pkt.ParseFromArray(buffer + sizeof(PacketHeader), len - sizeof(PacketHeader)) != true)
+		if (pkt.ParseFromArray(buffer + sizeof(RecvPacketHeader), len - sizeof(RecvPacketHeader)) != true)
 		{
-			cout << buffer + sizeof(PacketHeader) << " " << len - sizeof(PacketHeader) << endl;
+			cout << buffer + sizeof(RecvPacketHeader) << " " << len - sizeof(RecvPacketHeader) << endl;
 			return false;
 		}
 		return func(session, pkt);
@@ -58,10 +58,10 @@ private:
 	static SendBufferRef MakeSendBuffer(T& pkt, uint16 pktId)
 	{
 		const uint16 dataSize = static_cast<uint16>(pkt.ByteSizeLong());
-		const uint16 packetSize = dataSize + sizeof(PacketHeader);
+		const uint16 packetSize = dataSize + sizeof(SendPacketHeader);
 
-		SendBufferRef sendBuffer = GSendBufferManager->Open(packetSize);
-		PacketHeader* header = reinterpret_cast<PacketHeader*>(sendBuffer->Buffer());
+		SendBufferRef sendBuffer = GSendBufferManager->Open(SendPacketSize);
+		SendPacketHeader* header = reinterpret_cast<SendPacketHeader*>(sendBuffer->Buffer());
 		header->size = packetSize;
 		header->id = pktId;
 		ASSERT_CRASH(pkt.SerializeToArray(&header[1], dataSize));

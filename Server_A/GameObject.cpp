@@ -3,9 +3,9 @@
 #include "Room.h"
 #include "ClientPacketHandler.h"
 #include "RoomManager.h"
+
 GameObject::GameObject()
 {
-    SetObjectId(0); // 기본값 설정 (필요 시 나중에 변경)
 }
 
 Vector2Int GameObject::GetFrontCellPos(Protocol::MoveDir dir)
@@ -48,11 +48,10 @@ Protocol::MoveDir GameObject::GetDirFromVec(Vector2Int dir)
         return Protocol::MoveDir::DOWN;
 }
 
-void GameObject::OnDameged(GameObjectRef attacker,int damege)
+void GameObject::OnDameged(GameObjectRef attacker, int damege)
 {
     if (GetRoom() == nullptr)
         return;
-
     int32 objectHp = GetHp();
     objectHp -= damege;
     SetHp(objectHp);
@@ -62,42 +61,41 @@ void GameObject::OnDameged(GameObjectRef attacker,int damege)
         SetHp(0);
         OnDead(attacker);
     }
-    
 
     Protocol::S_CHANGEHP changehpPacket;
     changehpPacket.set_objectid(GetObjectId());
     changehpPacket.set_hp(GetHp());
     auto changehpPacketBuffer = ClientPacketHandler::MakeSendBuffer(changehpPacket);
 
-    GetRoom()->Broadcast(changehpPacketBuffer);
-
+     GetRoom()->DoAsync(&Room::Broadcast,changehpPacketBuffer);
 }
 
 void GameObject::OnDead(GameObjectRef attacker)
 {
     if (GetRoom() == nullptr)
         return;
+    //TODO : 죽을 때 위치를 초기화해주어야함 특히 몬스터부분 확인 해볼 것
 
     Protocol::S_DIE diePacket;
     diePacket.set_objectid(GetObjectId());
     diePacket.set_attackerid(attacker->GetObjectId());
     auto diePacketBuffer = ClientPacketHandler::MakeSendBuffer(diePacket);
-    GetRoom()->Broadcast(diePacketBuffer);
+    GetRoom()->DoAsync(&Room::Broadcast,diePacketBuffer);
 
     RoomRef room = GetRoom();
-    GetRoom()->LeaveGame(GetObjectId());
-  
+
+    GetRoom()->DoAsync(&Room::LeaveGame,GetObjectId());
+
+    GetRoom()->GetMap().ApplyLeave(shared_from_this());
+
     SetHp(GetObjectStat().maxhp());
     SetState(Protocol::CreatureState::IDLE);
     SetMoveDir(Protocol::MoveDir::DOWN);
     SetPosx(0);
     SetPosy(0);
-
-    room->EnterGame(shared_from_this());   
-}  
+    room->DoAsync(&Room::EnterGame,shared_from_this());
+}
 
 void GameObject::Update()
 {
 }
-
-

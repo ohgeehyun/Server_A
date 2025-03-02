@@ -1,9 +1,10 @@
 #include "pch.h"
 #include "Monster.h"
-#include "Room.h"
-#include "Player.h"
-#include "ClientPacketHandler.h"
+#include "Protocol.pb.h"
 #include "GameObject.h"
+#include "Player.h"
+#include "Room.h"
+#include "ClientPacketHandler.h"
 #include "DataContent.h"
 #include "DataManager.h"
 
@@ -51,7 +52,13 @@ void Monster::BroadCastMove()
     _movePacket.mutable_posinfo()->CopyFrom(GetPosinfo());
 
     auto movePacket = ClientPacketHandler::MakeSendBuffer(_movePacket);
-    GetRoom()->Broadcast(movePacket);
+    GetRoom()->DoAsync(&Room::Broadcast, movePacket);
+}
+
+void Monster::OnDead(GameObjectRef attacker)
+{
+    GameObject::OnDead(attacker);
+    _target = nullptr;
 }
 
 void Monster::UpdateIdle()
@@ -61,16 +68,16 @@ void Monster::UpdateIdle()
 
     _nextSearchTick = GetTickCount64() + 1000;
     //1초마다 진입 효율적인 방식은아님. 해당 함수를 들어올떄마다 if문을 하게된다는 뜻.
-    
+
     int32 cellDist = GetSearchCellDist();
-    PlayerRef target = GetRoom()->FindPlayer([cellDist](const GameObjectRef& p) -> bool {
-        Vector2Int dir = p->GetCellPos() - p->GetCellPos(); 
+    PlayerRef target = GetRoom()->FindPlayer([this,cellDist](const GameObjectRef& p) -> bool {
+        Vector2Int dir = GetCellPos() - p->GetCellPos();
         return dir.cellDistFromZero() <= cellDist;
     });
 
     if (target == nullptr)
         return;
-    
+
     _target = target;
     SetState(Protocol::CreatureState::MOVING);
 }
@@ -111,6 +118,15 @@ void Monster::UpdateMoving()
         return;
     }
 
+    // 이동
+    SetMoveDir(GetDirFromVec(path[1] - GetCellPos()));
+    GetRoom()->DoAsync([this, path]() {
+        GetRoom()->GetMap().ApplyMove(shared_from_this(), path[1]);
+        //GetRoom()->DoAsync(std::bind(&MapManager::ApplyMove, GetRoom()->GetMap(), shared_from_this(), path[1]));
+    });
+
+    BroadCastMove();
+
     //스킬로 넘어갈지 체크
     if (dist <= _skillRange && (dir.posx == 0 || dir.posy == 0))
     {
@@ -118,12 +134,6 @@ void Monster::UpdateMoving()
         SetState(Protocol::CreatureState::SKILL);
         return;
     }
-
-    // 이동
-    SetMoveDir(GetDirFromVec(path[1] - GetCellPos()));
-    GetRoom()->GetMap().ApplyMove(shared_from_this(), path[1]);
-    BroadCastMove();
-
 }
 
 
@@ -158,7 +168,7 @@ void Monster::UpdateSkill()
         if (GetMoveDir() != lookDir)
         {
             SetMoveDir(lookDir);
-            BroadCastMove(); 
+            BroadCastMove();
         }
 
         Skill skillData;
@@ -168,16 +178,18 @@ void Monster::UpdateSkill()
             if (pair.first == 1)
                 skillData = pair.second;
         }
-        
+
         //데미지 판정
-        _target->OnDameged(shared_from_this(), skillData.damege + GetObjectStat().attack());
-        
+        GetRoom()->DoAsync([this, skillData]() {
+            _target->OnDameged(shared_from_this(), skillData.damege + GetObjectStat().attack());
+        });
+       
         //스킬 사용 BroadCast
         Protocol::S_SKILL skill;
         skill.set_objectid(GetObjectId());
         skill.mutable_info()->set_skillid(skillData.id);
         auto skillPacket = ClientPacketHandler::MakeSendBuffer(skill);
-        GetRoom()->Broadcast(skillPacket);
+        GetRoom()->DoAsync(&Room::Broadcast, skillPacket);
 
         //스킬 쿨타임 적용
         int coolTick = (int)(1000 * skillData.cooldown);

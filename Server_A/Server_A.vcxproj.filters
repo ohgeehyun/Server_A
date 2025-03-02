@@ -22,8 +22,14 @@
     <Filter Include="Data">
       <UniqueIdentifier>{2cf978f4-16d7-4f8d-89eb-3584347eada2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Main\Game\Job">
-      <UniqueIdentifier>{8845723d-85bb-4297-9380-0dc8d1a1bcf1}</UniqueIdentifier>
+    <Filter Include="DB">
+      <UniqueIdentifier>{26bd730e-e8fb-46cd-a18a-ab663c58f13a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utils\Redis">
+      <UniqueIdentifier>{41d3c918-5b67-4c40-bfb5-71297c968252}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utils\JwtUtils">
+      <UniqueIdentifier>{df419935-e445-48f5-b60e-effa9cab710b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -57,25 +63,7 @@
     <ClCompile Include="Room.cpp">
       <Filter>Main\Game\Room</Filter>
     </ClCompile>
-    <ClCompile Include="Arrow.cpp">
-      <Filter>Main\Game\Object</Filter>
-    </ClCompile>
-    <ClCompile Include="GameObject.cpp">
-      <Filter>Main\Game\Object</Filter>
-    </ClCompile>
-    <ClCompile Include="Monster.cpp">
-      <Filter>Main\Game\Object</Filter>
-    </ClCompile>
     <ClCompile Include="Player.cpp">
-      <Filter>Main\Game\Object</Filter>
-    </ClCompile>
-    <ClCompile Include="ObjectManager.cpp">
-      <Filter>Main\Game\Object</Filter>
-    </ClCompile>
-    <ClCompile Include="MapManager.cpp">
-      <Filter>Main\Game\Room</Filter>
-    </ClCompile>
-    <ClCompile Include="ProjectTile.cpp">
       <Filter>Main\Game\Object</Filter>
     </ClCompile>
     <ClCompile Include="DataManager.cpp">
@@ -87,17 +75,56 @@
     <ClCompile Include="DataContent.cpp">
       <Filter>Data</Filter>
     </ClCompile>
-    <ClCompile Include="Job.cpp">
-      <Filter>Main\Game\Job</Filter>
+    <ClCompile Include="ObjectManager.cpp">
+      <Filter>Main\Game\Object</Filter>
     </ClCompile>
-    <ClCompile Include="JobSerializer.cpp">
-      <Filter>Main\Game\Job</Filter>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>Main\Game\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="MapManager.cpp">
+      <Filter>Main\Game\Room</Filter>
+    </ClCompile>
+    <ClCompile Include="MysqlConnectionPool.cpp">
+      <Filter>DB</Filter>
+    </ClCompile>
+    <ClCompile Include="MysqlConnection.cpp">
+      <Filter>DB</Filter>
+    </ClCompile>
+    <ClCompile Include="MysqlCommand.cpp">
+      <Filter>DB</Filter>
+    </ClCompile>
+    <ClCompile Include="GlobalObject.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="RedisConnectionPool.cpp">
+      <Filter>DB</Filter>
+    </ClCompile>
+    <ClCompile Include="RedisConnection.cpp">
+      <Filter>DB</Filter>
+    </ClCompile>
+    <ClCompile Include="RedisUtils.cpp">
+      <Filter>Utils\Redis</Filter>
+    </ClCompile>
+    <ClCompile Include="JwtUtils.cpp">
+      <Filter>Utils\JwtUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="JsonUtils.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Monster.cpp">
+      <Filter>Main\Game\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Arrow.cpp">
+      <Filter>Main\Game\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="ProjectTile.cpp">
+      <Filter>Main\Game\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="MagicSkill.cpp">
+      <Filter>Main\Game\Object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="pch.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
     <ClInclude Include="GameSessionManager.h">
       <Filter>Main</Filter>
     </ClInclude>
@@ -122,25 +149,7 @@
     <ClInclude Include="RoomManager.h">
       <Filter>Main\Game\Room</Filter>
     </ClInclude>
-    <ClInclude Include="MapManager.h">
-      <Filter>Main\Game\Room</Filter>
-    </ClInclude>
-    <ClInclude Include="Arrow.h">
-      <Filter>Main\Game\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="GameObject.h">
-      <Filter>Main\Game\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="Monster.h">
-      <Filter>Main\Game\Object</Filter>
-    </ClInclude>
     <ClInclude Include="Player.h">
-      <Filter>Main\Game\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="ObjectManager.h">
-      <Filter>Main\Game\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="ProjectTile.h">
       <Filter>Main\Game\Object</Filter>
     </ClInclude>
     <ClInclude Include="DataManager.h">
@@ -152,11 +161,56 @@
     <ClInclude Include="DataContent.h">
       <Filter>Data</Filter>
     </ClInclude>
-    <ClInclude Include="Job.h">
-      <Filter>Main\Game\Job</Filter>
+    <ClInclude Include="ObjectManager.h">
+      <Filter>Main\Game\Object</Filter>
     </ClInclude>
-    <ClInclude Include="JobSerializer.h">
-      <Filter>Main\Game\Job</Filter>
+    <ClInclude Include="GameObject.h">
+      <Filter>Main\Game\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="MapManager.h">
+      <Filter>Main\Game\Room</Filter>
+    </ClInclude>
+    <ClInclude Include="MysqlConnection.h">
+      <Filter>DB</Filter>
+    </ClInclude>
+    <ClInclude Include="MysqlConnectionPool.h">
+      <Filter>DB</Filter>
+    </ClInclude>
+    <ClInclude Include="MysqlCommand.h">
+      <Filter>DB</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="GlobalObject.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="RedisConnectionPool.h">
+      <Filter>DB</Filter>
+    </ClInclude>
+    <ClInclude Include="RedisConnection.h">
+      <Filter>DB</Filter>
+    </ClInclude>
+    <ClInclude Include="RedisUtils.h">
+      <Filter>Utils\Redis</Filter>
+    </ClInclude>
+    <ClInclude Include="JwtUtils.h">
+      <Filter>Utils\JwtUtils</Filter>
+    </ClInclude>
+    <ClInclude Include="JsonUtils.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Monster.h">
+      <Filter>Main\Game\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Arrow.h">
+      <Filter>Main\Game\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="ProjectTile.h">
+      <Filter>Main\Game\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="MagicSkill.h">
+      <Filter>Main\Game\Object</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

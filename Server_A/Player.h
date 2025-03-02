@@ -15,6 +15,8 @@ public:
     void OnDameged(GameObjectRef attacker, int damege) override;
     void OnDead(GameObjectRef attacker) override;
 
+public:
+
 private:
     GameSessionRef _session;
 

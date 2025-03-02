@@ -58,3 +58,25 @@ Protocol::SkillType Skill::ParseSkillType(const string& str)
     }
     throw std::runtime_error("Invalid SkillType string: " + str);
 }
+
+void ServerConfigData::Deserialize(const nlohmann::json& j)
+{
+    mysqlData.host = j["Mysql"]["host"].get<std::string>();
+    mysqlData.port = j["Mysql"]["port"].get<std::string>();
+    mysqlData.user = j["Mysql"]["user"].get<std::string>();
+    mysqlData.pwd = j["Mysql"]["pwd"].get<std::string>();
+    mysqlData.dbname = j["Mysql"]["dbname"].get<std::string>();
+
+    redisData.host = j["Redis"]["host"].get<std::string>();
+    redisData.port = j["Redis"]["port"].get<int>();
+    redisData.auth = j["Redis"]["auth"].get<std::string>();
+}
+
+HashMap<string, ServerConfigData> ServerConfigData::MakeDict()
+{
+    HashMap<string, ServerConfigData> dict;
+
+    dict["database"] = *this ;
+
+    return dict;
+}

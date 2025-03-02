@@ -8,6 +8,8 @@ public:
 public:
     string statPath;
     string skillPath;
+    string configPath;
+    string keyPath;
 };
 
 class ConfigManager

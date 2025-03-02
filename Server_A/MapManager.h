@@ -2,10 +2,10 @@
 
 struct Pos
 {
-     Pos(int32 y, int32 x) { Y = y; X = x; };
-     Pos() : Y(0), X(0) {};
-     int32 Y;
-     int32 X;
+    Pos(int32 y, int32 x) { Y = y; X = x; };
+    Pos() : Y(0), X(0) {};
+    int32 Y;
+    int32 X;
 };
 
 struct PQNode {
@@ -22,56 +22,56 @@ struct PQNode {
 class Vector2Int
 {
 public:
-     int32 posx;
-     int32 posy;
+    int32 posx;
+    int32 posy;
 
 public:
-   Vector2Int() : posx(0), posy(0) {}
-   Vector2Int(int32 x, int32 y) { posx = x; posy = y; }
-   ~Vector2Int() {}
+    Vector2Int() : posx(0), posy(0) {}
+    Vector2Int(int32 x, int32 y) { posx = x; posy = y; }
+    ~Vector2Int() {}
 
-   static Vector2Int up() { return Vector2Int(0, 1); }
-   static Vector2Int down() { return Vector2Int(0, -1); }
-   static Vector2Int left() { return Vector2Int(-1, 0); }
-   static Vector2Int right() { return Vector2Int(+1,0); }
+    static Vector2Int up() { return Vector2Int(0, 1); }
+    static Vector2Int down() { return Vector2Int(0, -1); }
+    static Vector2Int left() { return Vector2Int(-1, 0); }
+    static Vector2Int right() { return Vector2Int(+1, 0); }
 
-   Vector2Int operator+(const Vector2Int& other) const {
-       return Vector2Int(posx + other.posx, posy + other.posy);
-   }
-   Vector2Int operator-(const Vector2Int& other) const {
-       return Vector2Int(posx - other.posx, posy - other.posy);
-   }
-   Vector2Int& operator+=(const Vector2Int& other) {
-       posx += other.posx;
-       posy += other.posy;
-       return *this;
-   }
+    Vector2Int operator+(const Vector2Int& other) const {
+        return Vector2Int(posx + other.posx, posy + other.posy);
+    }
+    Vector2Int operator-(const Vector2Int& other) const {
+        return Vector2Int(posx - other.posx, posy - other.posy);
+    }
+    Vector2Int& operator+=(const Vector2Int& other) {
+        posx += other.posx;
+        posy += other.posy;
+        return *this;
+    }
 
-   float Magnitude() const { return std::sqrt(sqrMagnitude());}
-   int sqrMagnitude() const { return posx * posx + posy * posy; }
-   int cellDistFromZero() const { return std::abs(posx) + std::abs(posy);}
+    float Magnitude() const { return std::sqrt(sqrMagnitude()); }
+    int sqrMagnitude() const { return posx * posx + posy * posy; }
+    int cellDistFromZero() const { return std::abs(posx) + std::abs(posy); }
 };
 
 class MapManager
 {
 public:
 
-    MapManager() { LoadMap(1);};
+    MapManager() { LoadMap(1); };
     ~MapManager() {};
 
     int32 GetMinX() { return _MinX; }
     void SetMinX(int32 x) { _MinX = x; }
 
     int32 GetMaxX() { return _MaxX; }
-    void SetMaxX(int32 x)  { _MaxX = x; }
+    void SetMaxX(int32 x) { _MaxX = x; }
 
 
     int32 GetMinY() { return _MinY; }
-    void SetMinY(int32 y)  { _MinY = y; }
+    void SetMinY(int32 y) { _MinY = y; }
 
 
     int32 GetMaxY() { return _MaxY; }
-    void SetMaxY(int32 y)  { _MaxY = y; }
+    void SetMaxY(int32 y) { _MaxY = y; }
 
     int32 GetSizeX() { return _sizeX; }
     int32 GetSizeY() { return _sizeY; }
@@ -84,19 +84,17 @@ public:
     bool ApplyMove(const GameObjectRef& gameobject, Vector2Int dest);
     bool ApplyLeave(const GameObjectRef& gameObject);
 
-    void PrintObjectsState() const;
-
     Vector<Vector<GameObjectRef>>& GetObjects() { return _objects; };
     Vector<Vector2Int> FindPath(Vector2Int startCellPos, Vector2Int destCellPos, bool checkObjects);
 
-    
+
 private:
     int32  _MinX;
     int32  _MaxX;
     int32  _MinY;
     int32  _MaxY;
-    int32  _sizeX=0;
-    int32  _sizeY=0;
+    int32  _sizeX = 0;
+    int32  _sizeY = 0;
 
     Vector<Vector<bool>> _collision;
     Vector<Vector<GameObjectRef>> _objects;

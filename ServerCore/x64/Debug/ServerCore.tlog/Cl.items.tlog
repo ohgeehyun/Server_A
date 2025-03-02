@@ -2,9 +2,18 @@ C:\Users\OG\source\repos\Server_A\ServerCore\Allocator.cpp;C:\Users\OG\source\re
 C:\Users\OG\source\repos\Server_A\ServerCore\CoreGlobal.cpp;C:\Users\OG\source\repos\Server_A\ServerCore\x64\Debug\CoreGlobal.obj
 C:\Users\OG\source\repos\Server_A\ServerCore\CorePch.cpp;C:\Users\OG\source\repos\Server_A\ServerCore\x64\Debug\CorePch.obj
 C:\Users\OG\source\repos\Server_A\ServerCore\CoreTLS.cpp;C:\Users\OG\source\repos\Server_A\ServerCore\x64\Debug\CoreTLS.obj
+C:\Users\OG\source\repos\Server_A\ServerCore\DBBind.cpp;C:\Users\OG\source\repos\Server_A\ServerCore\x64\Debug\DBBind.obj
+C:\Users\OG\source\repos\Server_A\ServerCore\DBConnection.cpp;C:\Users\OG\source\repos\Server_A\ServerCore\x64\Debug\DBConnection.obj
+C:\Users\OG\source\repos\Server_A\ServerCore\DBConnectionPool.cpp;C:\Users\OG\source\repos\Server_A\ServerCore\x64\Debug\DBConnectionPool.obj
 C:\Users\OG\source\repos\Server_A\ServerCore\DeadLockProfiler.cpp;C:\Users\OG\source\repos\Server_A\ServerCore\x64\Debug\DeadLockProfiler.obj
+C:\Users\OG\source\repos\Server_A\ServerCore\FileUtils.cpp;C:\Users\OG\source\repos\Server_A\ServerCore\x64\Debug\FileUtils.obj
+C:\Users\OG\source\repos\Server_A\ServerCore\GlobalQueue.cpp;C:\Users\OG\source\repos\Server_A\ServerCore\x64\Debug\GlobalQueue.obj
 C:\Users\OG\source\repos\Server_A\ServerCore\IocpCore.cpp;C:\Users\OG\source\repos\Server_A\ServerCore\x64\Debug\IocpCore.obj
 C:\Users\OG\source\repos\Server_A\ServerCore\IocpEvent.cpp;C:\Users\OG\source\repos\Server_A\ServerCore\x64\Debug\IocpEvent.obj
+C:\Users\OG\source\repos\Server_A\ServerCore\Job.cpp;C:\Users\OG\source\repos\Server_A\ServerCore\x64\Debug\Job.obj
+C:\Users\OG\source\repos\Server_A\ServerCore\JobTimer.cpp;C:\Users\OG\source\repos\Server_A\ServerCore\x64\Debug\JobTimer.obj
+C:\Users\OG\source\repos\Server_A\ServerCore\LockQueue.cpp;C:\Users\OG\source\repos\Server_A\ServerCore\x64\Debug\LockQueue.obj
+C:\Users\OG\source\repos\Server_A\ServerCore\JobQueue.cpp;C:\Users\OG\source\repos\Server_A\ServerCore\x64\Debug\JobQueue.obj
 C:\Users\OG\source\repos\Server_A\ServerCore\Listener.cpp;C:\Users\OG\source\repos\Server_A\ServerCore\x64\Debug\Listener.obj
 C:\Users\OG\source\repos\Server_A\ServerCore\Lock.cpp;C:\Users\OG\source\repos\Server_A\ServerCore\x64\Debug\Lock.obj
 C:\Users\OG\source\repos\Server_A\ServerCore\Memory.cpp;C:\Users\OG\source\repos\Server_A\ServerCore\x64\Debug\Memory.obj
@@ -17,3 +26,4 @@ C:\Users\OG\source\repos\Server_A\ServerCore\Service.cpp;C:\Users\OG\source\repo
 C:\Users\OG\source\repos\Server_A\ServerCore\Session.cpp;C:\Users\OG\source\repos\Server_A\ServerCore\x64\Debug\Session.obj
 C:\Users\OG\source\repos\Server_A\ServerCore\SocketUtils.cpp;C:\Users\OG\source\repos\Server_A\ServerCore\x64\Debug\SocketUtils.obj
 C:\Users\OG\source\repos\Server_A\ServerCore\ThreadManager.cpp;C:\Users\OG\source\repos\Server_A\ServerCore\x64\Debug\ThreadManager.obj
+C:\Users\OG\source\repos\Server_A\ServerCore\XmlParser.cpp;C:\Users\OG\source\repos\Server_A\ServerCore\x64\Debug\XmlParser.obj

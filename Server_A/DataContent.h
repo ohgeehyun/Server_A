@@ -48,10 +48,6 @@ public:
 ------------------------------*/
 class Skill
 {
-
-public:
-
-
 public:
     int32 id;
     string name;
@@ -86,4 +82,33 @@ public:
 public:
     List<Skill> skills;
 
+};
+
+/*----------------------------------------------
+                ServerConfigData
+------------------------------------------------*/
+struct MysqlData
+{
+    std::string host;
+    std::string port;
+    std::string user;
+    std::string pwd;
+    std::string dbname;
+};
+struct RedisData
+{
+    std::string host;
+    int port;
+    std::string auth;
+};
+
+class ServerConfigData : public ILoader<string, ServerConfigData >
+{
+public:
+    MysqlData mysqlData;
+    RedisData redisData;
+    
+    void Deserialize(const nlohmann::json& j);
+
+    HashMap<string, ServerConfigData> MakeDict() override;
 };

@@ -302,10 +302,10 @@ int32 PacketSession::OnRecv(BYTE* buffer, int32 len)
     {
         uint16 dataSize = len - processLen;
         //최소한 헤더는 파싱 
-        if (dataSize < sizeof(PacketHeader))
+        if (dataSize < sizeof(RecvPacketHeader))
             break;
 
-        PacketHeader header = *(reinterpret_cast<PacketHeader*>(&buffer[processLen]));
+        RecvPacketHeader header = *(reinterpret_cast<RecvPacketHeader*>(&buffer[processLen]));
 
         if (dataSize < header.size)
             break;

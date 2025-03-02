@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 package Protocol;
-import "google/protobuf/timestamp.proto";
+//import "google/protobuf/timestamp.proto";
 
 
 enum MsgId {
@@ -14,8 +14,16 @@ enum MsgId {
   S_Move = 1006;
   C_Skill = 1007;
   S_Skill = 1008;
-  S_Cangehp = 1009;
+  S_Changehp = 1009;
   S_Die = 1010;
+  S_Verify = 1011;
+  C_Verify = 1012;
+  C_Create_Room = 1013;
+  C_Room_List = 1014;
+  S_Create_Room = 1015;
+  C_Enter_Game = 1016;
+  S_Message = 1017;
+  C_Message = 1018;
 }
 
  enum CreatureState
@@ -39,6 +47,7 @@ enum MsgId {
      PLAYER = 1;
      MONSTER = 2;
      PROJECTTILE = 3;
+     MAGIC = 4;
  }
 
  enum SkillType
@@ -46,12 +55,37 @@ enum MsgId {
      SKILL_NONE = 0;
      SKILL_AUTO = 1;
      SKILL_PROJECTILE= 2;
+     SKILL_MAGIC = 3;
  }
 
+message C_ENTER_GAME
+ {
+   int32 rommId = 1;
+   string roomname = 2;
+ }
 
-message S_ENTER_GAME 
+message S_ENTER_GAME
 {
-  OBJECT_INFO player =1;
+  OBJECT_INFO player = 1;
+  int32 roomId = 2;
+  string roomname = 3;
+}
+
+message C_CREATE_ROOM
+{
+    string roomname = 1;
+    string roompwd = 2;
+}
+
+message S_CREATE_ROOM
+{
+    bool   result =1;
+    int32 roomId =2;
+}
+
+message C_ROOM_LIST
+{
+    string roomname = 1;
 }
 
 message S_LEAVE_GAME
@@ -103,6 +137,29 @@ message S_DIE {
     int32 attackerId= 2;
 }
 
+message S_VERIFY
+{
+     bool result = 1;
+}
+message C_VERIFY
+{
+     string jwt = 1;
+}
+
+message C_MESSAGE
+{
+    int32 rommId = 1;
+    string nickname = 2;
+    string message = 3;
+}
+
+message S_MESSAGE
+{
+    int32 rommId = 1;
+    string nickname = 2;
+    string message = 3;
+}
+
 message OBJECT_INFO 
 {
     int32 objectId = 1; //플레이어 식별자
@@ -113,12 +170,13 @@ message OBJECT_INFO
 
 message POSITIONINFO
 {
-    CreatureState state = 1;
-    MoveDir moveDir = 2;
-    int32 posX = 3;
-    int32 posY = 4;
+   optional CreatureState state = 1;
+   optional MoveDir moveDir = 2;
+   optional int32 posX = 3;
+   optional int32 posY = 4;
 }
-message STATINFO{
+message STATINFO
+{
     int32 level = 1;
     int32 hp = 2;
     int32 maxHp = 3;

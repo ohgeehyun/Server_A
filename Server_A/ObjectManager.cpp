@@ -9,7 +9,7 @@ bool ObjectManager::Remove(int32 objectId)
     Protocol::GameObjectType objectType = GetObjectTypeById(objectId);
     WRITE_LOCK
     {
-        if(objectType == Protocol::PLAYER)
+        if (objectType == Protocol::PLAYER)
          return _objects.erase(objectId);
     }
     return false;
@@ -38,9 +38,9 @@ GameObjectRef ObjectManager::Find(int32 objectId)
 
 int32 ObjectManager::GenerateId(Protocol::GameObjectType type)
 {
-       //counter의 경우 하위24비트만 사용
-       return ((int32)type << 24) | (_counter++);
-    
+    //counter의 경우 하위24비트만 사용
+    return ((int32)type << 24) | (_counter++);
+
 }
 
 Protocol::GameObjectType ObjectManager::GetObjectTypeById(int32 id)
