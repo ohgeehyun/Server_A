@@ -3,6 +3,8 @@
 #include "Room.h"
 #include "ClientPacketHandler.h"
 #include "RoomManager.h"
+#include "RedisConnection.h"
+
 
 GameObject::GameObject()
 {
@@ -48,10 +50,11 @@ Protocol::MoveDir GameObject::GetDirFromVec(Vector2Int dir)
         return Protocol::MoveDir::DOWN;
 }
 
-void GameObject::OnDameged(GameObjectRef attacker, int damege)
+void GameObject::OnDameged(GameObjectRef attacker, int32 damege)
 {
     if (GetRoom() == nullptr)
         return;
+
     int32 objectHp = GetHp();
     objectHp -= damege;
     SetHp(objectHp);
@@ -67,7 +70,7 @@ void GameObject::OnDameged(GameObjectRef attacker, int damege)
     changehpPacket.set_hp(GetHp());
     auto changehpPacketBuffer = ClientPacketHandler::MakeSendBuffer(changehpPacket);
 
-     GetRoom()->DoAsync(&Room::Broadcast,changehpPacketBuffer);
+    GetRoom()->DoAsync(&Room::Broadcast,changehpPacketBuffer);
 }
 
 void GameObject::OnDead(GameObjectRef attacker)

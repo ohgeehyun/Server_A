@@ -38,8 +38,8 @@ void GameSession::OnConnected()
     cout << "클라이언트 소켓 연결 완료 " <<endl;
 
     InitPlayer();
-    RoomRef room = RoomManager::GetInstance().Find(1);
-    room->EnterGame(_myplayer);
+    //RoomRef room = RoomManager::GetInstance().Find(1);
+    //room->EnterGame(_myplayer);
 
 }
 
@@ -47,7 +47,7 @@ void GameSession::OnDisConnected()
 {
 
     RoomRef room = RoomManager::GetInstance().Find(1);
-    room->DoAsync(&Room::LeaveGame,_myplayer->GetObjectId());
+    int32 objectid = _myplayer->GetObjectId();
 
     redisAsyncCommand(GRedisConnection->GetContext(), [](redisAsyncContext* context, void* reply, void* privdata)
     {
@@ -56,6 +56,9 @@ void GameSession::OnDisConnected()
     }, nullptr, "HDEL active_user %s", _userid.c_str());
 
     _myplayer = nullptr;
+
+    if (room != nullptr)
+        room->DoAsync(&Room::LeaveGame, objectid);
 }
 
 void GameSession::OnRecvPacket(BYTE* buffer, int32 len)
@@ -63,6 +66,6 @@ void GameSession::OnRecvPacket(BYTE* buffer, int32 len)
     PacketSessionRef session = GetPacketSessionRef();
     RecvPacketHeader* header = reinterpret_cast<RecvPacketHeader*>(buffer);
 
-    //TODO : 만약 jwt토큰 검증이 패킷을조립전에 해야한다면 여기서 할 것 
+
     ClientPacketHandler::HandlePacket(session, buffer, len);
 }

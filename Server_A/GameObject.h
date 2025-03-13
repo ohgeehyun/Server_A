@@ -63,7 +63,7 @@ public:
 
 public:
 
-    virtual void OnDameged(GameObjectRef attacker, int damege);
+    virtual void OnDameged(GameObjectRef attacker, int32 damege);
     virtual void OnDead(GameObjectRef attacker);
     virtual void Update();
   

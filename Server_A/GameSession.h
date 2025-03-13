@@ -14,6 +14,12 @@ public:
 
     void SetUserId(const string userid) { _userid = userid; }
     void SetNickName(const string nickname) { _nickname = nickname; }
+    
+    void SetJwtToken(const string token) { _jwtToken = token; }
+    string GetJwtToken() { return _jwtToken; }
+
+    void SetIsJwtVerify(bool verify) { _isJwtVerify = verify; }
+    bool GetIsJwtVerify() { return _isJwtVerify; }
 
     string GetUserId() { return _userid; }
     string GetNickName() { return _nickname; }
@@ -21,4 +27,6 @@ private:
     PlayerRef _myplayer;
     string _userid;
     string _nickname;
+    string _jwtToken;
+    bool _isJwtVerify = false;
 };

@@ -24,6 +24,8 @@ enum MsgId {
   C_Enter_Game = 1016;
   S_Message = 1017;
   C_Message = 1018;
+  C_Leave_Game = 1019;
+  S_Exit_Game = 1020;
 }
 
  enum CreatureState
@@ -64,6 +66,7 @@ message C_ENTER_GAME
    string roomname = 2;
  }
 
+
 message S_ENTER_GAME
 {
   OBJECT_INFO player = 1;
@@ -91,6 +94,16 @@ message C_ROOM_LIST
 message S_LEAVE_GAME
 {
    bool exit = 1;
+}
+
+message C_LEAVE_GAME
+{
+    bool exitflag = 1;
+}
+
+message S_EXIT_GAME
+{
+    bool exitflag = 1;
 }
 
 message S_SPAWN
@@ -140,10 +153,14 @@ message S_DIE {
 message S_VERIFY
 {
      bool result = 1;
+     string userid =2;
+     string nickname =3;
 }
 message C_VERIFY
 {
      string jwt = 1;
+     string userid =2;
+     string nickname =3;
 }
 
 message C_MESSAGE

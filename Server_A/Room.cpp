@@ -13,19 +13,81 @@
 #include "MagicSkill.h"
 #include "RoomManager.h"
 #include "RedisConnection.h"
+#include <httplib/httplib.h> 
 
-Room::Room()
+Room::Room() 
 {
     
 }
 
 Room::~Room()
 {
+    redisAsyncCommand(GRedisConnection->GetContext(), [](redisAsyncContext* context, void* reply, void* privdata)
+    {
+        if (reply != nullptr)
+            RedisUtils::replyResponseHandler(reply, "Redis delete room : ");
+
+    }, nullptr, "DEL room:%d", _roomId);
 }
 
 void Room::Init(int32 mapId)
 {
     _map.LoadMap(mapId);
+}
+
+void Room::RoomBreak(PlayerRef player)
+{
+    Protocol::S_EXIT_GAME packet;
+    packet.set_exitflag(true);
+    auto exitPacketBuffer = ClientPacketHandler::MakeSendBuffer(packet);
+    BroadcastExcept(exitPacketBuffer, player);
+
+    HashMap<string, ServerConfigData> dict = DataManager::GetInstance().GetServerConfigDict();
+
+    std::string host = "http://" + dict["database"].nodeData.host + ":" + dict["database"].nodeData.port;
+
+    httplib::Client cli(host);
+    httplib::Params params;
+
+    params.emplace("roomId", std::to_string(_roomId));
+
+    if (auto res = cli.Post("/chat/savaChat", params))
+    {
+        if (res->status == 200)
+            std::cout << _roomId << " 번 방 채팅 로그 저장 호출 완료" << "\n";
+        else
+            std::cout <<"error : HTTP Status" << _roomId << " 번 방 채팅 로그 저장 호출 중 문제 발생" << "\n";
+    }
+    else
+    {
+        std::cout << "http Request failed:" << "\n";
+    }
+
+
+    for (auto& player : _players)
+    {
+        player.second->SetRoom(nullptr);
+    }
+    _players.clear();
+
+    for (auto& monster : _monsters)
+    {
+        monster.second->SetRoom(nullptr);
+    }
+
+    _monsters.clear();
+
+    for (auto& projectTile : _projectTiles)
+    {
+        projectTile.second->SetRoom(nullptr);
+    }
+    _projectTiles.clear();
+
+    _map.GetObjects().clear();
+
+    RoomManager::GetInstance().Remove(_roomId);
+
+    cout << "room is breaking shared_ptr_count" << shared_from_this().use_count() << endl;
 }
 
 void Room::Update()
@@ -103,6 +165,13 @@ void Room::EnterGame_Player(PlayerRef player)
         _map.ApplyMove(static_pointer_cast<GameObject>(player),Vector2Int(player->GetPosx(),player->GetPosy()));
         EnterGameEventSend_Player(player);
     });
+
+    redisAsyncCommand(GRedisConnection->GetContext(), [](redisAsyncContext* context, void* reply, void* privdata)
+    {
+        if (reply != nullptr)
+            RedisUtils::replyResponseHandler(reply, "nickname Score Add : ");
+
+    }, nullptr, "HSET room_score:%d:%s nickname %s", GetRoomId(), player->GetSession()->GetUserId().c_str(),player->GetSession()->GetNickName().c_str());
 }
 
 void Room::EnterGame_Monster(MonsterRef monster)
@@ -181,13 +250,12 @@ void Room::EnterGameEventSend_Player(PlayerRef player)
         }
     }
 
-    //현재는 방을 떠날때 Redis에서도 삭제 시켜주지만 나중에 방을나가는 기능 추가시 거기로 이동
     redisAsyncCommand(GRedisConnection->GetContext(), [](redisAsyncContext* context, void* reply, void* privdata)
     {
         if (reply != nullptr)
             RedisUtils::replyResponseHandler(reply, "Redis Room join user : ");
 
-    }, nullptr, "SADD room_user:%d %s",_roomId , player->GetSession()->GetUserId());
+    }, nullptr, "SADD room_user:%d %s",_roomId , player->GetSession()->GetUserId().c_str());
 }
 
 void Room::EnterGameEventSend_Monster(MonsterRef monster)
@@ -244,25 +312,21 @@ void Room::LeaveGame_Player(int32 objectId)
 
     if (it == _players.end())
         return;
+    int32 objectid = it->first;
+    PlayerRef player = it->second;
 
-    DoAsync([this,it]() {
-        _map.ApplyLeave(static_pointer_cast<GameObject>(it->second));
+    DoAsync([this, player, objectid]() {
+        _map.ApplyLeave(static_pointer_cast<GameObject>(player));
 
-        LeaveGameEventSend_Player(it->second, it->second->GetObjectId());
+        LeaveGameEventSend_Player(player, player->GetObjectId());
 
         //플레이어 와 Room 의존 끊기
-        it->second->SetRoom(nullptr);
+         player->SetRoom(nullptr);
 
+         if(_players.count(objectid) != 0)
         //플레이어 목록에서 삭제
-        _players.erase(it);
+        _players.erase(objectid);
     });
-
-    redisAsyncCommand(GRedisConnection->GetContext(), [](redisAsyncContext* context, void* reply, void* privdata)
-    {
-        if (reply != nullptr)
-            RedisUtils::replyResponseHandler(reply, "Redis Room Exit user : ");
-
-    }, nullptr, "SADD room_user:%d %s", _roomId, it->second->GetSession()->GetUserId());
 }
 
 void Room::LeaveGame_Monster(int32 objectId)
@@ -307,6 +371,30 @@ void Room::LeaveGame_ProjectTile(int32 objectId)
 
         projecttile->SetOwner(nullptr);
     });
+}
+
+void Room::ExitGameEventSend(PlayerRef player)
+{
+    //게임 방에서 완전히 나가기가 완료되었다고 클라이언트에게 패킷을 전송해주자
+    Protocol::S_EXIT_GAME packet;
+    packet.set_exitflag(true);
+    auto exitPacketBuffer = ClientPacketHandler::MakeSendBuffer(packet);
+    player->GetSession()->Send(exitPacketBuffer);
+
+    //해당방의 score 삭제 처리 1.nickname 2.kill 3.death 4.nickname Del로 그냥 모든 필드 밀어줌 필요시 HDell로 필요한 필드만 삭제
+    redisAsyncCommand(GRedisConnection->GetContext(), [](redisAsyncContext* context, void* reply, void* privdata)
+    {
+        if (reply != nullptr)
+            RedisUtils::replyResponseHandler(reply, "delete Score Add : ");
+
+    }, nullptr, "DEL room_score:%d:%s", GetRoomId(), player->GetSession()->GetUserId().c_str());
+
+    redisAsyncCommand(GRedisConnection->GetContext(), [](redisAsyncContext* context, void* reply, void* privdata)
+    {
+        if (reply != nullptr)
+            RedisUtils::replyResponseHandler(reply, "Redis Room Exit user : ");
+
+    }, nullptr, "SREM room_user:%d %s", _roomId, player->GetSession()->GetUserId().c_str());
 }
 
 void Room::Broadcast(SendBufferRef sendBuffer)
@@ -364,6 +452,10 @@ void Room::LeaveGameEventSend_Player(PlayerRef player,int32 objectid)
         if (objectid != pair.second->GetObjectId())
             pair.second->GetSession()->Send(despawnPacketBuffer);
     }
+
+    //room을 만든 user가 방에서 나감
+    if (player->GetSession()->GetNickName() == GetRootUser())
+         RoomBreak(player);
 }
 
 void Room::LeaveGameEventSend_Monster(MonsterRef monster, int32 objectid)

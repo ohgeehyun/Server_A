@@ -7,7 +7,9 @@
 #include "DataManager.h"
 #include "RedisConnection.h"
 #include "RedisUtils.h"
+#include "DataManager.h"
 #include <jwt-cpp/jwt.h>
+#include <httplib/httplib.h>
 
 
 PacketHandlerFunc GPacketHandler[UINT16_MAX];
@@ -21,13 +23,23 @@ bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len)
 
 bool Handle_C_ENTER_GAME(PacketSessionRef& session, Protocol::C_ENTER_GAME& pkt)
 {
-    //session 캐스팅
-    GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
-
-    //player를 초기화
-    gameSession->InitPlayer();
 
     RoomRef room = RoomManager::GetInstance().Find(pkt.rommid());
+
+    if (room->GetPlayerCount() >= MAX_USER_COUNT)
+    {
+        //방 정원 초과 S_ENTER_GAME 패킷발송 방ID_0은 room입장실패
+        Protocol::S_ENTER_GAME packet;
+        packet.set_roomid (0);
+        auto PacketBuffer = ClientPacketHandler::MakeSendBuffer(packet);
+        session->Send(PacketBuffer);
+    }
+
+    //session 캐스팅
+    GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
+    //player를 초기화
+    gameSession->InitPlayer();
+     
     cout << "플레이어 입장" << endl;
     //방 입장 gameSession->GetPlayer()가 참조값을 반환
     room->EnterGame(std::static_pointer_cast<GameObject>(gameSession->GetPlayer()));
@@ -62,6 +74,25 @@ bool Handle_C_CREATE_ROOM(PacketSessionRef& session, Protocol::C_CREATE_ROOM& pk
 
 bool Handle_C_ROOM_LIST(PacketSessionRef& session, Protocol::C_ROOM_LIST& pkt)
 {
+    return false;
+}
+
+bool Handle_C_LEAVE_GAME(PacketSessionRef& session, Protocol::C_LEAVE_GAME& pkt)
+{
+    GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
+
+    if (pkt.exitflag() != true)
+        return false;
+
+    if (gameSession->GetPlayer() == nullptr || gameSession->GetPlayer()->GetRoom() == nullptr)
+        return false;
+
+    RoomRef room = gameSession->GetPlayer()->GetRoom();
+
+    room->DoAsync(&Room::LeaveGame,gameSession->GetPlayer()->GetObjectId());
+
+    room->DoAsync(&Room::ExitGameEventSend,gameSession->GetPlayer());
+
     return false;
 }
 
@@ -113,28 +144,27 @@ bool Handle_C_VERIFY(PacketSessionRef& session, Protocol::C_VERIFY& pkt)
        string nickname = payload["nickname"];      
 
        // PacketSessionRef를 GameSession으로 캐스팅
-       GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
+       GameSessionRef gameSession = dynamic_pointer_cast<GameSession>(session);
        gameSession->SetUserId(payload["user_id"]);
        gameSession->SetNickName(payload["nickname"]);
+       gameSession->SetJwtToken(pkt.jwt());
+       gameSession->SetIsJwtVerify(jwt.GetVerifyStat());
        gameSession = nullptr;
 
-       std::weak_ptr<PacketSession> weakSession = session;
 
        redisAsyncCommand(GRedisConnection->GetContext(), [](redisAsyncContext* context, void* reply, void* privdata)
        {
            if (reply != nullptr)
                RedisUtils::replyResponseHandler(reply, "Redis active_user add : ");
-           
-           auto weakSession = static_cast<std::weak_ptr<PacketSession>*>(privdata);
-          
-           if (auto session = weakSession->lock()) // 유효한 shared_ptr 복원
-           {
-               Protocol::S_VERIFY packet;
-               packet.set_result(true);
-               auto PacketBuffer = ClientPacketHandler::MakeSendBuffer(packet);
-               session->Send(PacketBuffer);
-           }
-       }, &weakSession, "HSET active_user %s %s", user_id.c_str(), nickname.c_str());
+
+       }, nullptr, "HSET active_user %s %s", user_id.c_str(), nickname.c_str());
+
+       Protocol::S_VERIFY packet;
+       packet.set_result(true);
+       packet.set_userid(user_id);
+       packet.set_nickname(nickname);
+       auto PacketBuffer = ClientPacketHandler::MakeSendBuffer(packet);
+       session->Send(PacketBuffer);
     }
 
     return true;
@@ -163,6 +193,23 @@ bool Handle_C_MESSAGE(PacketSessionRef& session, Protocol::C_MESSAGE& pkt)
     auto messageBuffer = ClientPacketHandler::MakeSendBuffer(message);
 
     room->DoAsync(std::bind(& Room::BroadcastExcept,room,messageBuffer, player));
+
+    auto now = std::chrono::system_clock::now();
+    std::time_t time_now = std::chrono::system_clock::to_time_t(now);
+    std::tm tm_now;
+    localtime_s(&tm_now,&time_now);
+
+    std::ostringstream oss;
+    oss << std::put_time(&tm_now, "%Y-%m-%d %H:%M:%S");
+    std::string timestamp = oss.str();  // 시간 포맷팅
+
+    redisAsyncCommand(GRedisConnection->GetContext(), [](redisAsyncContext* context, void* reply, void* privdata)
+    {
+        if (reply != nullptr)
+            RedisUtils::replyResponseHandler(reply, "Redis Chat log : ");
+
+    }, nullptr, "XADD room_chat:%d * user_id %s nickname %s message %s timestamp %s", pkt.rommid(),gameSession->GetUserId().c_str(), pkt.nickname().c_str(), pkt.message().c_str(), timestamp.c_str());
+
     return false;
 }
 

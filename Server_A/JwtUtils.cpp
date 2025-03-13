@@ -39,7 +39,7 @@ bool JwtUtils::JwtVerify(string token, const char* log)
     }
 }
 
-bool JwtUtils::JwtVerify(string& token, const char* log)
+bool JwtUtils::GJwtVerify(const string& token, const char* log)
 {
     try 
     {
@@ -52,6 +52,15 @@ bool JwtUtils::JwtVerify(string& token, const char* log)
     }
     catch(const jwt::error::signature_verification_exception& e)
     {
+        std::error_code ec = e.code();
+
+        if (ec == jwt::error::token_verification_error::token_expired) {
+            //토큰 시간 만료 시간으로 인해 새로운 jwt 토큰 발급 후 요청 패킷 전송
+            cout << log << " 토큰 시간 만료" << endl;
+            return false;
+        }
+
+        //일반 검증 실패 에러 
         cout << log <<e.what() << endl;
         return false;
     }

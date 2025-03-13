@@ -11,7 +11,7 @@ public:
     nlohmann::json GetPayload_Json() { return payload_json; }
 
     //토큰 검증만을 위한 함수 
-    static bool JwtVerify(string& token, const char* log);
+    static bool GJwtVerify(const string& token, const char* log);
 
 
 private:

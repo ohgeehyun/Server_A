@@ -27,7 +27,7 @@ void MagicSkill::Update()
         if (GetObjectId() != object->GetObjectId())
         {
             GetRoom()->DoAsync([this, object]() {
-                object->OnDameged(shared_from_this(), GetSkillData().damege + GetOwner()->GetObjectStat().attack());
+                object->OnDameged(GetOwner(), GetSkillData().damege + GetOwner()->GetObjectStat().attack());
             });
         }
         //소멸

@@ -15,6 +15,7 @@ RoomRef RoomManager::Add(int32 mapId, string name, string pwd, string rootUser)
        gameRoom->SetRoomId(_roomid);
        gameRoom->SetRoomName(name);
        gameRoom->SetRoomPwd(pwd);
+       gameRoom->SetRootUser(rootUser);
        _rooms[_roomid] = gameRoom;
 
        bool pwdYn = false;
@@ -71,7 +72,7 @@ void RoomManager::Add(int32 mapId, string name, string pwd, int32 Roomid, string
 bool RoomManager::Remove(int32 roomId)
 {
   
-         return _rooms.erase(roomId);
+    return _rooms.erase(roomId);
     
 }
 

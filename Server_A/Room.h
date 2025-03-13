@@ -3,6 +3,10 @@
 #include "MapManager.h"
 #include "JobQueue.h"
 
+enum : int32 {
+    MAX_USER_COUNT = 4,
+};
+
 class Room : public JobQueue
 {
 public:
@@ -24,6 +28,8 @@ public:
     void LeaveGame_Monster(int32 objectId);
     void LeaveGame_ProjectTile(int32 objectId);
 
+    void ExitGameEventSend(PlayerRef player);
+
     void Broadcast(SendBufferRef sendBuffer);
     void BroadcastExcept(SendBufferRef sendBuffer,PlayerRef player);
     void SpawnMonster(int32 y,int32 x);
@@ -38,6 +44,8 @@ public:
     void HandleSkill(PlayerRef& player, Protocol::C_SKILL& pkt);
     void Init(int32 mapId);
 
+    void RoomBreak(PlayerRef player);
+
     MapManager& GetMap() { return _map; }
 
     int32 GetRoomId() { return _roomId; }
@@ -48,17 +56,15 @@ public:
     void SetRoomPwd(string pwd) { _roompwd = pwd; }
     string GetRootUser() { return _rootUser; }
     void SetRootUser(string rootUser) { _rootUser = rootUser; }
+    int32 GetPlayerCount() { return (int32)_players.size(); }
 
-    HashMap<int32, MonsterRef> GetMonsters() { return _monsters; }
-    
-    
+    HashMap<int32, MonsterRef> GetMonsters() { return _monsters; }    
 
     RoomRef GetSharedRoomPtr() { return static_pointer_cast<Room>(shared_from_this()); }
 
     void Update();
 
-
-    //FindPlayer는 Room이아닌 외부에서 FindPlayer를 사용하면 멀티스레드환경에서 안전하지않음.
+    //FindPlayer는 Room이아닌 외부에서 사용시 lock 을 고려해서 사용
     PlayerRef FindPlayer(std::function<bool(const GameObjectRef&)>condition);
   
 
@@ -66,6 +72,7 @@ private:
 
     bool tempSpawnHandle = false;
     int32 _roomId;
+  
     MapManager _map;
     string _roomName;
     string _roompwd;

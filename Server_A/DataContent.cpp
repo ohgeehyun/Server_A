@@ -70,6 +70,9 @@ void ServerConfigData::Deserialize(const nlohmann::json& j)
     redisData.host = j["Redis"]["host"].get<std::string>();
     redisData.port = j["Redis"]["port"].get<int>();
     redisData.auth = j["Redis"]["auth"].get<std::string>();
+
+    nodeData.host =j["NodeServer"]["host"].get<std::string>();
+    nodeData.port =j["NodeServer"]["port"].get<std::string>();
 }
 
 HashMap<string, ServerConfigData> ServerConfigData::MakeDict()

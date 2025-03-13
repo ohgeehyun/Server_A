@@ -101,12 +101,18 @@ struct RedisData
     int port;
     std::string auth;
 };
+struct NodeServer
+{
+    std::string host;
+    std::string port;
+};
 
 class ServerConfigData : public ILoader<string, ServerConfigData >
 {
 public:
     MysqlData mysqlData;
     RedisData redisData;
+    NodeServer nodeData;
     
     void Deserialize(const nlohmann::json& j);
 

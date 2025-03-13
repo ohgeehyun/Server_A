@@ -62,7 +62,7 @@ void Arrow::Update()
         if (target != nullptr)
         {
             GetRoom()->DoAsync([this,target]() {
-                target->OnDameged(shared_from_this(), GetSkillData().damege + GetOwner()->GetObjectStat().attack());
+                target->OnDameged(GetOwner(), GetSkillData().damege + GetOwner()->GetObjectStat().attack());
             });
         }
 

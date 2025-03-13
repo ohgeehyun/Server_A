@@ -7,6 +7,8 @@
 #include "ClientPacketHandler.h"
 #include "DataContent.h"
 #include "DataManager.h"
+#include "RedisConnection.h"
+#include "GameSession.h"
 
 
 Monster::Monster()
@@ -57,8 +59,20 @@ void Monster::BroadCastMove()
 
 void Monster::OnDead(GameObjectRef attacker)
 {
+    //캐릭터가 죽고 방에서 leave enter를 비동기적으로 처리 방식이라 객체와 room이 끊길수있어서 미리 변수로만들어서 사용
+    RoomRef room = GetRoom();
+    PlayerRef player = dynamic_pointer_cast<Player>(attacker);
+
     GameObject::OnDead(attacker);
+
     _target = nullptr;
+
+    redisAsyncCommand(GRedisConnection->GetContext(), [](redisAsyncContext* context, void* reply, void* privdata)
+    {
+        if (reply != nullptr)
+            RedisUtils::replyResponseHandler(reply, "kill Score Add : ");
+
+    }, nullptr, "HINCRBY room_score:%d:%s kill 1",room->GetRoomId(), player->GetSession()->GetUserId().c_str());
 }
 
 void Monster::UpdateIdle()
