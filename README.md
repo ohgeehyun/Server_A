@@ -43,6 +43,9 @@ IOCP 기반 소켓 통신을 위한 뼈대 라이브러리 구현 폴더입니�
 ### `Server_A`
 클라이언트와 통신하는 **GameServer** 프로젝트 폴더입니다.
 
+### `NodeServer_A`
+node.js express 웹 서버 프레임워크를 사용한 HTTP 서버 입니다. node.js서버에서는 Jwt토큰 발급  및 DB 조회 생성 조회 삭제 등 을 중점으로 처리하기 위해 만든 서브적인 서버 입니다.
+
 ---
 
 ## 🛠️ ServerCore 주요 구성 요소
