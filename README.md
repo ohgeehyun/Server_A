@@ -64,8 +64,7 @@ IOCP 기반 소켓 통신을 위한 뼈대 라이브러리 구현 폴더입니�
 
 ### **3. Thread**
 스레드 및 동기화 관련 기능:
-- **`Lock`**: `Atomic` 타입 기반 커스텀 Lock (`WriteLock`, `ReadLock`) 구현.
-  - 정책: `W->R` 허용, `R->W` 금지.
+- **`Lock`**: Atomic 타입 기반 커스텀 Lock (`WriteLock`, `ReadLock`) 구현.
 - **`ThreadManager`**: 전역 스레드 관리.
 - **`DeadLockProfiler`**:
   - **스레드 로컬 저장소**의 `LLockStack` 사용.
@@ -92,7 +91,7 @@ IOCP 기반 네트워크 통신:
 - **`JobTimer`**: jobQueue에서 시간 type을 하나 더 받아 우선순위 큐로 시간에 따른 우선순위로 job을 정리할 Queue
 - **`GlobalQueue`**: 전역으로 jobqueue를 관리하게 될 Queue
 ### **5. Utils**
-- **`LockQueue`**: 기본  c++ stl queue를 사용하여 push 및 pop 등 queue를 사용할떄 lock을 사용하여 thread safe 부분을 추가한 queue
+- **`LockQueue`**: 기본  c++ stl queue를 사용하여 push 및 pop 등 queue를 사용할떄 lock을 사용하여 thread safe 부분을 추가한 Queue
   
 ## 🛠️ GameServer 주요 구성 요소
 ### **1. Uthis**
@@ -172,5 +171,7 @@ IOCP 기반 네트워크 통신:
 - **네트워크 모델**: IOCP (I/O Completion Port)
 - **프로토콜 자동화**: Google Protocol Buffers
 - **클라이언트**: Unity
+- **DB**: mysql , Redis
+- **other server**: node.js(express)
 
 ---
