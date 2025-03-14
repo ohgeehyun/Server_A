@@ -85,7 +85,14 @@ IOCP 기반 네트워크 통신:
 - **`SendBuffer`**:
   - Chunk 방식의 전송 버퍼.
   - 각 스레드에서 스레드 로컬 저장소로 독립적chunk를 가지고있으며, 전역 **`SendBufferManager`**로 통합 관리.
- 
+### **5. Job**
+- **`Job`**: Job정의 파일 실행해야 할 함수및 함수실에 필요한 인자를 template으로 받아 job으로 패키징 
+- **`JobQueue`**: job을 담아둘 Queue Utils의 LockQueue베이스의 push 및 pop에 lock이 되어 한 스레드만 queue에 진입 하나의 스레드는 Queue안의 job을 처리하고 다른 스레드는 Queue에 push 해주는 형태
+- **`JobTimer`**: jobQueue에서 시간 type을 하나 더 받아 우선순위 큐로 시간에 따른 우선순위로 job을 정리할 Queue
+- **`GlobalQueue`**: 전역으로 jobqueue를 관리하게 될 Queue
+### **5. Utils**
+- **`LockQueue`**: 기본  c++ stl queue를 사용하여 push 및 pop 등 queue를 사용할떄 lock을 사용하여 thread safe 부분을 추가한 queue
+  
 ## 🛠️ GameServer 주요 구성 요소
 ### **1. Uthis**
 `Server_A`프로젝트에서 공통으로 사용할 기능 정의:
@@ -133,8 +140,24 @@ IOCP 기반 네트워크 통신:
   - **`GameSessionManager`**: GameSession을 관리할 매니저 클래스
   - **`ClientPacketHandler`**: 송수신 해야할 패킷을 처리하기 위한 기능을 정의한 클래스 PacketGenerator에 의해 Protobuf에 패킷 정의시 수정사항이있으면 빌드 시 파일 자동 수정
 ### **6.Protocol **
-
-  
+   - **`Protocol.proto`**: protobuf pakcet을 정의한 파일
+   - **`GenPackets.bat`**: 프로젝트 빌드 시 packetGenerator를 실행시키고 Protobuf관련 파일들을 최신화  시켜줄 batch파일 
+   - **`Protocol.pb`**: Protocol.proto 읽어서 생성된 protobuf 헤더와 cpp 파일
+### **7.Utils **
+  #### **7.1 JwtUtils  **
+  - **`JwtUtils`**: Json Web Token 유틸리티 관련 기능 정의 파일
+  #### **7.2 RedisUtils  **
+  - **`RedisUtils`**: Redis 유틸리티 관련 기능 정의 파일
+   #### **7.3 others  **
+  - **`JsonUtils`**: json관련 유틸리티 기능 정의 파일
+  - **`pch.h`**: GameServer 공통 헤더 및 using 정의 파일
+### **8.DB **
+   #### **8.1 Mysql **
+    - **`MysqlConnection`**: mysql 연결 소켓 클래스
+    - **`MysqlConnectionPool`** mysql 연결 소켓을 관리할 클래스
+   #### **8.2 Redis **  
+     - **`RedisConnection`**: RedisConnection 연결 소켓 클래스
+     - **`RedisConnectionPool`**: RedisConnection 연결 소켓을 관리할 클래스
 ---
 ## 🛠️ PacketGenerator 주요 구성 요소
 
