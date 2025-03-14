@@ -164,8 +164,8 @@ IOCP 기반 네트워크 통신:
     - **`MysqlConnection`**: mysql 연결 소켓 클래스
     - **`MysqlConnectionPool`** mysql 연결 소켓을 관리할 클래스
    #### **8.2 Redis **  
-     - **`RedisConnection`**: RedisConnection 연결 소켓 클래스
-     - **`RedisConnectionPool`**: RedisConnection 연결 소켓을 관리할 클래스
+    - **`RedisConnection`**: RedisConnection 연결 소켓 클래스
+    - **`RedisConnectionPool`**: RedisConnection 연결 소켓을 관리할 클래스
 ---
 ## 🛠️ PacketGenerator 주요 구성 요소
 
