@@ -126,6 +126,13 @@ IOCP 기반 네트워크 통신:
   - **`Room`**: 사용자 및 게임 오브젝트가 생성되어 활동하게 될 Room 클래스
   - **`RoomManager`**: 여러개의 Room을 관리하게 될 클래스
   - **`MapManager`**: 클라이언트 와 같이 사용하는 타일맵의 데이터를 저장하고 Map에서 일어나는 일 들을 구현하는 클래스
+  #### **5.3 other  **
+  그 외 파일
+  - **`Server.cpp`**: 프로그램 시작점 (main)
+  - **`GameSession`**: ServerCore에서 정의한 session 및 packetsession을 상속받아서 현재 서버에서 필요한 세션을 정의한 클래스
+  - **`GameSessionManager`**: GameSession을 관리할 매니저 클래스
+  - **`ClientPacketHandler`**: 송수신 해야할 패킷을 처리하기 위한 기능을 정의한 클래스 PacketGenerator에 의해 Protobuf에 패킷 정의시 수정사항이있으면 빌드 시 파일 자동 수정
+### **6.Protocol **
 
   
 ---
