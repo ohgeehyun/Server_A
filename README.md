@@ -119,6 +119,7 @@ IOCP 기반 네트워크 통신:
   - **`Player`**: GameObject를 상속받은 Player 클래스
   - **`Monster`**: GameObject를 상속받은 Monster 클래스
   - **`ProtjectTile`**: GameObject를 상속받은 ProjectTile(투사체) 클래스
+  - **`MagicSkill`**: ProjectTile를 MagicSkill 클래스
   - **`Arrow`**: ProjectTile를 상속받은 Arrow 클래스
   #### **5.2 Room  **
   사용자 및 게임 오브젝트가 생성되어 활동하게 될 Room 관련 클래스
