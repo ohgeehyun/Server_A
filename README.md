@@ -4,6 +4,14 @@
 패킷 자동화를 위해 **Google Protocol Buffers**와 **Python 3.9**를 사용하였습니다.
 DB의 경우 Mysql과 Redis 를 사용하였지만 iocp서버에서는 통신 중에 DB관련 네트워크 작업으로 인한 작업의 대기 , DB 응답 대기 부분 및 DB 데이터 처리를 최소화 하고자 nodejs 서버에게 DB 관련 일을 분배 하여 IOCP서버에서는 node.js에 request 하거나 서버가 맨 처음 실행시에만 DB관련 데이터를 읽어오는 방향으로 구현 하였습니다.
 
+각 서버들의 물리적인 위치는 
+A host ip server
+-IOCP , Node.js
+B host ip server(Aws ec2 사용)
+-Mysql , Redis , Nginx(proxy) 로 구성되어 있으며
+
+모든 통신은 Nginx를 거쳐 http통신의 경우 node.js 서버에 , TCP통신의 경우 IOCP로 서버에게 요청이 가도록 되어 있습니다.
+
 ---
 
 ## 📹 테스트 영상
@@ -167,11 +175,12 @@ IOCP 기반 네트워크 통신:
   - **`Templates`**: 템플릿 코드를 모아둔 dir PacketHandler.h 템플릿 위치
 ---
 ## 📝 개발 환경
+- **개발툴**:visual studio 2021 , visual studio code
 - **언어**: C++ 14, Python 3.9
 - **네트워크 모델**: IOCP (I/O Completion Port)
 - **프로토콜 자동화**: Google Protocol Buffers
 - **클라이언트**: Unity
-- **DB**: mysql , Redis
+- **DB(aws 서버)**: mysql , Redis
 - **other server**: node.js(express)
 
 ---
