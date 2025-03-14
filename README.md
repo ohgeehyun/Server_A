@@ -161,11 +161,11 @@ IOCP 기반 네트워크 통신:
   - **`pch.h`**: GameServer 공통 헤더 및 using 정의 파일
 ### **8.DB **
    #### **8.1 Mysql **
-    - **`MysqlConnection`**: mysql 연결 소켓 클래스
-    - **`MysqlConnectionPool`**: mysql 연결 소켓을 관리할 클래스
+  - **`MysqlConnection`**: mysql 연결 소켓 클래스
+  - **`MysqlConnectionPool`**: mysql 연결 소켓을 관리할 클래스
    #### **8.2 Redis **  
-    - **`RedisConnection`**: RedisConnection 연결 소켓 클래스
-    - **`RedisConnectionPool`**: RedisConnection 연결 소켓을 관리할 클래스
+  - **`RedisConnection`**: RedisConnection 연결 소켓 클래스
+  - **`RedisConnectionPool`**: RedisConnection 연결 소켓을 관리할 클래스
 ---
 ## 🛠️ PacketGenerator 주요 구성 요소
 
