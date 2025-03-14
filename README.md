@@ -2,6 +2,7 @@
 
 이 프로젝트는 **C++ IOCP 기반의 ServerCore**와 **Unity와 통신하는 GameServer**로 나뉘어져 있습니다.  
 패킷 자동화를 위해 **Google Protocol Buffers**와 **Python 3.9**를 사용하였습니다.
+DB의 경우 Mysql과 Redis 를 사용하였지만 iocp서버에서는 통신 중에 DB관련 네트워크 작업으로 인한 작업의 대기 , DB 응답 대기 부분 및 DB 데이터 처리를 최소화 하고자 nodejs 서버에게 DB 관련 일을 분배 하여 IOCP서버에서는 node.js에 request 하거나 서버가 맨 처음 실행시에만 DB관련 데이터를 읽어오는 방향으로 구현 하였습니다.
 
 ---
 
