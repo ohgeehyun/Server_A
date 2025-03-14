@@ -171,11 +171,30 @@ IOCP 기반 네트워크 통신:
   - **`RedisConnectionPool`**: RedisConnection 연결 소켓을 관리할 클래스
 ---
 ## 🛠️ PacketGenerator 주요 구성 요소
-
   ### **PacketGenerator**
   - **`PacketGenerator`**: 템플릿을 읽어 ProtoParser에 의해 파싱된 데이터를 사용하여 템플릿을 만들어주는 파일
   - **`ProtoParser`**: .proto파일을 읽어 파싱해 줄 파일
   - **`Templates`**: 템플릿 코드를 모아둔 dir PacketHandler.h 템플릿 위치
+---
+## 🛠️ NodeServer_A 주요 구성 요소
+  ### **Db**
+  - **`connection_pool.js`**: mysql 연결  객체 관리  
+  - **`User.js`**: mysql 사용자 정보 관련 기능 관리 
+  - **`Utils.js`**: mysql 관련 유틸리티 기능 관리 (ex.CURD)등
+ ### **jsonwebtoken**
+      - **`jwt.js`**: jwt 생성 , 검증, 인증 미들웨어 등 jwt 관련 기능 관리
+ ### **Redis** 
+  - **`connection_pool.js`**: Redis 연결 객체 관리
+  - **`room_chat.js`**: Redis의 채팅 관련 데이터 관리 
+  - **`Room.js`**:  Redis의 방 정보 관련 데이터 관리
+ ### **routes** 
+  - **`chat.js`**: chat 경로와 http method 지정 파일
+  - **`room.js`**: room 경로와 http method 지정 파일
+  - **`User.js`**: user 경로와 http method 지정 파일
+ ### **Utils** 
+  - **`InitEnv.js`**: .env에 jwt 에 사용할 secretkey 등 서버 실행시 초기화해야할 설정 파일  
+
+
 ---
 ## 📝 개발 환경
 - **개발툴**:visual studio 2021 , visual studio code
