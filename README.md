@@ -136,6 +136,7 @@ IOCP 기반 네트워크 통신:
   ### **PacketGenerator**
   - **`PacketGenerator`**: 템플릿을 읽어 ProtoParser에 의해 파싱된 데이터를 사용하여 템플릿을 만들어주는 파일
   - **`ProtoParser`**: .proto파일을 읽어 파싱해 줄 파일
+  - **`Templates`**: 템플릿 코드를 모아둔 dir PacketHandler.h 템플릿 위치
 ---
 ## 📝 개발 환경
 - **언어**: C++ 14, Python 3.9
