@@ -22,6 +22,7 @@ public:
     void BroadCastMove();
 
     void OnDead(GameObjectRef attacker) override;
+    void OnDameged(GameObjectRef attacker, int32 damege) override;
 
 protected:
     virtual void UpdateIdle();

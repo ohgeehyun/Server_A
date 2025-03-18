@@ -28,6 +28,13 @@ Room::~Room()
             RedisUtils::replyResponseHandler(reply, "Redis delete room : ");
 
     }, nullptr, "DEL room:%d", _roomId);
+
+    redisAsyncCommand(GRedisConnection->GetContext(), [](redisAsyncContext* context, void* reply, void* privdata)
+    {
+        if (reply != nullptr)
+            RedisUtils::replyResponseHandler(reply, "Redis Room Exit user : ");
+
+    }, nullptr, "DEL room_user:%d", _roomId);
 }
 
 void Room::Init(int32 mapId)
@@ -312,20 +319,21 @@ void Room::LeaveGame_Player(int32 objectId)
 
     if (it == _players.end())
         return;
-    int32 objectid = it->first;
-    PlayerRef player = it->second;
 
-    DoAsync([this, player, objectid]() {
-        _map.ApplyLeave(static_pointer_cast<GameObject>(player));
 
-        LeaveGameEventSend_Player(player, player->GetObjectId());
+    DoAsync([this, it]() {
+        if (it->second == nullptr)
+            return;
+
+        _map.ApplyLeave(static_pointer_cast<GameObject>(it->second));
+
+        LeaveGameEventSend_Player(it->second, it->second->GetObjectId());
 
         //플레이어 와 Room 의존 끊기
-         player->SetRoom(nullptr);
+        it->second->SetRoom(nullptr);
 
-         if(_players.count(objectid) != 0)
         //플레이어 목록에서 삭제
-        _players.erase(objectid);
+        _players.erase(it);
     });
 }
 
@@ -339,6 +347,9 @@ void Room::LeaveGame_Monster(int32 objectId)
         return;
 
     DoAsync([this, it]() {
+        if (it->second == nullptr)
+            return;
+
         _map.ApplyLeave(static_pointer_cast<Monster>(it->second));
 
         LeaveGameEventSend_Monster(it->second, it->second->GetObjectId());
@@ -359,6 +370,9 @@ void Room::LeaveGame_ProjectTile(int32 objectId)
         return;
 
     DoAsync([this, it]() {
+
+        if (it->second == nullptr)
+            return;
 
         ProjectTileRef projecttile = static_pointer_cast<ProjectTile>(it->second);
         _map.ApplyLeave(projecttile);
@@ -395,6 +409,10 @@ void Room::ExitGameEventSend(PlayerRef player)
             RedisUtils::replyResponseHandler(reply, "Redis Room Exit user : ");
 
     }, nullptr, "SREM room_user:%d %s", _roomId, player->GetSession()->GetUserId().c_str());
+
+    //room을 만든 user가 방에서 나감
+    if (player->GetSession()->GetNickName() == GetRootUser())
+        DoAsync(&Room::RoomBreak, player);
 }
 
 void Room::Broadcast(SendBufferRef sendBuffer)
@@ -452,10 +470,6 @@ void Room::LeaveGameEventSend_Player(PlayerRef player,int32 objectid)
         if (objectid != pair.second->GetObjectId())
             pair.second->GetSession()->Send(despawnPacketBuffer);
     }
-
-    //room을 만든 user가 방에서 나감
-    if (player->GetSession()->GetNickName() == GetRootUser())
-         RoomBreak(player);
 }
 
 void Room::LeaveGameEventSend_Monster(MonsterRef monster, int32 objectid)

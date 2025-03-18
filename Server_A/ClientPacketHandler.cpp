@@ -145,8 +145,8 @@ bool Handle_C_VERIFY(PacketSessionRef& session, Protocol::C_VERIFY& pkt)
 
        // PacketSessionRef를 GameSession으로 캐스팅
        GameSessionRef gameSession = dynamic_pointer_cast<GameSession>(session);
-       gameSession->SetUserId(payload["user_id"]);
-       gameSession->SetNickName(payload["nickname"]);
+       gameSession->SetUserId(user_id);
+       gameSession->SetNickName(nickname);
        gameSession->SetJwtToken(pkt.jwt());
        gameSession->SetIsJwtVerify(jwt.GetVerifyStat());
        gameSession = nullptr;
