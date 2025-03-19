@@ -132,18 +132,18 @@ IOCP 기반 네트워크 통신:
   게임 컨텐츠 관련 파일
   #### **5.1 Object  **
   게임에서 사용 될 오브젝트 정의 
-  - **`GameObject`**: Object들의 부모 클래스
-  - **`ObjectManager`**: Object의 생성 및 삭제 또는상태 관리 등을 하는 매니저
+  - **`GameObject`**: Object들의 부모 클래스 (최상위 클래스)
+  - **`ObjectManager`**: Object의 생성 및 삭제 또는상태 관리 등을 하는 Manager
   - **`Player`**: GameObject를 상속받은 Player 클래스
-  - **`Monster`**: GameObject를 상속받은 Monster 클래스
+  - **`Monster`**: GameObject를 상속받은 Monster 클래스Finite State Machine 사용하요 몬스터의 상태에 따라 다음 행동을 결정 , 유저를 추적하기 위해 a'알고리즘 사용 (참조:https://github.com/ohgeehyun/a-algorithm)
   - **`ProtjectTile`**: GameObject를 상속받은 ProjectTile(투사체) 클래스
   - **`MagicSkill`**: ProjectTile를 MagicSkill 클래스
   - **`Arrow`**: ProjectTile를 상속받은 Arrow 클래스
   #### **5.2 Room  **
   사용자 및 게임 오브젝트가 생성되어 활동하게 될 Room 관련 클래스
-  - **`Room`**: 사용자 및 게임 오브젝트가 생성되어 활동하게 될 Room 클래스
+  - **`Room`**: 사용자 및 게임 오브젝트가 생성되어 실질적으로 게임에서 일어나는 이벤트를 계산하고 그에 따른 요청을 할 클래스
   - **`RoomManager`**: 여러개의 Room을 관리하게 될 클래스
-  - **`MapManager`**: 클라이언트 와 같이 사용하는 게임맵의 데이터를 저장하고 Map에서 일어나는 일 들을 관리하는 클래스
+  - **`MapManager`**:맵의 정보를 저장하고 오브젝트의 위치 관련 정보 및 위치 관련 이벤트를 관리 할 클래스
   #### **5.3 other  **
   그 외 파일
   - **`Server.cpp`**: 프로그램 시작점 (main)
@@ -188,9 +188,9 @@ IOCP 기반 네트워크 통신:
   - **`room_chat.js`**: Redis의 채팅 관련 데이터 관리 
   - **`Room.js`**:  Redis의 방 정보 관련 데이터 관리
  ### **routes** 
-  - **`chat.js`**: chat 경로와 http method 지정 파일
-  - **`room.js`**: room 경로와 http method 지정 파일
-  - **`User.js`**: user 경로와 http method 지정 파일
+  - **`chat.js`**: chat 관련 http method 지정 파일
+  - **`room.js`**: room 관련 http method 지정 파일
+  - **`User.js`**: user 관련 http method 지정 파일
  ### **Utils** 
   - **`InitEnv.js`**: .env에 jwt 에 사용할 secretkey 등 서버 실행시 초기화해야할 설정 파일  
 
