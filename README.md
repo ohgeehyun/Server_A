@@ -16,7 +16,7 @@ B host ip server(Aws ec2 사용)
 
 ## 📹 테스트 영상
 
-[테스트 영상 보기][https://youtu.be/ouMp5Gto1]
+[테스트 영상 보기][[https://youtu.be/ouMp5Gto1]](https://youtu.be/vknkRw1GT1E?si=0iwsJJZAO-zBRKp0)
 
 ---
 
