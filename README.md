@@ -51,23 +51,23 @@ node.js express 웹 서버 프레임워크를 사용한 HTTP 서버 입니다. n
 ## 🛠️ ServerCore 주요 구성 요소
 
 ### **1. Main**
-`GameServer`에서 공통으로 사용하는 파일들:
 - **`Types.h`**: 자주 사용하는 타입 및 정의된 별칭 포함.
 - **`pch`/`CorePch`**: 프로젝트 전역에서 자주 사용되는 헤더 포함.
-- **`CoreMacro`**: 디버깅 및 동기화를 위한 유용한 매크로 정의 (`ASSERT_CRASH`, `LOCK`, 등).
+- **`CoreMacro`**: 디버깅 및 동기화를 위한 유용한 매크로 정의 (`ASSERT_CRASH`, `사용자 정의 LOCK`, 등).
+- **`CoreTLS`** : 각각의 스레드들이 사용할 (id,ticktime,stack 등등) thread local Storage 를 정의
 - **`CoreGlobal`**: 전역 객체 정의:
-  - **`GThreadManager`**: 스레드 관리.
+  - **`GThreadManager`**: 스레드를 관리할 Manager클래스 Manager클래스를 통해 외부에서 Thread사용.
   - **`GMemory`**: 메모리 할당 및 해제 관리.
-  - **`GSendBufferManager`**: Chunk 방식으로 전송 버퍼 관리.
-  - **`GDeadLockProfiler`**: 데드락 탐지 및 디버깅.
-  - **`SocketUtils::Init()`**: Windows 소켓 초기화.
+  - **`GSendBufferManager`**: Chunk 방식으로 전송 버퍼 관리. 미리 큰 buffer를 생성하여 필요한 곳에서 일정량 부분을 할당받아 사용.
+  - **`GDeadLockProfiler`**: 디버그 모드 일 때 스레드의 function 호출 경로를 스택에 저장하여 DFS(깊이 우선 순위)탐색을 실행해줄 전역 객체
+- **`SocketUtils::Init()`**: Windows 소켓 초기화. (connect disconnect accept이벤트 함수 포인터를 미리 받아와야하기 떄문에 전역으로 사용할 객체들과 같이 초기화하면서 미리 이벤트함수들의 함수포인터를 받아옴.)
 
 ---
 
 ### **2. Memory**
 효율적인 메모리 관리 기능:
-- **`Allocator`**: 다양한 메모리 할당/해제 정책 정의 (`Heap`, `VirtualAlloc`, `MemoryPool`).
-- **`Container.h`**: C++ STL 컨테이너를 커스터마이징하여 별칭으로 사용.
+- **`Allocator`**: 객체에 따른 메모리 할당/해제 정책 정의 
+- **`Container.h`**: C++ STL 컨테이너를 커스터마이징 별칭으로 사용.
 - **`Memory`**: 전역 `MemoryPool`을 통한 메모리 할당/해제 로직 구현.
 - **`MemoryPool`**: 미리 준비된 메모리 공간을 활용하여 빈번한 메모리 할당/해제 최적화.
 
@@ -76,9 +76,9 @@ node.js express 웹 서버 프레임워크를 사용한 HTTP 서버 입니다. n
 ### **3. Thread**
 스레드 및 동기화 관련 기능:
 - **`Lock`**: Atomic 타입 기반 커스텀 Lock (`WriteLock`, `ReadLock`) 구현.
-- **`ThreadManager`**: 전역 스레드 관리.
+- **`ThreadManager`**: 스레드들을 관리 할 Manager 객체.
 - **`DeadLockProfiler`**:
-  - **스레드 로컬 저장소**의 `LLockStack` 사용.
+  - **스레드 로컬 저장소(CoreTLS)**의 `LLockStack` 사용.
   - DFS 기반 역방향 간선 탐지를 통해 데드락 발생 여부 확인.
 
 ---
