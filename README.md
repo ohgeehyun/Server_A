@@ -177,6 +177,7 @@ IOCP 기반 네트워크 통신:
   - **`Templates`**: 템플릿 코드를 모아둔 dir PacketHandler.h 템플릿 위치
 ---
 ## 🛠️ NodeServer_A 주요 구성 요소
+ ★현재 Node.js서버는 서버는 추가작업 진행중이며 RestFulapi 형식에 맞춰 수정 작업 진행중입니다.★
   ### **Db**
   - **`connection_pool.js`**: mysql 연결  객체 관리  
   - **`User.js`**: mysql 사용자 정보 관련 기능 관리 
