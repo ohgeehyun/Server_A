@@ -12,11 +12,21 @@ router.use(async (req, res, next) => {
     res.status(500).send('middle ware err : redis disconnected');
 });
 
-//전체 방 조회 
-router.post('/savaChat',async (req, res) => {
+//채팅 저장
+router.post('/sava',async (req, res) => {
     const { roomId } = req.body;
-     const result = await room_chat.saveRoomChat(roomId);
-    return res.status(200).json(result);
+
+    if(!roomId)
+      return res.status(400).send({status: false, code:400,message: '요청에 Room id 가 없습니다.'});
+  
+    const result = await room_chat.saveRoomChat(roomId);
+    
+    if(result)
+      return res.status(201).json(result);
+    else
+    {
+      return res.status(500).json(result);
+    }
 });
 
 

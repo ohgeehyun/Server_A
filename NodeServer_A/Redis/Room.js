@@ -8,7 +8,7 @@ const scanAsync = promisify(Redis.redis.scan).bind(Redis.redis);
 // HGETAll 명령을 비동기로 실행할 수 있도록 promisify 사용
 const hgetallAsync = promisify(Redis.redis.hgetall).bind(Redis.redis);
 
-//룸 아이디를 이용한 방 검색
+//룸 아이디를 이용한 방 정보 조회
 async function getRoomInfo(roomId) {
     try {
       // Redis에서 해당 방 정보를 가져오기 (JSON 문자열)
@@ -64,11 +64,11 @@ async function getRoomInfo(roomId) {
           }
         }
       } while (cursor !== '0'); // 커서가 0이면 종료
-      return { status: true, data: allRooms};
+      return { status: true, code:200,data: allRooms};
     } 
     catch (err) 
     {
-      return { status: false, message: 'DB 조회 중 오류가 발생했습니다.' };
+      return { status: false,code:500,message: 'Redis roomlist 조회 중 오류가 발생했습니다.' };
     }
   }
 
@@ -83,16 +83,16 @@ async function getRoomInfo(roomId) {
         const roomInfo = JSON.parse(jsonStr);
         //비밀번호 비교
         if(roomInfo.password === client_pwd)
-          return {status:true,message:'패스워드 일치'};
+          return {status:true,code:200,message:'패스워드 일치'};
         else
-          return {status:false,message:'패스워드 불일치'};
+          return {status:false,code:401,message:'패스워드 불일치'};
       }
       else
-        return {status:false,message:'해당 방이 존재하지 않거나 정보를 찾을 수 없습니다.'};
+        return {status:false,code:404,message:'해당 방이 존재하지 않거나 정보를 찾을 수 없습니다.'};
     }
     catch(err)
     {
-      return { status: false, message: 'DB 조회 중 오류가 발생했습니다.' };
+      return { status: false,code:500, message: 'DB 조회 중 오류가 발생했습니다.' };
     }
   }
 
@@ -105,7 +105,7 @@ async function getRoomInfo(roomId) {
       const playerKeys = await keysAsync(`room_score:${roomId}:*`);
 
       if (playerKeys.length === 0) {
-        return { status: false, message: '해당 방에 유저가없음...' };
+        return { status: false, code:404, message: '해당 방에 유저가없음...' };
       }
 
       const scoreBoard = [];
@@ -118,16 +118,16 @@ async function getRoomInfo(roomId) {
           nickname: playerData.nickname || 'Unknown',
           kill: playerData.kill || 0,
           death: playerData.death || 0,
-          damege: playerData.damege || 0
+          damege: playerData.TotalDamege || 0
         });
       }
       console.log(scoreBoard)
-      return { status: true, data: scoreBoard};
+      return { status: true,code:200,data: scoreBoard};
     }
     catch(err)
     {
       console.log(err);
-      return { status: false, message: 'ScoreBoard 조회 중 오류가 발생했습니다.' };
+      return { status: false,code:500, message: 'ScoreBoard 조회 중 오류가 발생했습니다.' };
     }
   }
 

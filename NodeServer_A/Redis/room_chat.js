@@ -8,7 +8,7 @@ const getAsync = promisify(Redis.redis.get).bind(Redis.redis);
 const scanAsync = promisify(Redis.redis.scan).bind(Redis.redis);
 // XREAD 명령어를 비동기로 실행할 수 있도록 promisify 사용
 const xreadAsync = promisify(Redis.redis.xread).bind(Redis.redis);
-
+// del 명령어를 비동기로 실행할 수 있도록 promisify 사용
 const delAsync = promisify(Redis.redis.del).bind(Redis.redis);
 
 //룸 아이디를 이용한 채팅 저장
@@ -18,7 +18,7 @@ async function saveRoomChat(roomId) {
         const TableName = `room_chat:${roomId}_log`
         if((await DataBase_Util.CheckTable(TableName)).status == false)
             if((await DataBase_Util.CreateTable(TableName)).status == false)
-                return { status: false, message: 'DB 조회 및 생성 테이블 에러' };
+                return { status: false, code:500, message: 'DB 조회 및 생성 테이블 에러' };
         
         const streamName = `room_chat:${roomId}`;  // 예시: room_chat:1
 
@@ -53,10 +53,16 @@ async function saveRoomChat(roomId) {
             DataBase_Util.InsertTable(TableName, columns, values);
           });
         });
-        deleteRoomChat(roomId);
-        return {status:true,message:"save room chat complete."}
+        const deleteResult = await deleteRoomChat(roomId);
+
+        if(deleteResult)
+            return {status:true,code:201,message:"save room chat complete."}
+        else
+        {
+            return {status:false,code:500,message:'채팅 삭제 중 서버 에러'}
+        }
     } catch (err) {
-      return {status:false,message:'saveRoomChat 함수 실패'}
+      return {status:false,code:500,message:'채팅 저장 중 서버 에러'}
     }
   }
 
@@ -69,9 +75,9 @@ async function deleteRoomChat(roomId) {
 
         console.log(`Room ${roomId}의 채팅 스트림 데이터 전체 삭제 완료`);
 
-        return { status: true, message: `Room ${roomId}의 채팅 데이터 전체 삭제 완료` };
+        return { status: true, code:200,message: `Room ${roomId}의 채팅 데이터 전체 삭제 완료` };
     } catch (err) {
-        return { status: false, message: 'deleteRoomChat 함수 실패', error: err };
+        return { status: false,code:500, message: '채팅 삭제 중 서버 에러', error: err };
     }
 }
 

@@ -7,7 +7,7 @@ async function RegisterUser(user_id,password,nickname)
     const checkResult = await CheckUserId(user_id);
     console.log(checkResult.message);
     if (!checkResult.status)
-        return { status: false, message: checkResult.message };    
+        return { status: false,code:409, message: checkResult.message };    
 
     try {
         const hashedPassword = await bcrypt.hash(password,10);
@@ -25,11 +25,13 @@ async function RegisterUser(user_id,password,nickname)
 
         // 삽입된 결과 확인 (예: result.insertId는 삽입된 유저의 ID를 반환)
         if (result.affectedRows > 0) 
-            return { status: true, message: '유저가 성공적으로 등록되었습니다.' };
+            return { status: true,code:201, message: '유저가 성공적으로 등록되었습니다.' };
+        else
+            return {status:false,code:500,message:'유저 등록중 db오류 발생.'};
 
     } catch (err) {
-        console.error('DB 오류:', err);
-        return { status: 'error', message: '유저 등록 중 오류가 발생했습니다.' };
+        console.error('DB 또는 해쉬 오류:', err);
+        return { status:false,code:500, message: '유저 등록 중 오류가 발생했습니다.' };
     }
 }
 
@@ -49,13 +51,13 @@ async function GetUserInfo(user_Id)
         const [rows, fields] = await Database.DBpool.execute(query, values);
 
         if (rows.length > 0) {
-            return { status: true, data: rows[0] };
+            return { status: true,code:200, data: rows[0] };
         } else {
-            return { status: false, message: '해당 id로 사용자를 찾을 수 없습니다.' };
+            return { status: false,code:404, message: '해당 id로 사용자를 찾을 수 없습니다.' };
         }
     } catch (err) {
         console.log('err message : ', err);
-        return { status: 'error', message: 'DB 조회 중 오류가 발생했습니다.' };
+        return { status: false,code:500, message: 'DB 조회 중 오류가 발생했습니다.' };
     }
 }
 
@@ -91,16 +93,16 @@ async function LoginUser(user_Id, password) {
 
     if(rows.length === 0)
     {
-        return {status: false, message:'아이디가 존재 하지 않습니다.'};
+        return {status: false,code:404, message:'아이디가 존재 하지 않습니다.'};
     }
 
     const hashedPassword = rows[0].password;
     const isPasswordValid = await bcrypt.compare(password, hashedPassword);
 
     if(isPasswordValid){
-        return {status:true,result:rows[0] ,message:'로그인 성공'};
+        return {status:true,code:200 ,result:rows[0] ,message:'로그인 성공'};
     }else{
-        return {status:false,message:'비밀번호가 틀렸습니다.'};
+        return {status:false,code:401,message:'비밀번호가 틀렸습니다.'};
     }
 }
 

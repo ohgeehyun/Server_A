@@ -1,7 +1,6 @@
 import fs from 'fs';
 import crypto from 'crypto';
 
-//람다
 const generateSecretKey = () =>{
     //256비트(32바이트) 랜덤 비밀키 생성
     const secretKey = crypto.randomBytes(32).toString('hex');
