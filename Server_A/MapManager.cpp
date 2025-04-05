@@ -36,6 +36,8 @@ void MapManager::LoadMap(int32 mapId)
         return;
     }
 
+
+
     // 첫 4줄 읽어서 Min/Max 값을 설정
     file >> _MinX >> _MaxX >> _MinY >> _MaxY;
 
