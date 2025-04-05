@@ -49,11 +49,8 @@ void GameSession::OnDisConnected()
     RoomRef room = RoomManager::GetInstance().Find(1);
     int32 objectid = _myplayer->GetObjectId();
 
-    redisAsyncCommand(GRedisConnection->GetContext(), [](redisAsyncContext* context, void* reply, void* privdata)
-    {
-        RedisUtils::replyResponseHandler(reply,"Redis delete active user : ");
-
-    }, nullptr, "HDEL active_user %s", _userid.c_str());
+    const char* query = "HDEL active_user %s";
+    RedisUtils::RAsyncCommand(GRedisConnection->GetContext(), query, _userid.c_str());
 
     _myplayer = nullptr;
 

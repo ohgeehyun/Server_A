@@ -150,6 +150,7 @@ bool Handle_C_VERIFY(PacketSessionRef& session, Protocol::C_VERIFY& pkt)
        gameSession->SetIsJwtVerify(jwt.GetVerifyStat());
        gameSession = nullptr;
 
+       //jwt 검증완료 후 검증이 완료 된 후 활성화된 유저 수 redis에 업데이트
        const char* query = "HSET active_user %s %s";
        RedisUtils::RAsyncCommand(GRedisConnection->GetContext(), query, user_id.c_str(), nickname.c_str());
 
@@ -159,6 +160,7 @@ bool Handle_C_VERIFY(PacketSessionRef& session, Protocol::C_VERIFY& pkt)
        packet.set_nickname(nickname);
        auto PacketBuffer = ClientPacketHandler::MakeSendBuffer(packet);
        session->Send(PacketBuffer);
+
     }
 
     return true;
@@ -197,12 +199,8 @@ bool Handle_C_MESSAGE(PacketSessionRef& session, Protocol::C_MESSAGE& pkt)
     oss << std::put_time(&tm_now, "%Y-%m-%d %H:%M:%S");
     std::string timestamp = oss.str();  // 시간 포맷팅
 
-    redisAsyncCommand(GRedisConnection->GetContext(), [](redisAsyncContext* context, void* reply, void* privdata)
-    {
-        if (reply != nullptr)
-            RedisUtils::replyResponseHandler(reply, "Redis Chat log : ");
-
-    }, nullptr, "XADD room_chat:%d * user_id %s nickname %s message %s timestamp %s", pkt.rommid(),gameSession->GetUserId().c_str(), pkt.nickname().c_str(), pkt.message().c_str(), timestamp.c_str());
+    const char* query = "XADD room_chat:%d * user_id %s nickname %s message %s timestamp %s";
+    RedisUtils::RAsyncCommand(GRedisConnection->GetContext(), query, pkt.rommid(), gameSession->GetUserId().c_str(), pkt.nickname().c_str(), pkt.message().c_str(), timestamp.c_str());
 
     return false;
 }

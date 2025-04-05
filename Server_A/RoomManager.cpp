@@ -33,15 +33,8 @@ RoomRef RoomManager::Add(int32 mapId, string name, string pwd, string rootUser)
      
        std::string json_str = json_obj.dump();
 
-       //cout << "room json 정보 : " << endl;
-       //cout << json_obj << endl;
-
-       redisAsyncCommand(GRedisConnection->GetContext(), [](redisAsyncContext* context, void* reply, void* privdata)
-       {
-           if (reply != nullptr)
-               RedisUtils::replyResponseHandler(reply, "Redis create room : ");
-                 
-       }, nullptr, "SET room:%d %s", _roomid, json_str.c_str());
+       const char* query = "SET room:%d %s";
+       RedisUtils::RAsyncCommand(GRedisConnection->GetContext(), query, _roomid, json_str.c_str());
 
        std::cout << "Room 번호 : " << _roomid << " Room 생성 방 이름 : " << name << " Room pwd : " << pwd << endl;
 

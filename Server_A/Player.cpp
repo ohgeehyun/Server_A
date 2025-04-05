@@ -21,12 +21,8 @@ void Player::OnDameged(GameObjectRef attacker, int32 damege)
 
     if (attacker->GetGameObjectType() == Protocol::PLAYER && attacker->GetObjectId()!= GetObjectId())
     {
-        redisAsyncCommand(GRedisConnection->GetContext(), [](redisAsyncContext* context, void* reply, void* privdata)
-        {
-            if (reply != nullptr)
-                RedisUtils::replyResponseHandler(reply, "damege Score Add : ");
-
-        }, nullptr, "HINCRBY room_score:%d:%s TotalDamege %d", room->GetRoomId(), player->GetSession()->GetUserId().c_str(), damege);
+        const char* query = "HINCRBY room_score:%d:%s TotalDamege %d";
+        RedisUtils::RAsyncCommand(GRedisConnection->GetContext(), query, room->GetRoomId(), player->GetSession()->GetUserId().c_str(), damege);
     }
 
     std::cout << "Playerdamege :" << damege << endl;
@@ -40,28 +36,18 @@ void Player::OnDead(GameObjectRef attacker)
 
     GameObject::OnDead(attacker);
 
-
-    redisAsyncCommand(GRedisConnection->GetContext(), [](redisAsyncContext* context, void* reply, void* privdata)
-    {
-        if (reply != nullptr)
-            RedisUtils::replyResponseHandler(reply, "death Score Add : ");
-
-    }, nullptr, "HINCRBY room_score:%d:%s death 1", room->GetRoomId(), GetSession()->GetUserId().c_str());
+    const char* query = "HINCRBY room_score:%d:%s death 1";
+    RedisUtils::RAsyncCommand(GRedisConnection->GetContext(), query, room->GetRoomId(), GetSession()->GetUserId().c_str());
 
     if (type == Protocol::PLAYER)
     {
         if (attacker->GetGameObjectType() == Protocol::PLAYER && attacker->GetObjectId() != GetObjectId())
         {
-            redisAsyncCommand(GRedisConnection->GetContext(), [](redisAsyncContext* context, void* reply, void* privdata)
-            {
-                if (reply != nullptr)
-                    RedisUtils::replyResponseHandler(reply, "kill Score Add : ");
-
-            }, nullptr, "HINCRBY room_score:%d:%s kill 1", room->GetRoomId(), player->GetSession()->GetUserId().c_str());
+            const char* query = "HINCRBY room_score:%d:%s kill 1";
+            RedisUtils::RAsyncCommand(GRedisConnection->GetContext(), query, room->GetRoomId(), player->GetSession()->GetUserId().c_str());
         }
     }
 
-    std::cout << "Object Dead" << endl;
 }
 
 

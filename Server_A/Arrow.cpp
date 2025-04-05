@@ -12,6 +12,7 @@ Arrow::Arrow()
 
 Arrow::~Arrow()
 {
+    cout << GetObjectId() << " 아이디 오브젝트 소멸자 호출 완료 " << endl;
 }
 
 void Arrow::Update()

@@ -22,19 +22,12 @@ Room::Room()
 
 Room::~Room()
 {
-    redisAsyncCommand(GRedisConnection->GetContext(), [](redisAsyncContext* context, void* reply, void* privdata)
-    {
-        if (reply != nullptr)
-            RedisUtils::replyResponseHandler(reply, "Redis delete room : ");
 
-    }, nullptr, "DEL room:%d", _roomId);
+    const char* query = "DEL room:%d";
+    RedisUtils::RAsyncCommand(GRedisConnection->GetContext(), query, _roomId);
 
-    redisAsyncCommand(GRedisConnection->GetContext(), [](redisAsyncContext* context, void* reply, void* privdata)
-    {
-        if (reply != nullptr)
-            RedisUtils::replyResponseHandler(reply, "Redis Room Exit user : ");
-
-    }, nullptr, "DEL room_user:%d", _roomId);
+    query = "DEL room_user:%d";
+    RedisUtils::RAsyncCommand(GRedisConnection->GetContext(), query, _roomId);
 
     cout << _roomId << " 번 방 소멸자 호출 완료. Redis 삭제 호출 완료" << endl;
 }
@@ -175,12 +168,8 @@ void Room::EnterGame_Player(PlayerRef player)
         EnterGameEventSend_Player(player);
     });
 
-    redisAsyncCommand(GRedisConnection->GetContext(), [](redisAsyncContext* context, void* reply, void* privdata)
-    {
-        if (reply != nullptr)
-            RedisUtils::replyResponseHandler(reply, "nickname Score Add : ");
-
-    }, nullptr, "HSET room_score:%d:%s nickname %s", GetRoomId(), player->GetSession()->GetUserId().c_str(),player->GetSession()->GetNickName().c_str());
+    const char* query = "HSET room_score:%d:%s nickname %s";
+    RedisUtils::RAsyncCommand(GRedisConnection->GetContext(), query, GetRoomId(), player->GetSession()->GetUserId().c_str(), player->GetSession()->GetNickName().c_str());
 }
 
 void Room::EnterGame_Monster(MonsterRef monster)
@@ -259,12 +248,9 @@ void Room::EnterGameEventSend_Player(PlayerRef player)
         }
     }
 
-    redisAsyncCommand(GRedisConnection->GetContext(), [](redisAsyncContext* context, void* reply, void* privdata)
-    {
-        if (reply != nullptr)
-            RedisUtils::replyResponseHandler(reply, "Redis Room join user : ");
+    const char* query = "SADD room_user:%d %s";
+    RedisUtils::RAsyncCommand(GRedisConnection->GetContext(), query, _roomId, player->GetSession()->GetUserId().c_str());
 
-    }, nullptr, "SADD room_user:%d %s",_roomId , player->GetSession()->GetUserId().c_str());
 }
 
 void Room::EnterGameEventSend_Monster(MonsterRef monster)
@@ -398,19 +384,12 @@ void Room::ExitGameEventSend(PlayerRef player)
     player->GetSession()->Send(exitPacketBuffer);
 
     //해당방의 score 삭제 처리 1.nickname 2.kill 3.death 4.nickname Del로 그냥 모든 필드 밀어줌 필요시 HDell로 필요한 필드만 삭제
-    redisAsyncCommand(GRedisConnection->GetContext(), [](redisAsyncContext* context, void* reply, void* privdata)
-    {
-        if (reply != nullptr)
-            RedisUtils::replyResponseHandler(reply, "delete Score Add : ");
 
-    }, nullptr, "DEL room_score:%d:%s", GetRoomId(), player->GetSession()->GetUserId().c_str());
-
-    redisAsyncCommand(GRedisConnection->GetContext(), [](redisAsyncContext* context, void* reply, void* privdata)
-    {
-        if (reply != nullptr)
-            RedisUtils::replyResponseHandler(reply, "Redis Room Exit user : ");
-
-    }, nullptr, "SREM room_user:%d %s", _roomId, player->GetSession()->GetUserId().c_str());
+    const char* query = "DEL room_score:%d:%s";
+    RedisUtils::RAsyncCommand(GRedisConnection->GetContext(), query, GetRoomId(), player->GetSession()->GetUserId().c_str());
+    
+    query = "SREM room_user:%d %s";
+    RedisUtils::RAsyncCommand(GRedisConnection->GetContext(), query, _roomId, player->GetSession()->GetUserId().c_str());
 
     //room을 만든 user가 방에서 나감
     if (player->GetSession()->GetNickName() == GetRootUser())
