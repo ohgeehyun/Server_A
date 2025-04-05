@@ -43,7 +43,6 @@ bool Handle_C_ENTER_GAME(PacketSessionRef& session, Protocol::C_ENTER_GAME& pkt)
     cout << "플레이어 입장" << endl;
     //방 입장 gameSession->GetPlayer()가 참조값을 반환
     room->EnterGame(std::static_pointer_cast<GameObject>(gameSession->GetPlayer()));
-    //room->DoAsync(&Room::EnterGame, std::static_pointer_cast<GameObject>(gameSession->GetPlayer()));
     return true;
 }
 
@@ -135,7 +134,7 @@ bool Handle_C_SKILL(PacketSessionRef& session, Protocol::C_SKILL& pkt)
 bool Handle_C_VERIFY(PacketSessionRef& session, Protocol::C_VERIFY& pkt)
 {
     JwtUtils jwt;
-    jwt.JwtVerify(pkt.jwt(), "verify logintoken ");
+    jwt.JwtVerify(pkt.jwt(), "verify login token ");
 
     if (jwt.GetVerifyStat())
     {
@@ -151,13 +150,8 @@ bool Handle_C_VERIFY(PacketSessionRef& session, Protocol::C_VERIFY& pkt)
        gameSession->SetIsJwtVerify(jwt.GetVerifyStat());
        gameSession = nullptr;
 
-
-       redisAsyncCommand(GRedisConnection->GetContext(), [](redisAsyncContext* context, void* reply, void* privdata)
-       {
-           if (reply != nullptr)
-               RedisUtils::replyResponseHandler(reply, "Redis active_user add : ");
-
-       }, nullptr, "HSET active_user %s %s", user_id.c_str(), nickname.c_str());
+       const char* query = "HSET active_user %s %s";
+       RedisUtils::RAsyncCommand(GRedisConnection->GetContext(), query, user_id.c_str(), nickname.c_str());
 
        Protocol::S_VERIFY packet;
        packet.set_result(true);

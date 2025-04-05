@@ -7,7 +7,7 @@ void RedisUtils::replyResponseHandler(void* reply,const char* log)
     if (r->type == REDIS_REPLY_STATUS) 
     {
         // "OK"가 반환되었을 때
-        std::cout << log << r->str << std::endl;
+        std::cout << log << " : "  << r->str << std::endl;
     }
     else if (r->type == REDIS_REPLY_ERROR) 
     {
@@ -17,10 +17,10 @@ void RedisUtils::replyResponseHandler(void* reply,const char* log)
     else if (r->type == REDIS_REPLY_INTEGER)
     {
         //integer반환처리
-        std::cout << log << r->integer << std ::endl;
+        std::cout << log << " : "  << r->integer << std ::endl;
     }
     else {
-        std::cout << log <<"Unexpected response type" << std::endl;
+        std::cout << log << " : "  <<"Unexpected response type" << std::endl;
     }
 }
 

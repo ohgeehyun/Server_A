@@ -35,6 +35,8 @@ Room::~Room()
             RedisUtils::replyResponseHandler(reply, "Redis Room Exit user : ");
 
     }, nullptr, "DEL room_user:%d", _roomId);
+
+    cout << _roomId << " 번 방 소멸자 호출 완료. Redis 삭제 호출 완료" << endl;
 }
 
 void Room::Init(int32 mapId)
@@ -58,9 +60,9 @@ void Room::RoomBreak(PlayerRef player)
 
     params.emplace("roomId", std::to_string(_roomId));
 
-    if (auto res = cli.Post("/chat/savaChat", params))
+    if (auto res = cli.Post("/chat/save", params))
     {
-        if (res->status == 200)
+        if (res->status == 201) //restful에서 특정 데이터 추가 완료시 201 반환
             std::cout << _roomId << " 번 방 채팅 로그 저장 호출 완료" << "\n";
         else
             std::cout <<"error : HTTP Status" << _roomId << " 번 방 채팅 로그 저장 호출 중 문제 발생" << "\n";

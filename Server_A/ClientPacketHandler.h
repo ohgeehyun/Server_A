@@ -1,6 +1,6 @@
 #pragma once
 #include "Protocol.pb.h"
-
+#include "GameSession.h"
 using PacketHandlerFunc = std::function<bool(PacketSessionRef&, BYTE*, int32)>;
 extern PacketHandlerFunc GPacketHandler[UINT16_MAX];
 
@@ -79,12 +79,19 @@ private:
 	template<typename PacketType, typename ProcessFunc>
 	static bool HandlePacket(ProcessFunc func, PacketSessionRef& session, BYTE* buffer, int32 len)
 	{
-		PacketType pkt;
+        PacketType pkt;
         RecvPacketHeader* header = reinterpret_cast<RecvPacketHeader*>(buffer);
-        if (pkt.ParseFromArray(buffer + sizeof(RecvPacketHeader)+header->jwtsize, len - sizeof(RecvPacketHeader)-header->jwtsize) != true)
-			return false;
+        if (pkt.ParseFromArray(buffer + sizeof(RecvPacketHeader) + header->jwtsize, len - sizeof(RecvPacketHeader) - header->jwtsize) != true)
+            return false;
 
-		return func(session, pkt);
+        BYTE* jwtToken = buffer + sizeof(RecvPacketHeader);
+        std::string jwtTokenStr(reinterpret_cast<char*>(jwtToken), header->jwtsize);
+
+        if (dynamic_pointer_cast<GameSession>(session)->GetIsJwtVerify())
+            if (!JwtUtils::GJwtVerify(jwtTokenStr, ""))
+                return false;
+
+        return func(session, pkt);
 	}
 
 	template<typename T>

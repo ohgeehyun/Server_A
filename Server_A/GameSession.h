@@ -21,8 +21,8 @@ public:
     void SetIsJwtVerify(bool verify) { _isJwtVerify = verify; }
     bool GetIsJwtVerify() { return _isJwtVerify; }
 
-    string GetUserId() { return _userid; }
-    string GetNickName() { return _nickname; }
+    string& GetUserId() { cout << "userid size : " << _userid.size() << endl; return _userid; }
+    string& GetNickName() { return _nickname; }
 private:
     PlayerRef _myplayer;
     string _userid;

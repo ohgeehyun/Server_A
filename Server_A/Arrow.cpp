@@ -22,11 +22,11 @@ void Arrow::Update()
 
     GameObjectRef object = GetRoom()->GetMap().Find(Vector2Int(GetPosx(), GetPosy()));
 
-    //화살의 현재위치에 오브젝트가있을경우
+    //화살의 생성 위치에 바로 피격 가능한 오브젝트가있을경우
     if (object != nullptr)
     {
         GetRoom()->DoAsync([this, object]() {
-            object->OnDameged(shared_from_this(), GetSkillData().damege + GetOwner()->GetObjectStat().attack());
+            object->OnDameged(dynamic_pointer_cast<ProjectTile>(shared_from_this())->GetOwner(), GetSkillData().damege + GetOwner()->GetObjectStat().attack());
         });
         //소멸
         GetRoom()->DoAsync(&Room::LeaveGame, GetObjectId());

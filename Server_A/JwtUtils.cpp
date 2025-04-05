@@ -55,7 +55,7 @@ bool JwtUtils::GJwtVerify(const string& token, const char* log)
         std::error_code ec = e.code();
 
         if (ec == jwt::error::token_verification_error::token_expired) {
-            //토큰 시간 만료 시간으로 인해 새로운 jwt 토큰 발급 후 요청 패킷 전송
+            // TODO : 토큰 시간 만료 시간 일떄 클라이언트에게 jwt 만료 신호보내주자 클라이언트는 Node server에 jwt재발급을 요청할 것
             cout << log << " 토큰 시간 만료" << endl;
             return false;
         }
