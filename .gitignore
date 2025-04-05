@@ -9,3 +9,6 @@
 /Server_A/x64/Debug/Server_A.ilk
 /Server_A/x64/Release/Server_A.pch
 /Server_A/x64/Debug/Server_A.ilk
+*.log
+*.tlog
+/Server_A/x64/Debug/Server_A.tlog/CL.command.1.tlog
