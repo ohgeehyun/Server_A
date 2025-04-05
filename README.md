@@ -1,5 +1,6 @@
 # C++ IOCP 기반 서버 프로젝트
--- 현재 서버끼리의 동기화 가능 추가 중 으로 c# 서버와 redis 구조를 수정하여 다수의 서버가 redis에서 정보를 읽어서 동기화가 가능하게 수덩 둥입니다.--
+-- 현재 서버끼리의 동기화 가능 추가 중 으로 c# 서버와 redis 구조를 수정하여 다수의 서버가 redis에서 정보를 읽어서 동기화가 가능하게 수정 중 입니다.--
+--서버내에 메모리에 객체를 올려서 관리하는게 아닌 Redis에 객체를 넣고 관리하는 식으로 다수의 서버에서 돌아가도 지장없게 수정 중--
 
 이 프로젝트는 **C++ IOCP 기반의 ServerCore**와 **Unity와 통신하는 GameServer**로 나뉘어져 있습니다.  
 패킷 자동화를 위해 **Google Protocol Buffers**와 **Python 3.9**를 사용하였습니다.
@@ -178,7 +179,8 @@ IOCP 기반 네트워크 통신:
   - **`Templates`**: 템플릿 코드를 모아둔 dir PacketHandler.h 템플릿 위치
 ---
 ## 🛠️ NodeServer_A 주요 구성 요소
- ★현재 Node.js서버는 서버는 추가작업 진행중이며 RestFulapi 형식에 맞춰 수정 작업 진행중입니다.★
+ 현재 Node.js서버는 서버는 추가작업 진행중이며 RestFulapi 형식에 맞춰 수정 -2025-04-01.
+ 추가 수정 필요시 http method 수정
   ### **Db**
   - **`connection_pool.js`**: mysql 연결  객체 관리  
   - **`User.js`**: mysql 사용자 정보 관련 기능 관리 
