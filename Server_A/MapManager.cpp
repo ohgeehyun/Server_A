@@ -25,10 +25,7 @@ void MapManager::LoadMap(int32 mapId)
 {
 
     // 맵 이름 생성
-    std::string mapName = "Map_" +
-        (mapId < 10 ? std::string("00") :
-            (mapId < 100 ? std::string("0") : std::string(""))) +
-        std::to_string(mapId);
+    std::string mapName = "Map_" + (mapId < 10 ? std::string("00") : (mapId < 100 ? std::string("0") : std::string(""))) + std::to_string(mapId);
 
     string pathPrefix = "../Common/MapData";
 
