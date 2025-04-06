@@ -12,3 +12,5 @@
 *.log
 *.tlog
 /Server_A/x64/Debug/Server_A.tlog/CL.command.1.tlog
+/RoomServer/x64/Debug/RoomServer.pch 
+/ServerCore/x64/Debug/ServerCore.pch

@@ -33,12 +33,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="pch.cpp">
-      <Filter>Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="Server.cpp">
-      <Filter>Main</Filter>
-    </ClCompile>
     <ClCompile Include="GameSessionManager.cpp">
       <Filter>Main</Filter>
     </ClCompile>
@@ -123,6 +117,8 @@
     <ClCompile Include="MagicSkill.cpp">
       <Filter>Main\Game\Object</Filter>
     </ClCompile>
+    <ClCompile Include="pch.cpp" />
+    <ClCompile Include="Server.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameSessionManager.h">
@@ -179,9 +175,6 @@
     <ClInclude Include="MysqlCommand.h">
       <Filter>DB</Filter>
     </ClInclude>
-    <ClInclude Include="pch.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
     <ClInclude Include="GlobalObject.h">
       <Filter>Utils</Filter>
     </ClInclude>
@@ -212,6 +205,7 @@
     <ClInclude Include="MagicSkill.h">
       <Filter>Main\Game\Object</Filter>
     </ClInclude>
+    <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Common\Protobuf\bin\Enum.proto">

@@ -32,8 +32,6 @@ void  DoWorkerJob(ServerServiceRef& service)
 
 int main()
 {
-    //CALL $(SolutionDir)Common\Protobuf\bin\GenPackets.bat 테스트중에 빌드 전이벤트 잠시 종료
-
     SetConsoleOutputCP(CP_UTF8);
 
     ConfigManager::GetInstance().LoadConfig();
@@ -51,11 +49,20 @@ int main()
         make_shared<GameSession>,
         100);
 
+    //RoomServer 와 통신을 하기위한 service 클라이언트의 입장
+    //우선은 서버 규모가 켜지면 여러가지의 RoomServer와 연결되겟지만 현재는 클라이언트 소켓은 한대로 운영
+    ClientServiceRef clientService = Make_Shared<ClientService>(
+        NetAddress(L"220.81.12.171",5253),
+        make_shared<IocpCore>(),
+        make_shared<GameSession>,
+        1);
+
     GDBConnectionPool = new MysqlConnectionPool(3);
     GRedisConnection = new RedisConnection();
 
 
     ASSERT_CRASH(service->Start());
+    ASSERT_CRASH(clientService->Start());
 
     for (int32 i = 0; i < 5; i++)
     {
@@ -66,6 +73,14 @@ int main()
             }
         });
     }
+
+    GThreadManager->Launch([&clientService]() {
+        while (true)
+        {
+            clientService->GetIocpCore()->Dispatch(10);
+        }
+    });
+
 
     for (int32 i = 0; i < 2; i++)
     {
