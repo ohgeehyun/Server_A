@@ -1,13 +1,14 @@
 #include "pch.h"
 #include "UserServerSession.h"
 #include "SessionManager.h"
+#include "RoomPacketHandler.h"
 
 SessionManager* UserServerSessionManager;
 
 void UserServerSession::OnConnected()
 {
     UserServerSessionManager->Add(static_pointer_cast<UserServerSession>(shared_from_this()));
-    cout << "RoomServer : Session Add Success " << endl;
+    cout << "RoomServer : Client Server Session Add Success " << endl;
 }
 
 void UserServerSession::OnDisConnected()
@@ -18,9 +19,7 @@ void UserServerSession::OnDisConnected()
 void UserServerSession::OnRecvPacket(BYTE* buffer, int32 len)
 {
     PacketSessionRef session = GetPacketSessionRef();
-    RecvPacketHeader* header = reinterpret_cast<RecvPacketHeader*>(buffer);
+    SendPacketHeader* header = reinterpret_cast<SendPacketHeader*>(buffer);
 
-
-   //패킷 처리 함수 
-   // ClientPacketHandler::HandlePacket(session, buffer, len);
+    RoomPacketHandler::HandlePacket(session, buffer, len);
 }

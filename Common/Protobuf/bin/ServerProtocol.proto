@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package ServerProtocol;
+//import "google/protobuf/timestamp.proto";
+
+enum MsgId {
+  empty_value = 0;
+  S_Message_Game = 1001;
+  C_Message_Game = 1002;
+}
+
+message C_MESSAGE_GAME
+ {
+   string message = 1;
+ }
+
+ message S_MESSAGE_GAME
+ {
+     string message = 1;
+ }

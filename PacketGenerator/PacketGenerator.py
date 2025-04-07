@@ -5,7 +5,8 @@ import ProtoParser
 def main():
 
 	arg_parser = argparse.ArgumentParser(description = 'PacketGenerator')
-	arg_parser.add_argument('--path', type=str, default='C:/Users/OG/source/repos/Server_A/Common/Protobuf/bin/Protocol.proto', help='proto path')
+    #arg_parser.add_argument('--path', type=str, default='C:/Users/OG/source/repos/Server_A/Common/Protobuf/bin/Protocol.proto', help='proto path')
+	arg_parser.add_argument('--path', type=str, default='C:/Users/OG/source/repos/Server_A/Common/Protobuf/bin/ServerProtocol.proto', help='proto path')
 	arg_parser.add_argument('--output', type=str, default='TestPacketHandler', help='output file')
 	arg_parser.add_argument('--recv', type=str, default='C_', help='recv convention')
 	arg_parser.add_argument('--send', type=str, default='S_', help='send convention')
@@ -15,8 +16,8 @@ def main():
 	parser.parse_proto(args.path)
 	file_loader = jinja2.FileSystemLoader('Templates')
 	env = jinja2.Environment(loader=file_loader, cache_size=0)
-
-	template = env.get_template('PacketHandler.h')
+    #template = env.get_template('PacketHandler.h')
+	template = env.get_template('RoomPacketHandler.h')
 	output = template.render(parser=parser, output=args.output)
 
 	f = open(args.output+'.h', 'w+')

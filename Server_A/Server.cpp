@@ -1,9 +1,12 @@
 #pragma once
 #include "pch.h"
 #include "GameSession.h"
+#include "ServerSession.h"
 #include "RoomManager.h"
 #include "ClientPacketHandler.h"
+#include "ServerPacketHandler.h"
 #include "GameSessionManager.h"
+#include "ServerSessionManager.h"
 #include "ConfigManager.h"
 #include "DataManager.h"
 #include "Room.h"
@@ -41,7 +44,11 @@ int main()
     auto  skill = DataManager::GetInstance().GetSkillDict();
     
     ClientPacketHandler::Init();
-    SessionManager = new GameSessionManager();
+    ServerPacketHandler::Init();
+
+    GGameSessionManager = new GameSessionManager();
+    GServerSessionManager = new ServerSessionManager();
+
 
     ServerServiceRef service = Make_Shared<ServerService>(
         NetAddress(L"220.81.12.171", 5252),
@@ -54,7 +61,7 @@ int main()
     ClientServiceRef clientService = Make_Shared<ClientService>(
         NetAddress(L"220.81.12.171",5253),
         make_shared<IocpCore>(),
-        make_shared<GameSession>,
+        make_shared<ServerSession>,
         1);
 
     GDBConnectionPool = new MysqlConnectionPool(3);

@@ -31,6 +31,7 @@
 using namespace std;
 
 using GameSessionRef = shared_ptr<class GameSession>;
+using ServerSessionRef = shared_ptr<class ServerSession>;
 using PlayerRef = shared_ptr<class Player>;
 using MonsterRef = shared_ptr<class Monster>;
 using ArrowRef = shared_ptr<class Arrow>;

@@ -14,13 +14,6 @@
 
 PacketHandlerFunc GPacketHandler[UINT16_MAX];
 
-bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len)
-{
-    RecvPacketHeader* header = reinterpret_cast<RecvPacketHeader*>(buffer);
-    // TODO : Log
-    return true;
-}
-
 bool Handle_C_ENTER_GAME(PacketSessionRef& session, Protocol::C_ENTER_GAME& pkt)
 {
 

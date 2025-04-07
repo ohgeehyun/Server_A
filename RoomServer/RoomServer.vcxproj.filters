@@ -10,11 +10,14 @@
     <Filter Include="Session">
       <UniqueIdentifier>{8d10a97c-4011-41c4-92a0-ea129482702b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Protocol">
+      <UniqueIdentifier>{78c0a792-d6f6-462a-a522-31e48f52d1e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PacketHandler">
+      <UniqueIdentifier>{a62e60c1-ecb6-4885-837a-5b27fe5a0241}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="RoomServer.cpp">
-      <Filter>Main</Filter>
-    </ClCompile>
     <ClCompile Include="UserServerSession.cpp">
       <Filter>Session</Filter>
     </ClCompile>
@@ -22,6 +25,13 @@
       <Filter>Session</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp" />
+    <ClCompile Include="RoomPacketHandler.cpp">
+      <Filter>PacketHandler</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerProtocol.pb.cc">
+      <Filter>Protocol</Filter>
+    </ClCompile>
+    <ClCompile Include="RoomServer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="UserServerSession.h">
@@ -31,5 +41,16 @@
       <Filter>Session</Filter>
     </ClInclude>
     <ClInclude Include="pch.h" />
+    <ClInclude Include="RoomPacketHandler.h">
+      <Filter>PacketHandler</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerProtocol.pb.h">
+      <Filter>Protocol</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Common\Protobuf\bin\ServerProtocol.proto">
+      <Filter>Protocol</Filter>
+    </None>
   </ItemGroup>
 </Project>

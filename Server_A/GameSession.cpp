@@ -8,7 +8,7 @@
 #include "DataManager.h"
 #include "RedisConnection.h"
 
-GameSessionManager* SessionManager;
+GameSessionManager* GGameSessionManager;
 
 void GameSession::InitPlayer()
 {
@@ -34,7 +34,7 @@ void GameSession::InitPlayer()
 
 void GameSession::OnConnected()
 {
-    SessionManager->Add(static_pointer_cast<GameSession>(shared_from_this()));
+    GGameSessionManager->Add(static_pointer_cast<GameSession>(shared_from_this()));
     cout << "클라이언트 소켓 연결 완료 " <<endl;
 
     InitPlayer();
