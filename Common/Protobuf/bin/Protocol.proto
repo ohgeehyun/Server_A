@@ -28,43 +28,43 @@ enum MsgId {
   S_Exit_Game = 1020;
 }
 
- enum CreatureState
- {
+enum CreatureState
+{
       IDLE = 0;
       MOVING = 1;
       SKILL = 2;
       DEAD = 3;
- }
-  enum MoveDir
- {
+}
+enum MoveDir
+{
       UP = 0;
       DOWN = 1;
       LEFT = 2;
       RIGHT = 3;
- }
+}
 
- enum GameObjectType
- {
-     NONE = 0;
-     PLAYER = 1;
-     MONSTER = 2;
-     PROJECTTILE = 3;
-     MAGIC = 4;
- }
+enum GameObjectType
+{
+    NONE = 0;
+    PLAYER = 1;
+    MONSTER = 2;
+    PROJECTTILE = 3;
+    MAGIC = 4;
+}
 
- enum SkillType
- {
+enum SkillType
+{
      SKILL_NONE = 0;
      SKILL_AUTO = 1;
      SKILL_PROJECTILE= 2;
      SKILL_MAGIC = 3;
- }
+}
 
 message C_ENTER_GAME
- {
+{
    int32 rommId = 1;
    string roomname = 2;
- }
+}
 
 
 message S_ENTER_GAME
@@ -136,7 +136,6 @@ message S_SKILL
 {
     int32  objectId = 1;
     SkillInfo info = 2;
-
 }
 
 message S_CHANGEHP

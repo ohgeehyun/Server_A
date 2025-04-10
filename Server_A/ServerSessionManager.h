@@ -8,6 +8,9 @@ public:
     void Add(ServerSessionRef session);
     void Remove(ServerSessionRef session);
     void Broadcast(SendBufferRef sendBuffer);
+
+    ServerSessionRef Pop_Session(); 
+
 private:
     USE_LOCK;
     Set<ServerSessionRef> _sessions;

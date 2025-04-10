@@ -39,6 +39,5 @@ using MagicSkillRef = shared_ptr<class MagicSkill>;
 using ProjectTileRef = shared_ptr<class ProjectTile>;
 using RoomRef = shared_ptr<class Room>;
 using GameObjectRef = shared_ptr<class GameObject>;
-using IJopRef = shared_ptr<class IJob>;
 using MysqlConnectionRef = shared_ptr<class MysqlConnection>;
 using RedisConnectionRef = shared_ptr<class RedisConnection>;

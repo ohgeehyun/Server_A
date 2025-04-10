@@ -13,6 +13,7 @@
 #include "MagicSkill.h"
 #include "RoomManager.h"
 #include "RedisConnection.h"
+#include  "ServerSession.h"
 #include <httplib/httplib.h> 
 
 Room::Room() 

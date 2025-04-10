@@ -3,7 +3,7 @@
 #include "UserServerSession.h"
 #include "SessionManager.h"
 #include "RoomPacketHandler.h"
-
+#include "RedisConnection.h"
 
 int main()
 {
@@ -19,6 +19,7 @@ int main()
         make_shared<UserServerSession>,
         10);
 
+    GRedisConnection = new RedisConnection();
 
     ASSERT_CRASH(service->Start());
 
@@ -31,6 +32,11 @@ int main()
             }
         });
     }
+
+    GThreadManager->Launch([]() {
+        while (true)
+            GRedisConnection->RunEventLoop();
+    });
 
     GThreadManager->Join();
 }

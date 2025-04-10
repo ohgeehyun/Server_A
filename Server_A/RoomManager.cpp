@@ -2,15 +2,22 @@
 #include "Room.h"
 #include "RoomManager.h"
 #include "RedisConnection.h"
+#include "ServerProtocol.pb.h"
+#include "ServerSessionManager.h"
+#include "ServerPacketHandler.h"
+#include "ServerSession.h"
 #include "JsonUtils.h"
 
 
 RoomRef RoomManager::Add(int32 mapId, string name, string pwd, string rootUser)
 {
     RoomRef gameRoom = Make_Shared<Room>();
-
+    
     WRITE_LOCK
     {
+       if (pwd != "")
+            gameRoom->SetPwdYn(true);
+
        int32 _roomid = roomid.GetRoomId();
        gameRoom->SetRoomId(_roomid);
        gameRoom->SetRoomName(name);
@@ -18,10 +25,18 @@ RoomRef RoomManager::Add(int32 mapId, string name, string pwd, string rootUser)
        gameRoom->SetRootUser(rootUser);
        _rooms[_roomid] = gameRoom;
 
-       bool pwdYn = false;
+       // RoomServer에게 방 생성 요청
+       ServerProtocol::C_CREATE_ROOM packet;
+       packet.set_roomid(_roomid);
+       packet.set_roomname(name);
+       packet.set_roompwd(pwd);
+       packet.set_pwdyn(gameRoom->GetPwdYn());
+       packet.set_rootuser(rootUser);
 
-       if (pwd != "")
-           pwdYn = true;
+       ServerSessionRef session = GServerSessionManager->Pop_Session();
+
+       auto Packet = ServerPacketHandler::MakeSendBuffer(packet);
+       session->Send(Packet);
            
        nlohmann::json json_obj = JsonUtils::createJson(
            std::make_pair("id", _roomid),

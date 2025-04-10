@@ -24,9 +24,18 @@
 #include <hiredis/async.h>
 #include <hiredis/adapters/libevent.h>
 #include <boost/asio.hpp>
+#include "GlobalObject.h"
+#include "RedisUtils.h"
 
 using namespace std;
 
 using UserServerSessionRef = shared_ptr<class UserServerSession>;
-
+using RoomRef = shared_ptr<class Room>;
+using GameObjectRef = shared_ptr<class GameObject>;
+using PlayerRef = shared_ptr<class Player>;
+using MonsterRef = shared_ptr<class Monster>;
+using ArrowRef = shared_ptr<class Arrow>;
+using MagicSkillRef = shared_ptr<class MagicSkill>;
+using ProjectTileRef = shared_ptr<class ProjectTile>;
+using RedisConnectionRef = shared_ptr<class RedisConnection>;
 

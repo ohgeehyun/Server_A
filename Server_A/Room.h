@@ -58,6 +58,8 @@ public:
     void SetRootUser(string rootUser) { _rootUser = rootUser; }
     int32 GetPlayerCount() { return (int32)_players.size(); }
 
+    void SetPwdYn(bool pwdYn) { _pwdYn = pwdYn; }
+    bool GetPwdYn() { return _pwdYn; }
     HashMap<int32, MonsterRef> GetMonsters() { return _monsters; }    
 
     RoomRef GetSharedRoomPtr() { return static_pointer_cast<Room>(shared_from_this()); }
@@ -71,12 +73,16 @@ public:
 private:
 
     bool tempSpawnHandle = false;
-    int32 _roomId;
-  
+ 
     MapManager _map;
+
+    int32 _roomId;
     string _roomName;
     string _roompwd;
     string _rootUser;
+    bool _pwdYn = false;
+
+    ServerSessionRef _session;
 
     HashMap<int32, PlayerRef> _players;
     HashMap<int32, MonsterRef> _monsters;

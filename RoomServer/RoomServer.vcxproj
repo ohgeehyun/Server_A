@@ -163,12 +163,30 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Arrow.cpp" />
+    <ClCompile Include="ConfigManager.cpp" />
+    <ClCompile Include="DataContent.cpp" />
+    <ClCompile Include="DataManager.cpp" />
+    <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="GlobalObject.cpp" />
+    <ClCompile Include="JsonUtils.cpp" />
+    <ClCompile Include="MagicSkill.cpp" />
+    <ClCompile Include="MapManager.cpp" />
+    <ClCompile Include="Monster.cpp" />
+    <ClCompile Include="ObjectManager.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="ProjectTile.cpp" />
+    <ClCompile Include="RedisConnection.cpp" />
+    <ClCompile Include="RedisConnectionPool.cpp" />
+    <ClCompile Include="RedisUtils.cpp" />
+    <ClCompile Include="Room.cpp" />
+    <ClCompile Include="RoomManager.cpp" />
     <ClCompile Include="RoomPacketHandler.cpp" />
     <ClCompile Include="RoomServer.cpp" />
     <ClCompile Include="ServerProtocol.pb.cc">
@@ -181,7 +199,25 @@
     <ClCompile Include="UserServerSession.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Arrow.h" />
+    <ClInclude Include="ConfigManager.h" />
+    <ClInclude Include="DataContent.h" />
+    <ClInclude Include="DataManager.h" />
+    <ClInclude Include="GameObject.h" />
+    <ClInclude Include="GlobalObject.h" />
+    <ClInclude Include="JsonUtils.h" />
+    <ClInclude Include="MagicSkill.h" />
+    <ClInclude Include="MapManager.h" />
+    <ClInclude Include="Monster.h" />
+    <ClInclude Include="ObjectManager.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="Player.h" />
+    <ClInclude Include="ProjectTile.h" />
+    <ClInclude Include="RedisConnection.h" />
+    <ClInclude Include="RedisConnectionPool.h" />
+    <ClInclude Include="RedisUtils.h" />
+    <ClInclude Include="Room.h" />
+    <ClInclude Include="RoomManager.h" />
     <ClInclude Include="RoomPacketHandler.h" />
     <ClInclude Include="ServerProtocol.pb.h" />
     <ClInclude Include="SessionManager.h" />

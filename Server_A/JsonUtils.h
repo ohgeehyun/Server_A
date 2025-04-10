@@ -22,12 +22,6 @@ inline nlohmann::json JsonUtils::createJson(Args && ...args)
     return json_obj;
 }
 
-template<typename T>
-inline void JsonUtils::add_to_json(nlohmann::json& json_obj, T&& arg)
-{
-    json_obj[std::forward<T>(arg).first] = std::forward<T>(arg).second;
-}
-
 template<typename T, typename ...Args>
 inline void JsonUtils::add_to_json(nlohmann::json& json_obj, T&& arg, Args && ...args)
 {

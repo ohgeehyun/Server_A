@@ -10,12 +10,6 @@ void ServerSession::OnConnected()
 {
     GServerSessionManager->Add(static_pointer_cast<ServerSession>(shared_from_this()));
     cout << " RoomServer 연결 완료 " << endl;
-
-    ServerProtocol::C_MESSAGE_GAME chat;
-    string message = "hi room server";
-    chat.set_message(message);
-    auto messagebuffer = ServerPacketHandler::MakeSendBuffer(chat);
-    Send(messagebuffer);
 }
 
 void ServerSession::OnDisConnected()

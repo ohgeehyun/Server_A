@@ -9,8 +9,7 @@ bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len)
     return false;
 }
 
-bool Handle_C_MESSAGE_GAME(PacketSessionRef& session, ServerProtocol::C_MESSAGE_GAME& pkt)
+bool Handle_C_CREATE_ROOM(PacketSessionRef& session, ServerProtocol::C_CREATE_ROOM& pkt)
 {
-    cout << pkt.message() << endl;
-    return true;
+    return false;
 }

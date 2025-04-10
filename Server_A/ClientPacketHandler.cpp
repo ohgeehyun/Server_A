@@ -48,7 +48,7 @@ bool Handle_C_CREATE_ROOM(PacketSessionRef& session, Protocol::C_CREATE_ROOM& pk
     //룸생성 호출 
     RoomRef room = RoomManager::GetInstance().Add(1, pkt.roomname(), pkt.roompwd(),gameSession->GetNickName());
     
-    Protocol::S_CREATE_ROOM resultPacket;
+ /*   Protocol::S_CREATE_ROOM resultPacket;
     if (room != nullptr)
     {
         resultPacket.set_result(true);
@@ -59,7 +59,7 @@ bool Handle_C_CREATE_ROOM(PacketSessionRef& session, Protocol::C_CREATE_ROOM& pk
         resultPacket.set_result(false);
     }
     auto resultPacketBuffer = ClientPacketHandler::MakeSendBuffer(resultPacket);
-    session->Send(resultPacketBuffer);
+    session->Send(resultPacketBuffer);*/
 
     return true;
 }
