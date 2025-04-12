@@ -104,16 +104,21 @@ message C_SKILL
 
 message C_CREATE_ROOM
  {
-     int32  roomId = 1;
-     string roomname = 2;
-     string roompwd = 3;
-     bool   pwdYn = 4;
-     string rootUser = 5;
+     string roomname = 1;
+     string roompwd = 2;
+     string rootUser = 3;
+     int32  sessionId = 4;
  }
 message S_CREATE_ROOM
- {
-     bool result = 1;
- }
+{
+     bool   result   = 1 ; //방생성 결과 return;
+     int32  roomId   = 2 ;
+     string roomname = 3 ;
+     string roompwd  = 4 ;
+     bool   pwdYn    = 5 ;
+     string rootUser = 6 ;
+     int32 sessionId = 7 ;
+}
 
 message S_SKILL
 {

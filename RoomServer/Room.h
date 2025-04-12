@@ -59,6 +59,7 @@ public:
 
     void SetPwdYn(bool pwdYn) { _pwdYn = pwdYn; }
     bool GetPwdYn() { return _pwdYn; }
+
     HashMap<int32, MonsterRef> GetMonsters() { return _monsters; }
 
     RoomRef GetSharedRoomPtr() { return static_pointer_cast<Room>(shared_from_this()); }
@@ -76,9 +77,9 @@ private:
     MapManager _map;
 
     int32 _roomId;
-    string _roomName;
-    string _roompwd;
-    string _rootUser;
+    string _roomName = "";
+    string _roompwd = "";
+    string _rootUser = "";
     bool _pwdYn = false;
 
     UserServerSessionRef _session;

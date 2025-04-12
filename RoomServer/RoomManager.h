@@ -8,10 +8,15 @@ public:
         return instance;
     }
 
-    RoomRef Add(int32 mapId, string name, string pwd, string rootUser);
-    void Add(int32 mapId, string name, string pwd, int32 Roomid, string rootUser);
-    bool Remove(int32 roomId);
+    RoomRef Add(const ServerProtocol::C_CREATE_ROOM& pkt,int32 roomId, UserServerSessionRef session);
+    bool    Remove(int32 roomId);
     RoomRef Find(int32 roomId);
+
+    //redis에서 방 번호를 받아온 뒤 방 생성
+    void RequestCreateRoomFromRedis(const ServerProtocol::C_CREATE_ROOM& pkt, UserServerSessionRef session);
+    //방 생성 완료 후 방 생성 요청을한 UserServer에게 response
+    void ResponseCreateRoomPacket(RoomRef room, UserServerSessionRef session,int32 clientSessionId);
+
     void DoRoomUpdate();
 
 private:

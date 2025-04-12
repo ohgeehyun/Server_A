@@ -1,7 +1,10 @@
 #include "pch.h"
 #include "ClientPacketHandler.h"
+#include "ServerPacketHandler.h"
 #include "GameSession.h"
 #include "GameSessionManager.h"
+#include "ServerSession.h"
+#include "ServerSessionManager.h"
 #include "Player.h"
 #include "RoomManager.h"
 #include "DataManager.h"
@@ -45,21 +48,18 @@ bool Handle_C_CREATE_ROOM(PacketSessionRef& session, Protocol::C_CREATE_ROOM& pk
 
     if (pkt.roomname() == "")
         return false;
-    //룸생성 호출 
-    RoomRef room = RoomManager::GetInstance().Add(1, pkt.roomname(), pkt.roompwd(),gameSession->GetNickName());
-    
- /*   Protocol::S_CREATE_ROOM resultPacket;
-    if (room != nullptr)
-    {
-        resultPacket.set_result(true);
-        resultPacket.set_roomid(room->GetRoomId());
-    }
-    else 
-    {
-        resultPacket.set_result(false);
-    }
-    auto resultPacketBuffer = ClientPacketHandler::MakeSendBuffer(resultPacket);
-    session->Send(resultPacketBuffer);*/
+
+    // RoomServer에게 방 생성 요청
+    ServerProtocol::C_CREATE_ROOM packet;
+    packet.set_roomname(pkt.roomname());
+    packet.set_roompwd(pkt.roompwd());
+    packet.set_rootuser(gameSession->GetNickName());
+    packet.set_sessionid(static_pointer_cast<GameSession>(session)->GetSessionId());
+
+    ServerSessionRef RoomServerSession = GServerSessionManager->Pop_Session();
+
+    auto Packet = ServerPacketHandler::MakeSendBuffer(packet);
+    RoomServerSession->Send(Packet);
 
     return true;
 }
