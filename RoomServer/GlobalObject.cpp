@@ -1,16 +1,19 @@
 #include "pch.h"
 #include "GlobalObject.h"
-RedisConnection* GRedisConnection = nullptr;
+#include "RedisConnection.h"
+#include "NetAddress.h"
+std::shared_ptr<RedisConnection> GRedisConnection = nullptr;
+
 class ServerGlobal
 {
 public:
     ServerGlobal()
     {
-        //초기화는 main의 시작부분에서 해준다 링커순서에 의 해 pch에서 할시 초기화를 못하는 경우가 있다.
+        //초기화는 main의 시작부분에서 해준다 링커순서에 의 해 main()함수에서 초기화.
     }
 
     ~ServerGlobal()
     {
-        delete GRedisConnection;
+       
     }
 }GServerGlobal;

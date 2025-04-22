@@ -12,36 +12,62 @@ bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len)
     return false;
 }
 
+bool Handle_S_ENTER_GAME(PacketSessionRef& session, ServerProtocol::S_ENTER_GAME& pkt)
+{
+    return false;
+}
+
+bool Handle_S_LEAVE_GAME(PacketSessionRef& session, ServerProtocol::S_LEAVE_GAME& pkt)
+{
+    return false;
+}
+
+bool Handle_S_EXIT_GAME(PacketSessionRef& session, ServerProtocol::S_EXIT_GAME& pkt)
+{
+    return false;
+}
+
+bool Handle_S_SPAWN(PacketSessionRef& session, ServerProtocol::S_SPAWN& pkt)
+{
+    return false;
+}
+
+bool Handle_S_DESPAWN(PacketSessionRef& session, ServerProtocol::S_DESPAWN& pkt)
+{
+    return false;
+}
+
+bool Handle_S_MOVE(PacketSessionRef& session, ServerProtocol::S_MOVE& pkt)
+{
+    return false;
+}
+
 bool Handle_S_CREATE_ROOM(PacketSessionRef& session, ServerProtocol::S_CREATE_ROOM& pkt)
 {
-
-    //RoomServer에서 방만들기 실패 하였음. 혹여나 실패에 따른 분기가 필요할시 생성
-    if (pkt.result() == false)
-        return;
-
-    GameSessionRef ClientSession = GGameSessionManager->Find(pkt.sessionid());
-
-    if (ClientSession == nullptr)
-        return false;
-    
-
-    //UserRoomServer에서도 일단은 간단한 Room정보는 가지고 있는 방향
-    RoomRef room = RoomManager::GetInstance().Add(pkt);
-    
-    //클라이언트에게 결과전달
-    Protocol::S_CREATE_ROOM resultPacket;
-    if (room != nullptr)
-    {
-        resultPacket.set_result(true);
-        resultPacket.set_roomid(pkt.roomid());
-    }
-    else
-    {
-        resultPacket.set_result(false);
-    }
-
-    auto resultPacketBuffer = ClientPacketHandler::MakeSendBuffer(resultPacket);
-    ClientSession->Send(resultPacketBuffer);
-
     return true;
+}
+
+bool Handle_S_SKILL(PacketSessionRef& session, ServerProtocol::S_SKILL& pkt)
+{
+    return false;
+}
+
+bool Handle_S_MESSAGE(PacketSessionRef& session, ServerProtocol::S_MESSAGE& pkt)
+{
+    return false;
+}
+
+bool Handle_S_CHANGEHP(PacketSessionRef& session, ServerProtocol::S_CHANGEHP& pkt)
+{
+    return false;
+}
+
+bool Handle_S_DIE(PacketSessionRef& session, ServerProtocol::S_DIE& pkt)
+{
+    return false;
+}
+
+bool Handle_S_GET_ROOMINFO(PacketSessionRef& session, ServerProtocol::S_GET_ROOMINFO& pkt)
+{
+    return false;
 }

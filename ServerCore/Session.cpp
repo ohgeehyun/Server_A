@@ -43,6 +43,11 @@ bool Session::Connect()
     return RegisterConnect();
 }
 
+bool Session::Connect(const NetAddress& Address)
+{
+    return RegisterConnect(Address);
+}
+
 void Session::DisConnect(const WCHAR* cause)
 {
     if (_connected.exchange(false) == false)
@@ -90,11 +95,40 @@ bool Session::RegisterConnect()
 
     if (SocketUtils::BindAnyAddress(_socket, 0/*남는 포트*/))
 
-        _connectEvent.Init();
+    _connectEvent.Init();
     _connectEvent.owner = shared_from_this(); //ADD_REF
 
     DWORD numOfBytes = 0;
     SOCKADDR_IN sockAddr = GetService()->GetNetAddress().GetSockAddr();
+
+    if (false == SocketUtils::connectEx(_socket, reinterpret_cast<SOCKADDR*>(&sockAddr), sizeof(sockaddr), nullptr, 0, &numOfBytes, &_connectEvent))
+    {
+        int32 errorCode = ::WSAGetLastError();
+        if (errorCode != WSA_IO_PENDING)
+        {
+            _connectEvent.owner = nullptr;//RELESE REF
+            return false;
+        }
+    }
+}
+
+bool Session::RegisterConnect(const NetAddress& address)
+{
+    if (IsConnected())
+        return false;
+
+    if (GetService()->GetServiceType() != ServiceType::Client)
+        return false;
+
+    if (SocketUtils::BindAnyAddress(_socket, 0/*남는 포트*/))
+
+    _connectEvent.Init();
+    _connectEvent.owner = shared_from_this(); //ADD_REF
+
+    SetNetAddress(address);
+
+    DWORD numOfBytes = 0;
+    SOCKADDR_IN sockAddr = address.GetSockAddr();
 
     if (false == SocketUtils::connectEx(_socket, reinterpret_cast<SOCKADDR*>(&sockAddr), sizeof(sockaddr), nullptr, 0, &numOfBytes, &_connectEvent))
     {
@@ -278,6 +312,9 @@ void Session::HandleError(int32 errorCode)
     case WSAECONNRESET:
     case WSAECONNABORTED:
         DisConnect(L"HandleError");
+        break;
+    case 10057:
+        cout << "Session Handle Error : " << "서버와의 연결이 이루어 지지 않은 상태에서 Send,Recv 호출" << endl;
         break;
     default:
         // TODO : log

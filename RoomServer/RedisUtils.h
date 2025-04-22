@@ -1,21 +1,20 @@
 #pragma once
+
 class RedisUtils
 {
 public:
     template<typename ...Args>
-    static void RAsyncCommand(redisAsyncContext* context, const char* format, Args... args);
+    static void RAsyncCommand(redisAsyncContext* context, std::string_view format, Args&&... args);
+
     template<typename Callback, typename... Args>
-    static void RAsyncCommand(redisAsyncContext* context, Callback&& callback, const char* format, Args&&... args);
+    static void RAsyncCommandCallback(redisAsyncContext* context, Callback&& callback, std::string_view format, Args&&... args);
 
-    static void replyResponseHandler(void* reply,const char* log);
-    static void testGetvalue(void* reply);
-
-private:
-
+    static void ReplyResponseHandler(void* reply, std::string_view log);
+    static void TestGetValue(void* reply);
 };
 
 template<typename ...Args>
-inline void RedisUtils::RAsyncCommand(redisAsyncContext* context, const char* format, Args ...args)
+inline void RedisUtils::RAsyncCommand(redisAsyncContext* context, std::string_view format, Args&& ...args)
 {
     if (!context)
     {
@@ -23,46 +22,51 @@ inline void RedisUtils::RAsyncCommand(redisAsyncContext* context, const char* fo
         return;
     }
 
-    struct commandWrapper
+    struct CommandWrapper
     {
-        const char* commandFormat;
+        std::string format;
     };
 
-    auto* cbWrapper = new commandWrapper{ format };
+    auto* cbWrapper = new CommandWrapper{ std::string(format) };
 
     redisAsyncCommand(context, [](redisAsyncContext* ctx, void* reply, void* privdata)
     {
-        auto* wrapper = static_cast<commandWrapper*>(privdata);
+        auto* wrapper = static_cast<CommandWrapper*>(privdata);
         if (wrapper)
         {
-
-            RedisUtils::replyResponseHandler(reply, wrapper->commandFormat);
-
-            delete wrapper;  // 메모리 해제
+            RedisUtils::ReplyResponseHandler(reply, wrapper->format);
+            delete wrapper;
         }
-    }, cbWrapper, format, args...);
+    }, cbWrapper, format.data(), std::forward<Args>(args)...);
 }
 
-
-template<typename Callback, typename... Args>
-void RAsyncCommand(redisAsyncContext* context, Callback&& callback, const char* format, Args&&... args)
+template<typename Callback, typename ...Args>
+inline void RedisUtils::RAsyncCommandCallback(redisAsyncContext* context, Callback&& callback, std::string_view format, Args&& ...args)
 {
+    if (!context)
+    {
+        std::cerr << "Redis context is null!" << std::endl;
+        return;
+    }
+
     struct CallbackWrapper
     {
-        const char* format;
+        std::string format;
         std::function<void(redisReply*)> callback;
     };
 
     auto* cbWrapper = new CallbackWrapper{
-         format,
-         std::function<void(redisReply*)>(std::forward<Callback>(callback))
+        std::string(format),
+        std::function<void(redisReply*)>(std::forward<Callback>(callback))
     };
 
     redisAsyncCommand(context, [](redisAsyncContext* ctx, void* reply, void* privdata)
     {
         auto* wrapper = static_cast<CallbackWrapper*>(privdata);
-        wrapper->callback(static_cast<redisReply*>(reply));
-        delete wrapper;
-
-    }, cbWrapper, format, std::forward<Args>(args)...);
+        if (wrapper)
+        {
+            wrapper->callback(static_cast<redisReply*>(reply));
+            delete wrapper;
+        }
+    }, cbWrapper, format.data(), std::forward<Args>(args)...);
 }

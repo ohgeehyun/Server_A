@@ -150,26 +150,7 @@ void Room::EnterGame(GameObjectRef gameObject)
 
 void Room::EnterGame_Player(PlayerRef player)
 {
-    if (player == nullptr)
-        return;
-
-    if (tempSpawnHandle == false)
-    {
-        DoAsync(std::bind(&Room::SpawnMonster,this,5 ,5));
-        DoAsync(std::bind(&Room::SpawnMonster, this, 8, 3));
-        DoAsync(std::bind(&Room::SpawnMonster, this, 10, 7));
-        tempSpawnHandle = true;
-    }
-
-    DoAsync([this, player]() {
-        _players.insert(make_pair(player->GetObjectId(), player));
-        player->SetRoom(GetSharedRoomPtr());
-        _map.ApplyMove(static_pointer_cast<GameObject>(player),Vector2Int(player->GetPosx(),player->GetPosy()));
-        EnterGameEventSend_Player(player);
-    });
-
-    const char* query = "HSET room_score:%d:%s nickname %s";
-    RedisUtils::RAsyncCommand(GRedisConnection->GetContext(), query, GetRoomId(), player->GetSession()->GetUserId().c_str(), player->GetSession()->GetNickName().c_str());
+  
 }
 
 void Room::EnterGame_Monster(MonsterRef monster)
@@ -194,62 +175,7 @@ void Room::EnterGame_ProjectTile(ProjectTileRef projectTile)
 
 void Room::EnterGameEventSend_Player(PlayerRef player)
 {
-    if (player == nullptr)
-        return;
-
-    cout << player->GetObjectId() << endl;
-    ServerProtocol::S_ENTER_GAME enterPacket;
-    ServerProtocol::OBJECT_INFO playerInfo = player->GetObjectInfo();
-    enterPacket.set_roomid(_roomId);
-    enterPacket.set_roomname(_roomName);
-    *enterPacket.mutable_player() = playerInfo;
-
-    auto enterPacketBuffer = RoomPacketHandler::MakeSendBuffer(enterPacket);
-    player->GetSession()->Send(enterPacketBuffer);
-
-    //룸에 존재하는 인원들 정보를 새로 접속한 인원에게 전송
-    {
-        ServerProtocol::S_SPAWN SpawnPacket;
-        for (const auto& playerPair : _players)
-        {
-            const PlayerRef& p = playerPair.second;
-            if (p != player)
-            {
-                *SpawnPacket.add_objects() = p->GetObjectInfo();
-            }
-        }
-
-        for (const auto& monsterPair : _monsters)
-        {
-            const MonsterRef& m = monsterPair.second;
-            *SpawnPacket.add_objects() = m->GetObjectInfo();
-        }
-
-        for (const auto& tilepair : _projectTiles)
-        {
-            const ProjectTileRef& p = tilepair.second;
-            *SpawnPacket.add_objects() = p->GetObjectInfo();
-        }
-
-        auto SpawnPacketBuffer = RoomPacketHandler::MakeSendBuffer(SpawnPacket);
-        player->GetSession()->Send(SpawnPacketBuffer);
-    }
-
-    //이미 룸에 존재하던 인원에게 새로운 인원 정보 전송
-    {
-        ServerProtocol::S_SPAWN SpawnPacket;
-        SpawnPacket.add_objects()->CopyFrom(player->GetObjectInfo());
-
-        auto SpawnPacketBuffer = RoomPacketHandler::MakeSendBuffer(SpawnPacket);
-        for (const auto& playerPair : _players)
-        {
-            if (player->GetObjectId() != playerPair.second->GetObjectId())
-                playerPair.second->GetSession()->Send(SpawnPacketBuffer);
-        }
-    }
-
-    const char* query = "SADD room_user:%d %s";
-    RedisUtils::RAsyncCommand(GRedisConnection->GetContext(), query, _roomId, player->GetSession()->GetUserId().c_str());
+ 
 
 }
 
@@ -377,23 +303,7 @@ void Room::LeaveGame_ProjectTile(int32 objectId)
 
 void Room::ExitGameEventSend(PlayerRef player)
 {
-    //게임 방에서 완전히 나가기가 완료되었다고 클라이언트에게 패킷을 전송해주자
-    ServerProtocol::S_EXIT_GAME packet;
-    packet.set_exitflag(true);
-    auto exitPacketBuffer = RoomPacketHandler::MakeSendBuffer(packet);
-    player->GetSession()->Send(exitPacketBuffer);
 
-    //해당방의 score 삭제 처리 1.nickname 2.kill 3.death 4.nickname Del로 그냥 모든 필드 밀어줌 필요시 HDell로 필요한 필드만 삭제
-
-    const char* query = "DEL room_score:%d:%s";
-    RedisUtils::RAsyncCommand(GRedisConnection->GetContext(), query, GetRoomId(), player->GetSession()->GetUserId().c_str());
-    
-    query = "SREM room_user:%d %s";
-    RedisUtils::RAsyncCommand(GRedisConnection->GetContext(), query, _roomId, player->GetSession()->GetUserId().c_str());
-
-    //room을 만든 user가 방에서 나감
-    if (player->GetSession()->GetNickName() == GetRootUser())
-        DoAsync(&Room::RoomBreak, player);
 }
 
 void Room::Broadcast(SendBufferRef sendBuffer)

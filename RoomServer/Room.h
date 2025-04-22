@@ -1,3 +1,4 @@
+#pragma once
 #include "ServerProtocol.pb.h"
 #include "MapManager.h"
 #include "JobQueue.h"

@@ -1,190 +1,247 @@
 #include "pch.h"
 #include "RedisConnection.h"
-#include <hiredis/hiredis.h>
-#include <sw/redis++/redis++.h>
-#include "RoomManager.h"
-#include "DataManager.h"
+#include "NetAddress.h"
+
+
+
 RedisConnection::RedisConnection()
 {
-    HashMap<string, ServerConfigData> dict = DataManager::GetInstance().GetServerConfigDict();
-    AsyncConnect(dict["database"].redisData.host, dict["database"].redisData.port);
+    ConnectAsync([](bool success, const std::string& msg) {
+        if (success) 
+        {
+            std::cout << "redis connect success"<<endl;
+        }
+        else
+        {
+            std::cerr << "Redis connect failed : "<< msg <<endl;
+        }
+    });
 }
 
 RedisConnection::~RedisConnection()
 {
-    // TODO : 연결 끊어주기
+    if (_context)
+        redisAsyncFree(_context);
 }
 
-void RedisConnection::AsyncConnect(const std::string& host, int32 port)
+void RedisConnection::ConnectAsync(ConnectCallback callback)
 {
-    _context = redisAsyncConnect(host.c_str(), port);
-    
-    if (_context == nullptr) {
-        std::cerr << "Error: can't allocate redis context" << '\n';
-    };
+    _connectCallback = std::move(callback);
 
-    _eventBase = event_base_new();
-    if (redisLibeventAttach(_context, _eventBase) != REDIS_OK) {
-        std::cerr << "Failed to attach Redis context to libevent" << std::endl;
-    }
-
-    // redisAsyncSetConnectCallback에 래퍼 콜백 설정
-    redisAsyncSetConnectCallback(_context, [](const redisAsyncContext* context, int status) {
-        // 래퍼 콜백에서 실제 멤버 함수 호출
-        RedisConnection* connection = static_cast<RedisConnection*>(context->data);
-        connection->OnConnect(context, status);
-    });
-    
-}
-
-void RedisConnection::RunEventLoop()
-{
-    if (_eventBase)
-        event_base_loop(_eventBase, EVLOOP_NONBLOCK);
-}
-
-void RedisConnection::OnConnect(const redisAsyncContext* context, int status)
-{
-    if (status != REDIS_OK) {
-        std::cerr << "Connection failed: " << context->errstr << '\n';
+    _context = redisAsyncConnect(ServerConfig["database"].redisData.host.c_str(), ServerConfig["database"].redisData.port);
+    if (_context == nullptr || _context->err) {
+        std::string errMsg = _context ? _context->errstr : "null context";
+        _connectCallback(false, "Redis connect failed: " + errMsg);
         return;
     }
-    else {
-        std::cout << "Connected to Redis server successfully!" << '\n';
+
+    _context->data = this;
+    _eventBase.reset(event_base_new());
+
+    if (redisLibeventAttach(_context, _eventBase.get()) != REDIS_OK) {
+        _connectCallback(false, "Failed to attach libevent");
+        return;
     }
 
-    OnAuthenticate(const_cast<redisAsyncContext*>(context));
+    redisAsyncSetConnectCallback(_context, [](const redisAsyncContext* c, int status) {
+        RedisConnection* self = static_cast<RedisConnection*>(c->data);
+        self->OnConnected(c, status);
+    });
 }
 
-void RedisConnection::OnAuthenticate(redisAsyncContext* context)
+void RedisConnection::OnConnected(const redisAsyncContext* context, int status)
 {
-    HashMap<string, ServerConfigData> dict = DataManager::GetInstance().GetServerConfigDict();
-    const std::string password = dict["database"].redisData.auth;
+    if (status != REDIS_OK) {
+        _connectCallback(false, context->errstr);
+        return;
+    }
 
-    // 비동기적으로 AUTH 명령을 보내 Redis 서버에 인증 요청
-    redisAsyncCommand(context, [](redisAsyncContext* context, void* reply, void* privdata) {
-        // 인증 완료 후의 콜백 처리
-        if (reply == nullptr)
-            std::cerr << "Authentication failed!" << '\n';
+    // 연결 성공 후 인증 시작
+    const std::string password = ServerConfig["database"].redisData.auth; // 필요시 멤버로 저장
+    Authenticate(const_cast<redisAsyncContext*>(context), password);
+}
 
-        // 인증 성공 후 추가 작업 굳이 또 다른 함수를 호출할 작업까진 연결성공이라면 지금은 없지만 나중을 위하여 작성
-        RedisConnection* conn = static_cast<RedisConnection*>(context->data);
-        conn->PostAuthTask(context);  // 인증 후 작업을 위한 함수 호출
-
+void RedisConnection::Authenticate(redisAsyncContext* context, const std::string& password)
+{
+    redisAsyncCommand(context, [](redisAsyncContext* c, void* reply, void* privdata) {
+        RedisConnection* self = static_cast<RedisConnection*>(c->data);
+        self->OnAuthenticated(c, reply);
     }, nullptr, "AUTH %s", password.c_str());
 }
 
-void RedisConnection::PostAuthTask(redisAsyncContext* context)
+void RedisConnection::OnAuthenticated(redisAsyncContext* context, void* reply)
 {
-    std::cout << "Authentication successful!" << '\n';
-    
-    redisAsyncCommand(context, [](redisAsyncContext* context, void* reply, void* privdata) {
-        
-        // void* 타입인 reply를 redisReply*로 캐스팅
-        redisReply* redisReplyPtr = static_cast<redisReply*>(reply);
-        if (reply == nullptr) {
-            std::cerr << "PING failed!" << '\n';
-        }
-        else {
-            std::cout << "PING successful! Response:"  << redisReplyPtr->str<<'\n';  // Redis가 정상적으로 응답하면 성공 메시지 출력
-        }
-        RedisConnection* conn = static_cast<RedisConnection*>(context->data);
-        conn->OnCheckToCreateData(context); // 방 연결 이후 Redis 에 등록된 방에 따른 방 생성
-    }, nullptr, "PING");
+    if (reply == nullptr) {
+        _connectCallback(false, "Redis AUTH failed (no reply)");
+        return;
+    }
+
+    RedisConnection* self = static_cast<RedisConnection*>(context->data);
+
+    _connectCallback(true, "");
+    std::cout << "[Redis] Authentication success.\n";
+    //auth 인증 완료후 Redis에 올라와 있는 RoomServer정보 가저오는 함수 호출
+    OnRoomServerInfoFetched([self](const std::vector<NetAddress>& servers)
+        {
+            for (auto& s : servers)
+            {
+                std::wcout << L"[Redis] Room Server: " << s.GetIpAdress() << " : " << s.GetPort() <<"\n";
+                //전역 클라이언트 서비스에서 클라이언트 추가 호출
+                GPClientService->Add_ClientInfo(s);
+                //room_servers 구독
+            }
+            self->SubscribeRoomServerChannel();
+            ASSERT_CRASH(GPClientService->Start());
+        });
 }
 
-void RedisConnection::OnCheckToCreateData(redisAsyncContext* context)
+void RedisConnection::LoadRoomServers(std::function<void(const std::vector<NetAddress>&)> callback)
 {
+    redisAsyncCommand(_context,
+        [](redisAsyncContext* c, void* r, void* privdata) 
+        {
 
-    redisAsyncCommand(context, [](redisAsyncContext* context, void* reply, void* privdata) {
-        redisReply* res = (redisReply*)reply;
+            redisReply* reply = static_cast<redisReply*>(r);
 
-        if (res == nullptr) {
-            std::cerr << "Error in SCAN response." << std::endl;
-            return;
-        }
-        RedisConnection* conn = static_cast<RedisConnection*>(context->data);
-        conn->GetRoom(context, res); // 응답을 처리하는 함수 호출
-    },nullptr, "SCAN 0 MATCH room:[0-9]*");
+            if (reply == nullptr || reply->type != REDIS_REPLY_ARRAY) 
+                return;
+
+            std::vector<std::string> keys;
+            for (size_t i = 0; i < reply->element[1]->elements; ++i)
+            {
+                keys.push_back(reply->element[1]->element[i]->str);
+            }
+
+            RedisConnection* self = static_cast<RedisConnection*>(c->data);
+            self->FetchRoomServerInfos(keys, std::move(*static_cast<std::function<void(std::vector<NetAddress>)>*>(privdata)));
+            delete static_cast<std::function<void(std::vector<NetAddress>)>*>(privdata);
+
+         }, new std::function<void(std::vector<NetAddress>)>(std::move(callback)),
+        "SCAN 0 MATCH room_servers:*");
 }
 
-void RedisConnection::GetRoom(redisAsyncContext* context, redisReply* res)
+void RedisConnection::FetchRoomServerInfos(const std::vector<std::string>& keys, std::function<void(const std::vector<NetAddress>&)> callback)
 {
- 
-    // SCAN 결과 처리: 첫 번째 요소는 커서 값이고, 두 번째 요소부터 키 목록
-    if (res->type == REDIS_REPLY_ARRAY) {
-        // 첫 번째 요소는 커서 값 (처리하지 않음)
-        std::string cursor = res->element[0]->str;
+    struct FetchContext
+    {
+        std::shared_ptr<std::vector<NetAddress>> result = std::make_shared<std::vector<NetAddress>>();
+        std::shared_ptr<std::atomic<int32_t>> pending;
+        std::function<void(const std::vector<NetAddress>&)> finalCallback;
+    };
 
-        for (size_t i = 1; i < res->elements; i++) {
-            // 만약 element[i]가 REDIS_REPLY_ARRAY라면 그 안에서 또 키들을 찾아야 합니다.
-            if (res->element[i]->type == REDIS_REPLY_ARRAY) {
-                // 키 목록이 배열로 감싸져 있으면, 그 안에서 문자열들을 출력합니다.
-                for (size_t j = 0; j < res->element[i]->elements; j++) {
-                    if (res->element[i]->element[j] != nullptr && res->element[i]->element[j]->type == REDIS_REPLY_STRING) {
-                        std::string key(res->element[i]->element[j]->str, res->element[i]->element[j]->len);
-                        std::cout << "key value: " << key << std::endl;
+    auto ctx = std::make_shared<FetchContext>();
+    ctx->pending = std::make_shared<std::atomic<int32_t>>(static_cast<int32_t>(keys.size()));
+    ctx->finalCallback = std::move(callback);
 
-                        //여기에 이제 key 값을 받아서 CreateRoom함수에  jsondata넘겨주고 파싱해야할듯
-                        CreateRoom(context,res,key);
+    for (const auto& key : keys)
+    {
+        RedisUtils::RAsyncCommandCallback(_context,
+            [ctx](redisReply* reply)
+            {
+                if (reply && reply->type == REDIS_REPLY_ARRAY)
+                {
+                    std::string ip;
+                    uint16_t port = 0;
+                    std::string status;
+
+                    for (size_t i = 0; i + 1 < reply->elements; i += 2)
+                    {
+                        std::string field = reply->element[i]->str;
+                        std::string value = reply->element[i + 1]->str;
+
+                        if (field == "ip") ip = value;
+                        else if (field == "port") port = static_cast<uint16_t>(std::stoi(value));
+                        else if (field == "status") status = value;
                     }
-                    else {
-                        std::cerr << "Error: Invalid element at nested index " << j << std::endl;
+
+                    if (!ip.empty() && port != 0 && status == "available")
+                    {
+                        ctx->result->emplace_back(Utils::Utf8ToWstring(ip), port);
                     }
+                }
+
+                if (--(*ctx->pending) == 0)
+                {
+                    ctx->finalCallback(*ctx->result);
+                }
+            },"HGETALL %s", key.c_str());
+    }
+}
+
+void RedisConnection::OnRoomServerInfoFetched(std::function<void(const std::vector<NetAddress>&)> callback)
+{
+    RedisUtils::RAsyncCommandCallback(_context,
+        [this, callback = std::move(callback)](redisReply* reply)
+        {
+            std::vector<std::string> keys;
+
+            if (reply && reply->type == REDIS_REPLY_ARRAY && reply->elements == 2)
+            {
+                redisReply* keysReply = reply->element[1];
+                for (size_t i = 0; i < keysReply->elements; ++i)
+                {
+                    keys.emplace_back(keysReply->element[i]->str);
                 }
             }
 
-            // 커서가 0이 아니면 다음 SCAN 명령을 호출하여 계속 반복
-            if (cursor != "0") {
-                std::cout << "Continuing scan with cursor: " << cursor << std::endl;
-                redisAsyncCommand(context, [](redisAsyncContext* context, void* reply, void* privdata) {
-                    redisReply* res = (redisReply*)reply;
-                    RedisConnection* conn = static_cast<RedisConnection*>(context->data);
-                    conn->GetRoom(context, res);
-                }, nullptr, "SCAN %s MATCH room:[0-9]*", cursor.c_str());
+            if (keys.empty())
+            {
+                callback({});
+                return;
             }
-            else {
-                std::cout << "Scan complete." << std::endl;
-            }
-        }    
-    }
-  
+
+            FetchRoomServerInfos(keys, callback);
+        },"SCAN 0 MATCH room_servers:*");
 }
 
-void RedisConnection::CreateRoom(redisAsyncContext* context, redisReply* res, string room)
+void RedisConnection::SubscribeRoomServerChannel()
 {
-    redisAsyncCommand(context, [](redisAsyncContext* context, void* reply, void* privdata) {
-        redisReply* res = (redisReply*)reply;
-        RedisConnection* conn = static_cast<RedisConnection*>(context->data);
+    redisAsyncCommand(_context,[](redisAsyncContext* c, void* reply, void* privdata)
+        {
+           if (!reply) return;
 
-        const std::string key = static_cast<const char*>(privdata);
+           redisReply* r = static_cast<redisReply*>(reply);
 
-        if (res->type == REDIS_REPLY_STRING) {
-            std::string json_data(res->str, res->len);
-            std::cout << "Received JSON for key " << key << ": " << json_data << std::endl;
+           if(r->type != REDIS_REPLY_ARRAY || r->elements < 3)
+               return;
 
-            // JSON 파싱
-            try {
-                nlohmann::json jsonparse = nlohmann::json::parse(json_data);  // JSON 파싱
+           //c스타일 문법에서는 포인터와 string은 비교시 포인터 비교이다. string으로 변환후 비교 또는 strcmp함수를 사용해야함.
+           std::string msgType = r->element[0]->str;
 
-                // 파싱된 JSON 데이터에서 필요한 값 추출
-                int id = jsonparse["id"].get<int>();
-                std::string name = jsonparse["name"].get<std::string>();
-                std::string password = jsonparse["password"].get<std::string>();
-                std::string nickname = jsonparse["rootUser"].get<std::string>();
-                bool pwdYn = jsonparse["pwdYn"].get<bool>();
+           if (msgType == "subscribe")
+               cout << "room:servers subscribe complete" << endl;
 
-                RoomManager::GetInstance().Add(1,name, password,id, nickname);
+           //요소가 3개인지 검사 
+           if (msgType == "message")
+           {
+               //Redis에서 subscribe 의 반환은 배열에 프로토콜 형식,채널명,메세지(실제 데이터)기때문에 배열의2번
+               std::string payload = r->element[2]->str;
+
+               try
+               {
+                   auto jsonData = nlohmann::json::parse(payload);
+                   std::string ip = jsonData["ip"];
+                   uint16_t port = jsonData["port"];
+                   //int32_t roomId = jsonData["room_id"];
+
+                   NetAddress addr(Utils::Utf8ToWstring(ip), port);
+
+                   // 여기서 addr를 사용해서 서버 리스트에 추가하든, 핸들러 호출하든 하면 됨
+                   std::wcout << L"[Redis] SUB : RoomServer RoomServer Addr: " << Utils::Utf8ToWstring(ip)<< " : " << port << std::endl;
+
+                   GPClientService->AddClientInfoAndStart(addr);
+               }
+               catch (const std::exception& e)
+               {
+                   std::cerr << "[Redis] JSON parsing failed: " << e.what() << std::endl;
+               }
             }
-            catch (const nlohmann::json::exception& e) {
-                std::cerr << "Error parsing JSON for key " << key << ": " << e.what() << std::endl;
-            }
-        }
-        else {
-            std::cerr << "Expected a string value for key: " << key << std::endl;
-        }
-
-    }, (void*)room.c_str(), "GET %s",room.c_str());
+        }, nullptr,"SUBSCRIBE channel:room_servers");
 }
 
+void RedisConnection::RunEventLoopOnce()
+{
+    if (_eventBase)
+        event_base_loop(_eventBase.get(), EVLOOP_NONBLOCK);
+}
 

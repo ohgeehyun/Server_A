@@ -10,7 +10,7 @@ public:
 
     RoomRef Add(const ServerProtocol::C_CREATE_ROOM& pkt,int32 roomId, UserServerSessionRef session);
     bool    Remove(int32 roomId);
-    RoomRef Find(int32 roomId);
+    const RoomRef& Find(int32 roomId) const;
 
     //redis에서 방 번호를 받아온 뒤 방 생성
     void RequestCreateRoomFromRedis(const ServerProtocol::C_CREATE_ROOM& pkt, UserServerSessionRef session);

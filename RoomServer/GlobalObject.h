@@ -1,2 +1,3 @@
 #pragma once
-extern class RedisConnection* GRedisConnection;
+class RedisConnection;
+extern std::shared_ptr<RedisConnection> GRedisConnection;

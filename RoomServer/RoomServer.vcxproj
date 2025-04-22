@@ -104,6 +104,8 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)\Libraries\Libs\hiredis\Debug\;$(SolutionDir)\Libraries\Libs\hiredis\Release\;$(SolutionDir)\Libraries\Libs\mysql\Debug\vs14\;G:\developtools\boost_1_87_0\boost_1_87_0\stage\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>event_extra.lib;event_core.lib;event.lib;hiredis.lib;mysqlcppconnx.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -124,6 +126,8 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)\Libraries\Libs\hiredis\Debug\;$(SolutionDir)\Libraries\Libs\hiredis\Release\;$(SolutionDir)\Libraries\Libs\mysql\Debug\vs14\;G:\developtools\boost_1_87_0\boost_1_87_0\stage\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>event_extra.lib;event_core.lib;event.lib;hiredis.lib;mysqlcppconnx.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -140,6 +144,8 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)\Libraries\Libs\hiredis\Debug\;$(SolutionDir)\Libraries\Libs\hiredis\Release\;$(SolutionDir)\Libraries\Libs\mysql\Debug\vs14\;G:\developtools\boost_1_87_0\boost_1_87_0\stage\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>event_extra.lib;event_core.lib;event.lib;hiredis.lib;mysqlcppconnx.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -160,6 +166,8 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)\Libraries\Libs\hiredis\Debug\;$(SolutionDir)\Libraries\Libs\hiredis\Release\;$(SolutionDir)\Libraries\Libs\mysql\Debug\vs14\;G:\developtools\boost_1_87_0\boost_1_87_0\stage\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>event_extra.lib;event_core.lib;event.lib;hiredis.lib;mysqlcppconnx.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -183,7 +191,6 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="ProjectTile.cpp" />
     <ClCompile Include="RedisConnection.cpp" />
-    <ClCompile Include="RedisConnectionPool.cpp" />
     <ClCompile Include="RedisUtils.cpp" />
     <ClCompile Include="Room.cpp" />
     <ClCompile Include="RoomManager.cpp" />
@@ -197,6 +204,7 @@
     </ClCompile>
     <ClCompile Include="SessionManager.cpp" />
     <ClCompile Include="UserServerSession.cpp" />
+    <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Arrow.h" />
@@ -214,7 +222,6 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="ProjectTile.h" />
     <ClInclude Include="RedisConnection.h" />
-    <ClInclude Include="RedisConnectionPool.h" />
     <ClInclude Include="RedisUtils.h" />
     <ClInclude Include="Room.h" />
     <ClInclude Include="RoomManager.h" />
@@ -222,6 +229,7 @@
     <ClInclude Include="ServerProtocol.pb.h" />
     <ClInclude Include="SessionManager.h" />
     <ClInclude Include="UserServerSession.h" />
+    <ClInclude Include="Utils.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Common\Protobuf\bin\ServerProtocol.proto" />

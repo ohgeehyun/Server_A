@@ -30,10 +30,10 @@ public:
 
 private:
     PlayerRef _myplayer;
-    string _userid;
-    string _nickname;
-    string _jwtToken;
-    bool _isJwtVerify = false;
+    string    _userid;
+    string    _nickname;
+    string    _jwtToken;
+    bool      _isJwtVerify = false;
 
-    int32 _sessionId;
+    int32     _sessionId;
 };

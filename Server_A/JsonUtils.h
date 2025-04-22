@@ -1,15 +1,15 @@
 #pragma once
-
+#include <nlohmann/json.hpp>
 class JsonUtils
 {
 public:
     template<typename ...Args>
     static nlohmann::json createJson(Args&&...args);
-  
+
 private:
     template<typename T>
     static void add_to_json(nlohmann::json& json_obj, T&& arg);
-    template<typename T,typename... Args>
+    template<typename T, typename... Args>
     static void add_to_json(nlohmann::json& json_obj, T&& arg, Args&&... args);
 
 };
@@ -18,7 +18,7 @@ template<typename ...Args>
 inline nlohmann::json JsonUtils::createJson(Args && ...args)
 {
     nlohmann::json json_obj;
-    add_to_json(json_obj,std::forward<Args>(args)...);
+    add_to_json(json_obj, std::forward<Args>(args)...);
     return json_obj;
 }
 

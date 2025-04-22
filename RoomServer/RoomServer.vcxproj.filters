@@ -34,6 +34,9 @@
     <Filter Include="DB">
       <UniqueIdentifier>{3182a6e4-f208-4431-b990-3f23ed0e0e52}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Utils\Json">
+      <UniqueIdentifier>{1c467cab-b6e3-4ba2-8d20-282ae93b0a53}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="UserServerSession.cpp">
@@ -89,20 +92,20 @@
     <ClCompile Include="ConfigManager.cpp">
       <Filter>Data</Filter>
     </ClCompile>
-    <ClCompile Include="JsonUtils.cpp">
-      <Filter>Utils</Filter>
-    </ClCompile>
     <ClCompile Include="RedisUtils.cpp">
       <Filter>Utils\Redis</Filter>
     </ClCompile>
     <ClCompile Include="RedisConnection.cpp">
       <Filter>DB</Filter>
     </ClCompile>
-    <ClCompile Include="RedisConnectionPool.cpp">
-      <Filter>DB</Filter>
-    </ClCompile>
     <ClCompile Include="GlobalObject.cpp">
       <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="JsonUtils.cpp">
+      <Filter>Utils\Json</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -158,20 +161,20 @@
     <ClInclude Include="ConfigManager.h">
       <Filter>Data</Filter>
     </ClInclude>
-    <ClInclude Include="JsonUtils.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
     <ClInclude Include="RedisUtils.h">
       <Filter>Utils\Redis</Filter>
     </ClInclude>
     <ClInclude Include="RedisConnection.h">
       <Filter>DB</Filter>
     </ClInclude>
-    <ClInclude Include="RedisConnectionPool.h">
-      <Filter>DB</Filter>
-    </ClInclude>
     <ClInclude Include="GlobalObject.h">
       <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="JsonUtils.h">
+      <Filter>Utils\Json</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

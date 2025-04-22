@@ -25,6 +25,8 @@ enum class ServerPacketType : uint16
     PKT_C_MESSAGE = 1016,
     PKT_C_LEAVE_GAME = 1017,
     PKT_S_EXIT_GAME = 1018,
+    PKT_S_GET_ROOMINFO = 1019,
+    PKT_C_GET_ROOMINFO = 1020,
 };
 
 // Custom Handlers
@@ -40,6 +42,7 @@ bool Handle_S_SKILL(PacketSessionRef& session, ServerProtocol::S_SKILL& pkt);
 bool Handle_S_MESSAGE(PacketSessionRef& session, ServerProtocol::S_MESSAGE& pkt);
 bool Handle_S_CHANGEHP(PacketSessionRef& session, ServerProtocol::S_CHANGEHP& pkt);
 bool Handle_S_DIE(PacketSessionRef& session, ServerProtocol::S_DIE& pkt);
+bool Handle_S_GET_ROOMINFO(PacketSessionRef& session, ServerProtocol::S_GET_ROOMINFO& pkt);
 
 class ServerPacketHandler
 {
@@ -59,6 +62,7 @@ public:
 		GServerPacketHandler[static_cast<uint16>(ServerPacketType::PKT_S_MESSAGE)] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<ServerProtocol::S_MESSAGE>(Handle_S_MESSAGE, session, buffer, len); };
 		GServerPacketHandler[static_cast<uint16>(ServerPacketType::PKT_S_CHANGEHP)] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<ServerProtocol::S_CHANGEHP>(Handle_S_CHANGEHP, session, buffer, len); };
 		GServerPacketHandler[static_cast<uint16>(ServerPacketType::PKT_S_DIE)] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<ServerProtocol::S_DIE>(Handle_S_DIE, session, buffer, len); };
+		GServerPacketHandler[static_cast<uint16>(ServerPacketType::PKT_S_GET_ROOMINFO)] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<ServerProtocol::S_GET_ROOMINFO>(Handle_S_GET_ROOMINFO, session, buffer, len); };
 	}
 
 	static bool HandlePacket(PacketSessionRef& session, BYTE* buffer, int32 len)
@@ -66,9 +70,11 @@ public:
         SendPacketHeader* header = reinterpret_cast<SendPacketHeader*>(buffer);
 		return GServerPacketHandler[header->id](session, buffer, len);
 	}
+	static SendBufferRef MakeSendBuffer(ServerProtocol::C_ENTER_GAME& pkt) { return MakeSendBuffer(pkt, ServerPacketType::PKT_C_ENTER_GAME); }
 	static SendBufferRef MakeSendBuffer(ServerProtocol::C_MOVE& pkt) { return MakeSendBuffer(pkt, ServerPacketType::PKT_C_MOVE); }
 	static SendBufferRef MakeSendBuffer(ServerProtocol::C_SKILL& pkt) { return MakeSendBuffer(pkt, ServerPacketType::PKT_C_SKILL); }
 	static SendBufferRef MakeSendBuffer(ServerProtocol::C_CREATE_ROOM& pkt) { return MakeSendBuffer(pkt, ServerPacketType::PKT_C_CREATE_ROOM); }
+	static SendBufferRef MakeSendBuffer(ServerProtocol::C_GET_ROOMINFO& pkt) { return MakeSendBuffer(pkt, ServerPacketType::PKT_C_GET_ROOMINFO); }
 
 private:
 	template<typename PacketType, typename ProcessFunc>

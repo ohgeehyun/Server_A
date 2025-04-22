@@ -24,6 +24,8 @@ enum MsgId {
   C_Message = 1016;
   C_Leave_Game = 1017;
   S_Exit_Game = 1018;
+  S_Get_Roominfo = 1019;
+  C_Get_Roominfo = 1020;
 }
 
 enum CreatureState
@@ -40,8 +42,6 @@ enum MoveDir
      LEFT = 2;
      RIGHT = 3;
 }
-
-
 enum GameObjectType
 {
     NONE = 0;
@@ -57,6 +57,12 @@ enum SkillType
      SKILL_AUTO = 1;
      SKILL_PROJECTILE= 2;
      SKILL_MAGIC = 3;
+}
+
+message C_ENTER_GAME
+{
+   int32 rommId = 1;
+   string roomname = 2;
 }
 
 message S_ENTER_GAME
@@ -175,3 +181,18 @@ message SkillInfo
     int32 skillId = 1;
 }
 
+message C_GET_ROOMINFO
+{
+    int32 roomId = 1;
+    int32 owner = 2;
+}
+
+message S_GET_ROOMINFO
+{
+    int32 roomId = 1;
+    string roomname = 2;
+    string rootUser = 3;
+    bool pwdYn = 4;
+    string roompwd = 5;
+    int32 callownersessionId = 6;
+}

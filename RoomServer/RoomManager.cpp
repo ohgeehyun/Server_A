@@ -1,13 +1,25 @@
+#pragma once
 #include "pch.h"
 #include "Room.h"
 #include "RoomManager.h"
 #include "ServerProtocol.pb.h"
-#include "RedisConnection.h"
 #include "RoomPacketHandler.h"
 #include "UserServerSession.h"
-#include "RedisUtils.h"
-#include "JsonUtils.h"
-#include <nlohmann/json.hpp>
+#include "RedisConnection.h"
+
+
+namespace StringUtils
+{
+    inline std::string ToUtf8(const std::wstring& wstr)
+    {
+        if (wstr.empty()) return {};
+
+        int sizeNeeded = ::WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), (int)wstr.size(), nullptr, 0, nullptr, nullptr);
+        std::string result(sizeNeeded, 0);
+        ::WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), (int)wstr.size(), &result[0], sizeNeeded, nullptr, nullptr);
+        return result;
+    }
+}
 
 RoomRef RoomManager::Add(const ServerProtocol::C_CREATE_ROOM& pkt, int32 roomId, UserServerSessionRef session)
 {
@@ -15,29 +27,7 @@ RoomRef RoomManager::Add(const ServerProtocol::C_CREATE_ROOM& pkt, int32 roomId,
 
     WRITE_LOCK
     {
-        gameRoom->SetRoomId(roomId);
-        gameRoom->SetRoomName(pkt.roomname());
-        gameRoom->SetRoomPwd(pkt.roompwd());
-        gameRoom->SetRootUser(pkt.rootuser());
-
-        if (gameRoom->GetRoomPwd() != "")
-            gameRoom->SetPwdYn(true);
-
-        nlohmann::json json_obj = JsonUtils::createJson(
-            std::make_pair("id", gameRoom->GetRoomId()),
-            std::make_pair("pwdYn",gameRoom->GetPwdYn()),
-            std::make_pair("name", gameRoom->GetRoomName()),
-            std::make_pair("password", gameRoom->GetRoomPwd()),
-            std::make_pair("rootUser", gameRoom->GetRootUser())
-        );
-
-        std::string json_str = json_obj.dump();
-
-        const char* query = "SET room:%d %s";
-        RedisUtils::RAsyncCommand(GRedisConnection->GetContext(), query, _roomid, json_str.c_str());
-
-        gameRoom->Init(1);
-        _rooms[roomId] = gameRoom;
+       
     }
     
     ResponseCreateRoomPacket(gameRoom,session,pkt.sessionid());
@@ -52,7 +42,7 @@ bool RoomManager::Remove(int32 roomId)
 
 }
 
-RoomRef RoomManager::Find(int32 roomId)
+const RoomRef& RoomManager::Find(int32 roomId) const
 {
     RoomRef gameRoom = nullptr;
     for (auto it = _rooms.begin(); it != _rooms.end(); ++it)
@@ -87,10 +77,10 @@ void RoomManager::RequestCreateRoomFromRedis(const ServerProtocol::C_CREATE_ROOM
         const int32 roomId = static_cast<int32>(r->integer);
 
         // 실제 방 생성
-        RoomRef room = this->Add(pkt , roomId, session);
+        this->Add(pkt , roomId, session);
     };
 
-    RedisUtils::RAsyncCommand(
+    RedisUtils::RAsyncCommandCallback(
         GRedisConnection->GetContext(),
         onRoomIdReceived,
         query

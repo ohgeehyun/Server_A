@@ -39,7 +39,7 @@ typename std::enable_if<std::is_base_of<GameObject, T>::value, std::shared_ptr<T
 
     gameObject->SetObjectId(GenerateId(gameObject->GetGameObjectType()));
 
-    if (gameObject->GetGameObjectType() == Protocol::PLAYER)
+    if (gameObject->GetGameObjectType() == ServerProtocol::PLAYER)
     {
         _objects[gameObject->GetObjectId()] = gameObject;
     }

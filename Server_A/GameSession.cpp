@@ -53,9 +53,6 @@ void GameSession::OnDisConnected()
     RedisUtils::RAsyncCommand(GRedisConnection->GetContext(), query, _userid.c_str());
 
     _myplayer = nullptr;
-
-    if (room != nullptr)
-        room->DoAsync(&Room::LeaveGame, objectid);
 }
 
 void GameSession::OnRecvPacket(BYTE* buffer, int32 len)

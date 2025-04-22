@@ -1,36 +1,49 @@
 #include "pch.h"
 #include "RedisUtils.h"
 
-void RedisUtils::replyResponseHandler(void* reply,const char* log)
+void RedisUtils::ReplyResponseHandler(void* reply, std::string_view log)
 {
-    redisReply* r = (redisReply*)reply;  // redisReply로 캐스팅
-    if (r->type == REDIS_REPLY_STATUS) 
+    redisReply* r = static_cast<redisReply*>(reply);
+
+    if (!r)
     {
-        // "OK"가 반환되었을 때
-        std::cout << log << " : "  << r->str << std::endl;
+        std::cerr << log << " : null reply received" << std::endl;
+        return;
     }
-    else if (r->type == REDIS_REPLY_ERROR) 
+
+    switch (r->type)
     {
-        // 오류 응답 처리
-        std::cout << log << "Error: " << r->str << std::endl;
-    }
-    else if (r->type == REDIS_REPLY_INTEGER)
-    {
-        //integer반환처리
-        std::cout << log << " : "  << r->integer << std ::endl;
-    }
-    else {
-        std::cout << log << " : "  <<"Unexpected response type" << std::endl;
+    case REDIS_REPLY_STATUS:
+        std::cout << log << " : " << r->str << std::endl;
+        break;
+    case REDIS_REPLY_ERROR:
+        std::cerr << log << " Error: " << r->str << std::endl;
+        break;
+    case REDIS_REPLY_INTEGER:
+        std::cout << log << " : " << r->integer << std::endl;
+        break;
+    default:
+        std::cerr << log << " : Unexpected response type: " << r->type << std::endl;
+        break;
     }
 }
 
-void RedisUtils::testGetvalue(void* reply)
+void RedisUtils::TestGetValue(void* reply)
 {
-   redisReply* r = (redisReply*)reply;  // redisReply로 캐스팅
-   if (r->type == REDIS_REPLY_STRING) {
-       std::cout << "Fetched value: " << r->str << std::endl; // 값이 문자열이라면 출력
-   }
-   else {
-       std::cout << "Error: Unexpected Redis reply type" << std::endl;
-   }
+    redisReply* r = static_cast<redisReply*>(reply);
+
+    if (!r)
+    {
+        std::cerr << "TestGetValue : null reply received" << std::endl;
+        return;
+    }
+
+    if (r->type == REDIS_REPLY_STRING)
+    {
+        std::cout << "Fetched value: " << r->str << std::endl;
+    }
+    else
+    {
+        std::cerr << "Error: Unexpected Redis reply type " << r->type << std::endl;
+    }
 }

@@ -37,6 +37,9 @@
     <Filter Include="PacketHandler">
       <UniqueIdentifier>{e87d376d-b5b6-4783-891e-c6c7f50760b7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Utils\Json">
+      <UniqueIdentifier>{be2ec07a-8d20-4985-b4d4-36d90edd8cd2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Protocol.pb.cc">
@@ -78,12 +81,6 @@
     <ClCompile Include="MysqlCommand.cpp">
       <Filter>DB</Filter>
     </ClCompile>
-    <ClCompile Include="GlobalObject.cpp">
-      <Filter>Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="RedisConnectionPool.cpp">
-      <Filter>DB</Filter>
-    </ClCompile>
     <ClCompile Include="RedisConnection.cpp">
       <Filter>DB</Filter>
     </ClCompile>
@@ -92,9 +89,6 @@
     </ClCompile>
     <ClCompile Include="JwtUtils.cpp">
       <Filter>Utils\JwtUtils</Filter>
-    </ClCompile>
-    <ClCompile Include="JsonUtils.cpp">
-      <Filter>Utils</Filter>
     </ClCompile>
     <ClCompile Include="Monster.cpp">
       <Filter>Main\Game\Object</Filter>
@@ -130,6 +124,15 @@
     </ClCompile>
     <ClCompile Include="GameSession.cpp">
       <Filter>Session</Filter>
+    </ClCompile>
+    <ClCompile Include="GlobalObject.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="JsonUtils.cpp">
+      <Filter>Utils\Json</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils.cpp">
+      <Filter>Utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -175,9 +178,6 @@
     <ClInclude Include="GlobalObject.h">
       <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="RedisConnectionPool.h">
-      <Filter>DB</Filter>
-    </ClInclude>
     <ClInclude Include="RedisConnection.h">
       <Filter>DB</Filter>
     </ClInclude>
@@ -186,9 +186,6 @@
     </ClInclude>
     <ClInclude Include="JwtUtils.h">
       <Filter>Utils\JwtUtils</Filter>
-    </ClInclude>
-    <ClInclude Include="JsonUtils.h">
-      <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="Monster.h">
       <Filter>Main\Game\Object</Filter>
@@ -223,6 +220,12 @@
     </ClInclude>
     <ClInclude Include="GameSession.h">
       <Filter>Session</Filter>
+    </ClInclude>
+    <ClInclude Include="JsonUtils.h">
+      <Filter>Utils\Json</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils.h">
+      <Filter>Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
