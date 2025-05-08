@@ -32,7 +32,9 @@
 #include <event2/event.h>
 
 #include "GlobalObject.h"
-#include "RedisUtils.h"
+#include "RedisConnection.h"
+#include "RedisPubSubConnection.h"
+#include "RedisManager.h"
 #include "JsonUtils.h"
 
 using namespace std;
@@ -46,4 +48,5 @@ using ArrowRef = shared_ptr<class Arrow>;
 using MagicSkillRef = shared_ptr<class MagicSkill>;
 using ProjectTileRef = shared_ptr<class ProjectTile>;
 using RedisConnectionRef = shared_ptr<class RedisConnection>;
-
+using RedisPubSubConnectionRef = shared_ptr<class RedisPubSubConnection>;
+using RoomManagerRef = shared_ptr<class RoomManager>;

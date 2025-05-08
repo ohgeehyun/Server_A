@@ -2,6 +2,7 @@
 
 class RedisUtils
 {
+
 public:
     template<typename ...Args>
     static void RAsyncCommand(redisAsyncContext* context, std::string_view format, Args&&... args);
@@ -11,6 +12,7 @@ public:
 
     static void ReplyResponseHandler(void* reply, std::string_view log);
     static void TestGetValue(void* reply);
+
 };
 
 template<typename ...Args>

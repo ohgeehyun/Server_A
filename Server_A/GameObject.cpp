@@ -10,22 +10,22 @@ GameObject::GameObject()
 {
 }
 
-Vector2Int GameObject::GetFrontCellPos(Protocol::MoveDir dir)
+Vector2Int GameObject::GetFrontCellPos(Common::MoveDir dir)
 {
     Vector2Int cellPos = GetCellPos();
 
     switch (dir)
     {
-    case Protocol::MoveDir::UP:
+    case Common::MoveDir::UP:
         cellPos += Vector2Int::up();
         break;
-    case Protocol::MoveDir::DOWN:
+    case Common::MoveDir::DOWN:
         cellPos += Vector2Int::down();
         break;
-    case Protocol::MoveDir::LEFT:
+    case Common::MoveDir::LEFT:
         cellPos += Vector2Int::left();
         break;
-    case Protocol::MoveDir::RIGHT:
+    case Common::MoveDir::RIGHT:
         cellPos += Vector2Int::right();
         break;
     }
@@ -38,16 +38,16 @@ Vector2Int GameObject::GetFrontCellPos()
     return GetFrontCellPos(GetMoveDir());
 }
 
-Protocol::MoveDir GameObject::GetDirFromVec(Vector2Int dir)
+Common::MoveDir GameObject::GetDirFromVec(Vector2Int dir)
 {
     if (dir.posx > 0)
-        return Protocol::MoveDir::RIGHT;
+        return Common::MoveDir::RIGHT;
     else if (dir.posx < 0)
-        return Protocol::MoveDir::LEFT;
+        return Common::MoveDir::LEFT;
     else if (dir.posy > 0)
-        return Protocol::MoveDir::UP;
+        return Common::MoveDir::UP;
     else
-        return Protocol::MoveDir::DOWN;
+        return Common::MoveDir::DOWN;
 }
 
 void GameObject::OnDameged(GameObjectRef attacker, int32 damege)

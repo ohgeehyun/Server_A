@@ -1,19 +1,19 @@
 #include "pch.h"
 #include "RedisConnection.h"
-#include "RedisUtils.h" 
-#include "Utils.h"
-#include <nlohmann/json.hpp> 
+#include "NetAddress.h"
+
+
 
 RedisConnection::RedisConnection()
 {
     ConnectAsync([](bool success, const std::string& msg) {
         if (success)
         {
-            std::cout << "redis connect success" << std::endl;
+            std::cout << "redis connect success" << endl;
         }
         else
         {
-            std::cerr << "Redis connect failed : " << msg << std::endl;
+            std::cerr << "Redis connect failed : " << msg << endl;
         }
     });
 }
@@ -56,7 +56,8 @@ void RedisConnection::OnConnected(const redisAsyncContext* context, int status)
         return;
     }
 
-    const std::string password = ServerConfig["database"].redisData.auth;
+    // 연결 성공 후 인증 시작
+    const std::string password = ServerConfig["database"].redisData.auth; // 필요시 멤버로 저장
     Authenticate(const_cast<redisAsyncContext*>(context), password);
 }
 
@@ -75,61 +76,9 @@ void RedisConnection::OnAuthenticated(redisAsyncContext* context, void* reply)
         return;
     }
 
-    _connectCallback(true, "");
     std::cout << "[Redis] Authentication success.\n";
-
-    RegisterRoomServer();  //서버 정보 등록 시작
 }
 
-void RedisConnection::RegisterRoomServer()
-{
-    RedisUtils::RAsyncCommandCallback(_context,
-        [this](redisReply* reply)
-        {
-        if (reply && reply->type == REDIS_REPLY_INTEGER)
-        {
-            _roomId = static_cast<int32_t>(reply->integer);
-            SaveRoomServerInfo();          // 정보 저장
-            PublishRoomServerRegister();   // 채널 발행
-        }
-        else
-        {
-            std::cerr << "[Redis] Failed to get room_id from INCR.\n";
-        }
-        },
-        "INCR room_server_id_seq");
-}
-
-void RedisConnection::SaveRoomServerInfo()
-{
-    std::string key = "room_servers:" + std::to_string(_roomId);
-
-    RedisUtils::RAsyncCommand(_context,
-        "HMSET %s ip %s port %d status %s",
-        key.c_str(),
-        Utils::WstringToUtf8(_serverIp).c_str(),
-        _serverPort,
-        "available");
-
-    StartHeartbeat();
-}
-
-void RedisConnection::PublishRoomServerRegister()
-{
-    nlohmann::json data = {
-       {"room_id", _roomId},
-       {"ip", Utils::WstringToUtf8(_serverIp)},
-       {"port", _serverPort}
-    };
-
-    cout << Utils::WstringToUtf8(_serverIp) << endl;
-
-    std::string msg = data.dump(); // JSON → string
-
-    RedisUtils::RAsyncCommand(_context,
-        "PUBLISH channel:room_servers %s",
-        msg.c_str());
-}
 
 void RedisConnection::RunEventLoopOnce()
 {
@@ -137,20 +86,3 @@ void RedisConnection::RunEventLoopOnce()
         event_base_loop(_eventBase.get(), EVLOOP_NONBLOCK);
 }
 
-void RedisConnection::SendHeartbeat()
-{
-    RedisUtils::RAsyncCommand(_context,
-        "EXPIRE room_servers:%d 5", _roomId);
-}
-
-void RedisConnection::StartHeartbeat()
-{
-    DoTimer(3000, [this]()
-    {
-        //Redis에 생존 신고
-        SendHeartbeat();  
-        cout <<"Send Redis room_server Heart Beat!" <<'\n';
-        // 다음 하트비트 예약
-        StartHeartbeat();
-    });
-}

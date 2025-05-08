@@ -28,27 +28,26 @@ enum class ServerPacketType : uint16
     PKT_S_GET_ROOMINFO = 1019,
     PKT_C_GET_ROOMINFO = 1020,
 };
-
-// Custom Handlers
-bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len);
 bool Handle_C_ENTER_GAME(PacketSessionRef& session, ServerProtocol::C_ENTER_GAME& pkt);
+bool Handle_C_LEAVE_GAME(PacketSessionRef& session, ServerProtocol::C_LEAVE_GAME& pkt);
 bool Handle_C_MOVE(PacketSessionRef& session, ServerProtocol::C_MOVE& pkt);
 bool Handle_C_SKILL(PacketSessionRef& session, ServerProtocol::C_SKILL& pkt);
 bool Handle_C_CREATE_ROOM(PacketSessionRef& session, ServerProtocol::C_CREATE_ROOM& pkt);
-bool Handle_C_GET_ROOMINFO(PacketSessionRef& session, ServerProtocol::C_GET_ROOMINFO& pkt);
+bool Handle_C_MESSAGE(PacketSessionRef& session, ServerProtocol::C_MESSAGE& pkt);
 
 class RoomPacketHandler
 {
 public:
 	static void Init()
 	{
-		for (int32 i = 0; i < UINT16_MAX; i++)
-             GServerPacketHandler[i] = Handle_INVALID;
+		//for (int32 i = 0; i < UINT16_MAX; i++)
+             //GServerPacketHandler[i] = Handle_INVALID;
 		GServerPacketHandler[static_cast<uint16>(ServerPacketType::PKT_C_ENTER_GAME)] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<ServerProtocol::C_ENTER_GAME>(Handle_C_ENTER_GAME, session, buffer, len); };
+		GServerPacketHandler[static_cast<uint16>(ServerPacketType::PKT_C_LEAVE_GAME)] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<ServerProtocol::C_LEAVE_GAME>(Handle_C_LEAVE_GAME, session, buffer, len); };
 		GServerPacketHandler[static_cast<uint16>(ServerPacketType::PKT_C_MOVE)] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<ServerProtocol::C_MOVE>(Handle_C_MOVE, session, buffer, len); };
 		GServerPacketHandler[static_cast<uint16>(ServerPacketType::PKT_C_SKILL)] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<ServerProtocol::C_SKILL>(Handle_C_SKILL, session, buffer, len); };
 		GServerPacketHandler[static_cast<uint16>(ServerPacketType::PKT_C_CREATE_ROOM)] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<ServerProtocol::C_CREATE_ROOM>(Handle_C_CREATE_ROOM, session, buffer, len); };
-		GServerPacketHandler[static_cast<uint16>(ServerPacketType::PKT_C_GET_ROOMINFO)] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<ServerProtocol::C_GET_ROOMINFO>(Handle_C_GET_ROOMINFO, session, buffer, len); };
+		GServerPacketHandler[static_cast<uint16>(ServerPacketType::PKT_C_MESSAGE)] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<ServerProtocol::C_MESSAGE>(Handle_C_MESSAGE, session, buffer, len); };
 	}
 
 	static bool HandlePacket(PacketSessionRef& session, BYTE* buffer, int32 len)
@@ -67,7 +66,6 @@ public:
 	static SendBufferRef MakeSendBuffer(ServerProtocol::S_MESSAGE& pkt) { return MakeSendBuffer(pkt, ServerPacketType::PKT_S_MESSAGE); }
 	static SendBufferRef MakeSendBuffer(ServerProtocol::S_CHANGEHP& pkt) { return MakeSendBuffer(pkt, ServerPacketType::PKT_S_CHANGEHP); }
 	static SendBufferRef MakeSendBuffer(ServerProtocol::S_DIE& pkt) { return MakeSendBuffer(pkt, ServerPacketType::PKT_S_DIE); }
-	static SendBufferRef MakeSendBuffer(ServerProtocol::S_GET_ROOMINFO& pkt) { return MakeSendBuffer(pkt, ServerPacketType::PKT_S_GET_ROOMINFO); }
 
 private:
 	template<typename PacketType, typename ProcessFunc>

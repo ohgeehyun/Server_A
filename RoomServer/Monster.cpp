@@ -13,33 +13,34 @@
 
 Monster::Monster()
 {
-    SetGameObjectType(ServerProtocol::MONSTER);
+    SetGameObjectType(Common::MONSTER);
 
     SetLevel(1);
     SetHp(100);
     SetMaxHp(100);
     SetSpeed(5.0f);
-    SetState(ServerProtocol::CreatureState::IDLE);
+    SetState(Common::CreatureState::IDLE);
 }
 
 Monster::~Monster()
 {
+  
 }
 
 void Monster::Update()
 {
     switch (GetState())
     {
-    case ServerProtocol::CreatureState::IDLE:
+    case Common::CreatureState::IDLE:
         UpdateIdle();
         break;
-    case ServerProtocol::CreatureState::MOVING:
+    case Common::CreatureState::MOVING:
         UpdateMoving();
         break;
-    case ServerProtocol::CreatureState::SKILL:
+    case Common::CreatureState::SKILL:
         UpdateSkill();
         break;
-    case ServerProtocol::CreatureState::DEAD:
+    case Common::CreatureState::DEAD:
         UpdateDead();
         break;
     }
@@ -52,19 +53,37 @@ void Monster::BroadCastMove()
     ServerProtocol::S_MOVE _movePacket;
     _movePacket.set_objectid(GetObjectId());
     _movePacket.mutable_posinfo()->CopyFrom(GetPosinfo());
-
+    _movePacket.set_roomid(GetRoom()->GetRoomId());
     auto movePacket = RoomPacketHandler::MakeSendBuffer(_movePacket);
-    GetRoom()->DoAsync(&Room::Broadcast, movePacket);
+    GetRoom()->DoAsync(&Room::Broadcast, std::move(movePacket));
 }
 
 void Monster::OnDead(GameObjectRef attacker)
 {
-   
+    //캐릭터가 죽고 방에서 leave enter를 비동기적으로 처리 방식이라 객체와 room이 끊길수있어서 미리 변수로만들어서 사용
+    RoomRef room = GetRoom();
+    PlayerRef player = static_pointer_cast<Player>(attacker);
+
+    _target = nullptr;
+
+    GameObject::OnDead(attacker);
+
+    const char* query = "HINCRBY room_score:%d:%s kill 1";
+    RedisManager::GetInstance().RAsyncCommand(query, room->GetRoomId(), player->GetUserId().c_str());
 }
 
 void Monster::OnDameged(GameObjectRef attacker, int32 damege)
 {
+    PlayerRef player = static_pointer_cast<Player>(attacker);
+    RoomRef room = GetRoom();
 
+    GameObject::OnDameged(attacker, damege);
+
+    if (attacker->GetGameObjectType() == Common::PLAYER && attacker->GetObjectId() != GetObjectId())
+    {
+        const char* query = "HINCRBY room_score:%d:%s TotalDamege %d";
+        RedisManager::GetInstance().RAsyncCommand(query, room->GetRoomId(), player->GetUserId().c_str(), damege);
+    }
 }
 
 void Monster::UpdateIdle()
@@ -85,7 +104,7 @@ void Monster::UpdateIdle()
         return;
 
     _target = target;
-    SetState(ServerProtocol::CreatureState::MOVING);
+    SetState(Common::CreatureState::MOVING);
 }
 
 void Monster::UpdateMoving()
@@ -100,7 +119,7 @@ void Monster::UpdateMoving()
     if (_target == nullptr || _target->GetRoom() != GetRoom())
     {
         _target = nullptr;
-        SetState(ServerProtocol::CreatureState::IDLE);
+        SetState(Common::CreatureState::IDLE);
         BroadCastMove();
         return;
     }
@@ -110,7 +129,7 @@ void Monster::UpdateMoving()
     if (dist == 0 || dist > GetChaseCellDist())
     {
         _target = nullptr;
-        SetState(ServerProtocol::CreatureState::IDLE);
+        SetState(Common::CreatureState::IDLE);
         BroadCastMove();
         return;
     }
@@ -119,7 +138,7 @@ void Monster::UpdateMoving()
     if (path.size() < 2 || path.size() > GetChaseCellDist())
     {
         _target = nullptr;
-        SetState(ServerProtocol::CreatureState::IDLE);
+        SetState(Common::CreatureState::IDLE);
         BroadCastMove();
         return;
     }
@@ -137,7 +156,7 @@ void Monster::UpdateMoving()
     if (dist <= _skillRange && (dir.posx == 0 || dir.posy == 0))
     {
         _coolTick = 0;
-        SetState(ServerProtocol::CreatureState::SKILL);
+        SetState(Common::CreatureState::SKILL);
         return;
     }
 }
@@ -153,7 +172,7 @@ void Monster::UpdateSkill()
         if (_target == nullptr || _target->GetRoom() != GetRoom() || _target->GetHp() <= 0)
         {
             _target = nullptr;
-            SetState(ServerProtocol::CreatureState::MOVING);
+            SetState(Common::CreatureState::MOVING);
             BroadCastMove();
             return;
         }
@@ -164,13 +183,13 @@ void Monster::UpdateSkill()
         bool canUseSkill = (dist <= _skillRange && (dir.posx == 0 || dir.posy == 0));
         if (canUseSkill == false)
         {
-            SetState(ServerProtocol::CreatureState::MOVING);
+            SetState(Common::CreatureState::MOVING);
             BroadCastMove();
             return;
         }
 
         //타켓팅 방향 주시
-        ServerProtocol::MoveDir lookDir = GetDirFromVec(dir);
+        Common::MoveDir lookDir = GetDirFromVec(dir);
         if (GetMoveDir() != lookDir)
         {
             SetMoveDir(lookDir);
@@ -194,8 +213,9 @@ void Monster::UpdateSkill()
         ServerProtocol::S_SKILL skill;
         skill.set_objectid(GetObjectId());
         skill.mutable_info()->set_skillid(skillData.id);
+        skill.set_roomid(GetRoom()->GetRoomId());
         auto skillPacket = RoomPacketHandler::MakeSendBuffer(skill);
-        GetRoom()->DoAsync(&Room::Broadcast, skillPacket);
+        GetRoom()->DoAsync(&Room::Broadcast, std::move(skillPacket));
 
         //스킬 쿨타임 적용
         int coolTick = (int)(1000 * skillData.cooldown);

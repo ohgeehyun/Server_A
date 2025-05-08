@@ -3,9 +3,9 @@
 #include "ServerProtocol.pb.h"
 #include <google/protobuf/util/json_util.h>
 
-HashMap<int, ServerProtocol::STATINFO> StatData::MakeDict()
+HashMap<int, Common::STATINFO> StatData::MakeDict()
 {
-    HashMap<int, ServerProtocol::STATINFO> dict;
+    HashMap<int, Common::STATINFO> dict;
 
     for (auto& stat : stats)
     {
@@ -18,7 +18,7 @@ HashMap<int, ServerProtocol::STATINFO> StatData::MakeDict()
 void StatData::Deserialize(const nlohmann::json& j) {
     for (const auto& statJson : j["stats"]) {
         
-        ServerProtocol::STATINFO stat;
+        Common::STATINFO stat;
 
         std::string jsonString = statJson.dump();
 
@@ -50,10 +50,10 @@ void SkillData::Deserialize(const nlohmann::json& j)
     }
 }
 
-ServerProtocol::SkillType Skill::ParseSkillType(const string& str)
+Common::SkillType Skill::ParseSkillType(const string& str)
 {
-    ServerProtocol::SkillType type;
-    if (ServerProtocol::SkillType_Parse(str, &type)) {
+    Common::SkillType type;
+    if (Common::SkillType_Parse(str, &type)) {
         return type; // 성공적으로 변환된 경우
     }
     throw std::runtime_error("Invalid SkillType string: " + str);

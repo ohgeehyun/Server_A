@@ -87,7 +87,7 @@ bool MapManager::ApplyMove(const GameObjectRef& gameobject, Vector2Int dest)
         int32 y = _MaxY - dest.posy;
         _objects[y][x] = gameobject;
 
-        if (gameobject->GetGameObjectType() == Protocol::MONSTER)
+        if (gameobject->GetGameObjectType() == Common::MONSTER)
         {
             cout << "현재 Monster : " << y << "," << x << "\n";
         }
@@ -104,7 +104,7 @@ bool MapManager::ApplyLeave(const GameObjectRef& gameObject)
     if (gameObject->GetRoom() == nullptr)
         return false;
 
-    Protocol::POSITIONINFO* posInfo = gameObject->GetObjectInfo().mutable_posinfo();
+    Common::POSITIONINFO* posInfo = gameObject->GetObjectInfo().mutable_posinfo();
 
     if (gameObject->GetPosx() < _MinX || gameObject->GetPosx() > _MaxX)
         return false;

@@ -1,17 +1,17 @@
 #pragma once
 #include "pch.h"
 #include "GameSession.h"
-#include "ServerSession.h"
+#include "RoomSession.h"
 #include "RoomManager.h"
 #include "ClientPacketHandler.h"
 #include "ServerPacketHandler.h"
 #include "GameSessionManager.h"
-#include "ServerSessionManager.h"
+#include "RoomSessionManager.h"
 #include "ConfigManager.h"
 #include "DataManager.h"
 #include "Room.h"
 #include "MysqlConnectionPool.h"
-#include "RedisConnection.h"
+#include "RedisManager.h"
 
 enum
 {
@@ -32,6 +32,11 @@ void  DoWorkerJob(ServerServiceRef& service)
         ThreadManager::DoGlobalQueueWork();
     }
 }
+void DoRedisWorkJob()
+{
+    RedisManager::GetInstance().PubSubNode_RunEventLoopOnce();
+    RedisManager::GetInstance().CommandNode_RunEventLoopOnce();
+}
 
 int main()
 {
@@ -47,11 +52,11 @@ int main()
     ServerPacketHandler::Init();
 
     GGameSessionManager = new GameSessionManager();
-    GServerSessionManager = new ServerSessionManager();
+    GRoomSessionManager = new RoomSessionManager();
 
 
     ServerServiceRef service = Make_Shared<ServerService>(
-        NetAddress(L"220.81.12.171", 5252),
+        NetAddress(L"125.137.11.149", 5252),
         make_shared<IocpCore>(),
         make_shared<GameSession>,
         100);
@@ -61,10 +66,10 @@ int main()
     GPClientService = Make_Shared<ClientService>(
         //NetAddress(L"220.81.12.171",5253),
         make_shared<IocpCore>(),
-        make_shared<ServerSession>);
+        make_shared<RoomSession>);
 
+    
     GDBConnectionPool = new MysqlConnectionPool(3);
-    GRedisConnection = new RedisConnection();
 
 
     ASSERT_CRASH(service->Start());
@@ -102,15 +107,7 @@ int main()
 
     GThreadManager->Launch([]() {
         while (true)
-            GRedisConnection->RunEventLoopOnce();
-    });
-
-    GThreadManager->Launch([]() {
-        while (true)
-        {
-            RoomManager::GetInstance().DoRoomUpdate();
-            this_thread::sleep_for(chrono::milliseconds(100));
-        }
+            DoRedisWorkJob();
     });
 
     GThreadManager->Join();

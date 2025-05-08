@@ -13,13 +13,13 @@
 
 Monster::Monster()
 {
-    SetGameObjectType(Protocol::MONSTER);
+    SetGameObjectType(Common::MONSTER);
 
     SetLevel(1);
     SetHp(100);
     SetMaxHp(100);
     SetSpeed(5.0f);
-    SetState(Protocol::CreatureState::IDLE);
+    SetState(Common::CreatureState::IDLE);
 }
 
 Monster::~Monster()
@@ -30,16 +30,16 @@ void Monster::Update()
 {
     switch (GetState())
     {
-    case Protocol::CreatureState::IDLE:
+    case Common::CreatureState::IDLE:
         UpdateIdle();
         break;
-    case Protocol::CreatureState::MOVING:
+    case Common::CreatureState::MOVING:
         UpdateMoving();
         break;
-    case Protocol::CreatureState::SKILL:
+    case Common::CreatureState::SKILL:
         UpdateSkill();
         break;
-    case Protocol::CreatureState::DEAD:
+    case Common::CreatureState::DEAD:
         UpdateDead();
         break;
     }
@@ -62,7 +62,7 @@ void Monster::OnDead(GameObjectRef attacker)
     GameObject::OnDead(attacker);
 
     const char* query = "HINCRBY room_score:%d:%s kill 1";
-    RedisUtils::RAsyncCommand(GRedisConnection->GetContext(), query, room->GetRoomId(), player->GetSession()->GetUserId().c_str());
+    //RedisUtils::RAsyncCommand(GRedisConnection->GetContext(), query, room->GetRoomId(), player->GetSession()->GetUserId().c_str());
 }
 
 void Monster::OnDameged(GameObjectRef attacker, int32 damege)
@@ -72,10 +72,10 @@ void Monster::OnDameged(GameObjectRef attacker, int32 damege)
 
     GameObject::OnDameged(attacker, damege);
 
-    if (attacker->GetGameObjectType() == Protocol::PLAYER && attacker->GetObjectId() != GetObjectId())
+    if (attacker->GetGameObjectType() == Common::PLAYER && attacker->GetObjectId() != GetObjectId())
     {
         const char* query = "HINCRBY room_score:%d:%s TotalDamege %d";
-        RedisUtils::RAsyncCommand(GRedisConnection->GetContext(), query, room->GetRoomId(), player->GetSession()->GetUserId().c_str(), damege);
+        //RedisUtils::RAsyncCommand(GRedisConnection->GetContext(), query, room->GetRoomId(), player->GetSession()->GetUserId().c_str(), damege);
     }
 }
 

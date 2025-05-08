@@ -6,13 +6,13 @@
 
 MagicSkill::MagicSkill()
 {
-    SetGameObjectType(ServerProtocol::MAGIC);
+    SetGameObjectType(Common::MAGIC);
     //_skillData.id = 0;
 }
 
 MagicSkill::~MagicSkill()
 {
-    cout << GetObjectId() << " 아이디 마법 오브젝트 소멸자 호출 완료 " << endl;
+    cout << GetObjectId() << "  마법 오브젝트 소멸자 호출 완료 " << endl;
 }
 
 void MagicSkill::Update()

@@ -6,7 +6,6 @@
 #include "ServerProtocol.pb.h"
 #include "RoomPacketHandler.h"
 #include "UserServerSession.h"
-#include "ObjectManager.h"
 #include "DataManager.h"
 #include "Monster.h"
 #include "Arrow.h"
@@ -24,10 +23,10 @@ Room::~Room()
 {
 
     const char* query = "DEL room:%d";
-    RedisUtils::RAsyncCommand(GRedisConnection->GetContext(), query, _roomId);
+    RedisManager::GetInstance().RAsyncCommand(query, _roomId);
 
     query = "DEL room_user:%d";
-    RedisUtils::RAsyncCommand(GRedisConnection->GetContext(), query, _roomId);
+    RedisManager::GetInstance().RAsyncCommand(query, _roomId);
 
     cout << _roomId << " 번 방 소멸자 호출 완료. Redis 삭제 호출 완료" << endl;
 }
@@ -42,13 +41,14 @@ void Room::RoomBreak(PlayerRef player)
     ServerProtocol::S_EXIT_GAME packet;
     packet.set_exitflag(true);
     auto exitPacketBuffer = RoomPacketHandler::MakeSendBuffer(packet);
-    BroadcastExcept(exitPacketBuffer, player);
+    DoAsync(&Room::BroadcastExcept, std::move(exitPacketBuffer), std::move(player));
 
     HashMap<string, ServerConfigData> dict = DataManager::GetInstance().GetServerConfigDict();
 
     std::string host = "http://" + dict["database"].nodeData.host + ":" + dict["database"].nodeData.port;
 
     httplib::Client cli(host);
+    cli.set_connection_timeout(5); // 5초
     httplib::Params params;
 
     params.emplace("roomId", std::to_string(_roomId));
@@ -87,7 +87,7 @@ void Room::RoomBreak(PlayerRef player)
 
     _map.GetObjects().clear();
 
-    RoomManager::GetInstance().Remove(_roomId);
+    GRoomManager->Remove(_roomId);
 
     cout << "room is breaking shared_ptr_count" << shared_from_this().use_count() << endl;
 }
@@ -115,32 +115,52 @@ PlayerRef Room::FindPlayer(std::function<bool(const GameObjectRef&)> condition)
     return nullptr;
 }
 
+PlayerRef Room::GetPlayer(string userid)
+{
+    auto it = _useridToPlayers.find(userid);
+
+    if (it == _useridToPlayers.end())
+        return nullptr;
+
+    return it->second;
+}
+
+PlayerRef Room::GetPlayer(int32 objectid)
+{
+    auto it = _players.find(objectid);
+
+    if (it == _players.end())
+        return nullptr;
+
+    return it->second;
+}
+
 
 void Room::EnterGame(GameObjectRef gameObject)
 {
     if (gameObject == nullptr)
         return;
     
-    ServerProtocol::GameObjectType type = ObjectManager::GetObjectTypeById(gameObject->GetObjectId());
+    Common::GameObjectType type = ObjectManager::GetObjectTypeById(gameObject->GetObjectId());
     
     switch (type)
     {
-    case ServerProtocol::PLAYER: 
+    case Common::PLAYER:
         {
             DoAsync(&Room::EnterGame_Player, dynamic_pointer_cast<Player>(gameObject));
         }
         break;
-        case ServerProtocol::MONSTER: 
+        case Common::MONSTER:
         {
              DoAsync(&Room::EnterGame_Monster, dynamic_pointer_cast<Monster>(gameObject));
         }
         break;
-        case ServerProtocol::PROJECTTILE:
+        case Common::PROJECTTILE:
         {
             DoAsync(&Room::EnterGame_ProjectTile, dynamic_pointer_cast<ProjectTile>(gameObject));
         }
         break;
-        case ServerProtocol::MAGIC :
+        case Common::MAGIC :
         {
             DoAsync(&Room::EnterGame_ProjectTile, dynamic_pointer_cast<ProjectTile>(gameObject));
         }
@@ -150,7 +170,28 @@ void Room::EnterGame(GameObjectRef gameObject)
 
 void Room::EnterGame_Player(PlayerRef player)
 {
-  
+    if (player == nullptr)
+        return;
+
+    if (tempSpawnHandle == false)
+    {
+        SpawnMonster(5, 5);
+        SpawnMonster(8, 3);
+        SpawnMonster(10, 7);
+
+        tempSpawnHandle = true;
+    }
+
+
+    DoAsync([this, player]() {
+        _players.insert(std::make_pair(player->GetObjectId(), player));
+        player->SetRoom(GetSharedRoomPtr());
+        _map.ApplyMove(static_pointer_cast<GameObject>(player), Vector2Int(player->GetPosx(), player->GetPosy()));
+        EnterGameEventSend_Player(player);
+    });
+
+    const char* query = "HSET room_score:%d:%s nickname %s";
+    RedisManager::GetInstance().RAsyncCommand(query, GetRoomId(), player->GetUserId().c_str(), player->GetUserNickName().c_str());
 }
 
 void Room::EnterGame_Monster(MonsterRef monster)
@@ -175,19 +216,69 @@ void Room::EnterGame_ProjectTile(ProjectTileRef projectTile)
 
 void Room::EnterGameEventSend_Player(PlayerRef player)
 {
- 
+    if (player == nullptr)
+        return;
 
+    cout << player->GetObjectId() << endl;
+    ServerProtocol::S_ENTER_GAME enterPacket;
+    enterPacket.set_roomid(_roomId);
+    enterPacket.set_roomname(_roomName);
+    enterPacket.set_userid(player->GetUserId());
+    enterPacket.mutable_player()->CopyFrom(player->GetObjectInfo());
+    auto enterPacketBuffer = RoomPacketHandler::MakeSendBuffer(enterPacket);
+    DoAsync(std::bind(&Room::Send, this, player->GetSession(), enterPacketBuffer));
+
+    //룸에 존재하는 인원들 정보를 새로 접속한 인원에게 전송
+    {
+        ServerProtocol::S_SPAWN SpawnPacket;
+        SpawnPacket.set_userid(player->GetUserId());
+        SpawnPacket.set_roomid(GetRoomId());
+        for (const auto& playerPair : _players)
+        {
+            const PlayerRef& p = playerPair.second;
+            if (p != player)
+            {
+                *SpawnPacket.add_objects() = p->GetObjectInfo();
+            }
+        }
+
+        for (const auto& monsterPair : _monsters)
+        {
+            const MonsterRef& m = monsterPair.second;
+            *SpawnPacket.add_objects() = m->GetObjectInfo();
+        }
+
+        for (const auto& tilepair : _projectTiles)
+        {
+            const ProjectTileRef& p = tilepair.second;
+            *SpawnPacket.add_objects() = p->GetObjectInfo();
+        }
+
+        auto SpawnPacketBuffer = RoomPacketHandler::MakeSendBuffer(SpawnPacket);
+        DoAsync(std::bind(&Room::Send, this, player->GetSession(), SpawnPacketBuffer));
+    }
+
+    //이미 룸에 존재하던 인원에게 새로운 인원 정보 전송
+    {
+        ServerProtocol::S_SPAWN SpawnPacket;
+        SpawnPacket.add_objects()->CopyFrom(player->GetObjectInfo());
+        SpawnPacket.set_roomid(GetRoomId());
+
+        auto SpawnPacketBuffer = RoomPacketHandler::MakeSendBuffer(SpawnPacket);
+
+        BroadcastExcept(SpawnPacketBuffer,player);
+    }
 }
 
 void Room::EnterGameEventSend_Monster(MonsterRef monster)
 {
     if (monster == nullptr)
         return;
-
     ServerProtocol::S_SPAWN SpawnPacket;
     SpawnPacket.add_objects()->CopyFrom(monster->GetObjectInfo());
+    SpawnPacket.set_roomid(GetRoomId());
     auto SpawnPacketBuffer = RoomPacketHandler::MakeSendBuffer(SpawnPacket);
-    DoAsync(&Room::Broadcast,SpawnPacketBuffer);
+    DoAsync(&Room::Broadcast,std::move(SpawnPacketBuffer));
 }
 
 void Room::EnterGameEventSend_ProjectTile(ProjectTileRef projecTtile)
@@ -197,8 +288,9 @@ void Room::EnterGameEventSend_ProjectTile(ProjectTileRef projecTtile)
 
     ServerProtocol::S_SPAWN SpawnPacket;
     SpawnPacket.add_objects()->CopyFrom(projecTtile->GetObjectInfo());
+    SpawnPacket.set_roomid(GetRoomId());
     auto SpawnPacketBuffer = RoomPacketHandler::MakeSendBuffer(SpawnPacket);
-    DoAsync(&Room::Broadcast, SpawnPacketBuffer);
+    DoAsync(&Room::Broadcast, std::move(SpawnPacketBuffer));
 }
 
 void Room::LeaveGame(int32 objectId)
@@ -206,21 +298,21 @@ void Room::LeaveGame(int32 objectId)
     if (objectId < 0)
         return;
 
-    ServerProtocol::GameObjectType type = ObjectManager::GetObjectTypeById(objectId);
+    Common::GameObjectType type = ObjectManager::GetObjectTypeById(objectId);
 
     switch (type)
     {
-        case ServerProtocol::PLAYER:
-            DoAsync(&Room::LeaveGame_Player,objectId);
+        case Common::PLAYER:
+            DoAsync(&Room::LeaveGame_Player,std::move(objectId));
             break;
-        case ServerProtocol::MONSTER:
-            DoAsync(&Room::LeaveGame_Monster, objectId);
+        case Common::MONSTER:
+            DoAsync(&Room::LeaveGame_Monster, std::move(objectId));
             break;
-        case ServerProtocol::PROJECTTILE:
-            DoAsync(&Room::LeaveGame_ProjectTile, objectId);
+        case Common::PROJECTTILE:
+            DoAsync(&Room::LeaveGame_ProjectTile, std::move(objectId));
             break;
-        case ServerProtocol::MAGIC:
-            DoAsync(&Room::LeaveGame_ProjectTile, objectId);
+        case Common::MAGIC:
+            DoAsync(&Room::LeaveGame_ProjectTile, std::move(objectId));
             break;
     }
 }
@@ -234,20 +326,22 @@ void Room::LeaveGame_Player(int32 objectId)
     if (it == _players.end())
         return;
 
+    //it는 해당 객체가있는 위치를 가르키는 포인터기 떄문에 비동기로 나중에 사용될 객체는 따로 받아서 람다에 복사해서 사용하자.
+    PlayerRef player = it->second;
 
-    DoAsync([this, it]() {
-        if (it->second == nullptr)
+    DoAsync([this, player]() {
+        if (player == nullptr)
             return;
 
-        _map.ApplyLeave(static_pointer_cast<GameObject>(it->second));
+        _map.ApplyLeave(static_pointer_cast<GameObject>(player));
 
-        LeaveGameEventSend_Player(it->second, it->second->GetObjectId());
+        LeaveGameEventSend_Player(player, player->GetObjectId());
 
         //플레이어 와 Room 의존 끊기
-        it->second->SetRoom(nullptr);
+        player->SetRoom(nullptr);
 
         //플레이어 목록에서 삭제
-        _players.erase(it);
+        _players.erase(player->GetObjectId());
     });
 }
 
@@ -260,17 +354,19 @@ void Room::LeaveGame_Monster(int32 objectId)
     if (it == _monsters.end())
         return;
 
-    DoAsync([this, it]() {
-        if (it->second == nullptr)
+    MonsterRef monster = it->second;
+
+    DoAsync([this, monster]() {
+        if (monster == nullptr)
             return;
 
-        _map.ApplyLeave(static_pointer_cast<Monster>(it->second));
+        _map.ApplyLeave(static_pointer_cast<Monster>(monster));
 
-        LeaveGameEventSend_Monster(it->second, it->second->GetObjectId());
+        LeaveGameEventSend_Monster(monster, monster->GetObjectId());
 
-        it->second->SetRoom(nullptr);
+        monster->SetRoom(nullptr);
 
-        _monsters.erase(it);
+        _monsters.erase(monster->GetObjectId());
     });
 }
 
@@ -283,27 +379,46 @@ void Room::LeaveGame_ProjectTile(int32 objectId)
     if (it == _projectTiles.end())
         return;
 
-    DoAsync([this, it]() {
+    ProjectTileRef tile = it->second;
 
-        if (it->second == nullptr)
+    DoAsync([this, tile]() {
+
+        if (tile == nullptr)
             return;
 
-        ProjectTileRef projecttile = static_pointer_cast<ProjectTile>(it->second);
-        _map.ApplyLeave(projecttile);
+        _map.ApplyLeave(tile);
 
-        LeaveGameEventSend_ProjectTile(it->second, it->second->GetObjectId());
+        LeaveGameEventSend_ProjectTile(tile, tile->GetObjectId());
 
-        it->second->SetRoom(nullptr);
+        tile->SetRoom(nullptr);
 
-        _projectTiles.erase(it);
+        _projectTiles.erase(tile->GetObjectId());
 
-        projecttile->SetOwner(nullptr);
+        tile->SetOwner(nullptr);
     });
 }
 
 void Room::ExitGameEventSend(PlayerRef player)
 {
+    //게임 방에서 완전히 나가기가 완료되었다고 User서버에게 패킷을 전송해주자
+    ServerProtocol::S_EXIT_GAME packet;
+    packet.set_exitflag(true);
+    packet.set_objectid(player->GetObjectId());
+    packet.set_roomid(GetRoomId());
+    auto exitPacketBuffer = RoomPacketHandler::MakeSendBuffer(packet);
+    player->GetSession()->Send(exitPacketBuffer);
 
+    //해당방의 score 삭제 처리 1.nickname 2.kill 3.death 4.nickname Del로 그냥 모든 필드 밀어줌 필요시 HDell로 필요한 필드만 삭제
+
+    const char* query = "DEL room_score:%d:%s";
+    RedisManager::GetInstance().RAsyncCommand(query, GetRoomId(), player->GetUserId().c_str());
+
+    query = "SREM room_user:%d %s";
+    RedisManager::GetInstance().RAsyncCommand(query, _roomId, player->GetUserId().c_str());
+
+    //room을 만든 user가 방에서 나감
+    if (player->GetUserNickName() == GetRootUser())
+        DoAsync(&Room::RoomBreak, std::move(player));
 }
 
 void Room::Broadcast(SendBufferRef sendBuffer)
@@ -311,10 +426,16 @@ void Room::Broadcast(SendBufferRef sendBuffer)
     if (_players.size() == 0)
         return;
 
-    for (const auto& playerPair : _players)
+    Set<PacketSessionRef> sessions;
+
+    for (const auto& pair : _players)
     {
-        playerPair.second->GetSession()->Send(sendBuffer);
-        cout << "Broadcast 전송된 플레이어 id" << playerPair.second->GetObjectInfo().objectid() << endl;
+        sessions.insert(pair.second->GetSession());
+    }
+
+    for (const auto& session : sessions)
+    {
+        session->Send(sendBuffer);
     }
 }
 
@@ -323,24 +444,34 @@ void Room::BroadcastExcept(SendBufferRef sendBuffer, PlayerRef player)
     if (_players.size() == 0)
         return;
 
-    for (const auto& playerPair : _players)
+    Set<PacketSessionRef> sessions;
+
+    for (const auto& pair : _players)
     {
-        if (playerPair.second != player)
+        if (pair.second != player)
         {
-            playerPair.second->GetSession()->Send(sendBuffer);
-            cout << "Broadcast 전송된 플레이어 id" << playerPair.second->GetObjectInfo().objectid() << endl;
+            sessions.insert(pair.second->GetSession());
         }
     }
+    for (const auto& session : sessions)
+    {
+        session->Send(sendBuffer);
+    }
+}
+
+void Room::Send(PacketSessionRef session, SendBufferRef sendBuffer)
+{
+    session->Send(sendBuffer);
 }
 
 void Room::SpawnMonster(int32 y, int32 x)
 {
     // TEMP 몬스터 소환
-    MonsterRef monster = ObjectManager::GetInstance().Add<Monster>();
+    MonsterRef monster = _objmanagers.Add<Monster>();
     monster->SetCellPos(x, y);
 
     GameObjectRef gameObject = static_pointer_cast<GameObject>(monster);
-    DoAsync(&Room::EnterGame,gameObject);
+    EnterGame(gameObject);
 }
 
 void Room::LeaveGameEventSend_Player(PlayerRef player,int32 objectid)
@@ -348,12 +479,15 @@ void Room::LeaveGameEventSend_Player(PlayerRef player,int32 objectid)
     //본인에게 퇴장 패킷 전송
     ServerProtocol::S_LEAVE_GAME leavePacket;
     leavePacket.set_exit(true);
+    leavePacket.set_objectid(objectid);
+    leavePacket.set_objectid(GetRoomId());
     auto leavePacketBuffer = RoomPacketHandler::MakeSendBuffer(leavePacket);
     player->GetSession()->Send(leavePacketBuffer);
 
     //서버에 접속인원에게 퇴장 패킷 생성
     ServerProtocol::S_DESPAWN despawnPacket;
     despawnPacket.add_objectids(objectid);
+    despawnPacket.set_roomid(GetRoomId());
     auto despawnPacketBuffer = RoomPacketHandler::MakeSendBuffer(despawnPacket);
 
     // 다른 플레이어에게만 패킷 전송 
@@ -368,6 +502,7 @@ void Room::LeaveGameEventSend_Monster(MonsterRef monster, int32 objectid)
     //서버에 접속인원에게 퇴장 패킷 생성
     ServerProtocol::S_DESPAWN despawnPacket;
     despawnPacket.add_objectids(objectid);
+    despawnPacket.set_roomid(GetRoomId());
     auto despawnPacketBuffer = RoomPacketHandler::MakeSendBuffer(despawnPacket);
 
     // 다른 플레이어에게만 패킷 전송 
@@ -382,6 +517,7 @@ void Room::LeaveGameEventSend_ProjectTile(ProjectTileRef projectTile, int32 obje
     //서버에 접속인원에게 퇴장 패킷 생성
     ServerProtocol::S_DESPAWN despawnPacket;
     despawnPacket.add_objectids(objectid);
+    despawnPacket.set_roomid(GetRoomId());
     auto despawnPacketBuffer = RoomPacketHandler::MakeSendBuffer(despawnPacket);
 
     // 다른 플레이어에게만 패킷 전송 
@@ -408,8 +544,6 @@ void Room::HandleMove(PlayerRef& player, ServerProtocol::C_MOVE& pkt)
         _map.ApplyMove(static_pointer_cast<GameObject>(player), Vector2Int(pkt.posinfo().posx(), pkt.posinfo().posy()));
         HandleMoveEvent(player, pkt);
     });
-
-  
 }
 
 void Room::HandleMoveEvent(PlayerRef player, ServerProtocol::C_MOVE pkt)
@@ -417,20 +551,13 @@ void Room::HandleMoveEvent(PlayerRef player, ServerProtocol::C_MOVE pkt)
     //다른 플레이어에게도 이동 전달
     ServerProtocol::S_MOVE resMovePacket;
     resMovePacket.set_objectid(player->GetObjectInfo().objectid());
-    resMovePacket.mutable_posinfo()->set_movedir(pkt.posinfo().movedir());
-    resMovePacket.mutable_posinfo()->set_posx(pkt.posinfo().posx());
-    resMovePacket.mutable_posinfo()->set_posy(pkt.posinfo().posy());
-    resMovePacket.mutable_posinfo()->set_state(pkt.posinfo().state());
-
+    resMovePacket.mutable_posinfo()->CopyFrom(pkt.posinfo());
+    resMovePacket.set_roomid(GetRoomId());
     auto resMovePacketBuffer = RoomPacketHandler::MakeSendBuffer(resMovePacket);
-    for (const auto& pair : _players)
-    {
-        if (player != pair.second)
-        {
-            pair.second->GetSession()->Send(resMovePacketBuffer);
-            cout << "이동 이벤트 전송 받은 플레이어 id" << pair.second->GetObjectInfo().objectid() << endl;
-        }
-    }
+    
+    Set<PacketSessionRef> sessions;
+  
+    BroadcastExcept(resMovePacketBuffer,player);
 }
 
 void Room::HandleSkill(PlayerRef& player, ServerProtocol::C_SKILL& pkt)
@@ -439,29 +566,22 @@ void Room::HandleSkill(PlayerRef& player, ServerProtocol::C_SKILL& pkt)
         return;
 
     //외부에서 다른 곳에서  playerinfo가수정이될수도있기때문에 미리 정보를 받아둠
-    ServerProtocol::OBJECT_INFO info = player->GetObjectInfo();
-    if (info.posinfo().state() != ServerProtocol::CreatureState::IDLE)
+    Common::OBJECT_INFO info = player->GetObjectInfo();
+    if (info.posinfo().state() != Common::CreatureState::IDLE)
         return;
 
     // TODO : 스킬 사용 가능 여부 체크
 
    //스킬 사용 애니메이션을 플레이어들에게 전송
-    info.mutable_posinfo()->set_state(ServerProtocol::CreatureState::SKILL);
+    info.mutable_posinfo()->set_state(Common::CreatureState::SKILL);
 
     ServerProtocol::S_SKILL skill;
 
     skill.set_objectid(info.objectid());
     skill.mutable_info()->set_skillid(pkt.info().skillid());
+    skill.set_roomid(GetRoomId());
     auto resSkillPacketBuffer = RoomPacketHandler::MakeSendBuffer(skill);
-    Broadcast(resSkillPacketBuffer);
-
-   
-   /*
-    반복문으로 skill검색 unorderdedmap의 내장 find함수 사용하여 주석처리 필요시 해제해서 사용
-    auto it = std::find_if(DataManager::GetInstance().GetSkillDict().begin(), DataManager::GetInstance().GetSkillDict().end(),
-        [pkt](const std::pair<const int32, Skill>& pair) {
-        return pair.first == pkt.info().skillid();
-    });*/
+    DoAsync(&Room::Broadcast, std::move(resSkillPacketBuffer));
 
     auto it = DataManager::GetInstance().GetSkillDict().find(pkt.info().skillid());
 
@@ -472,7 +592,7 @@ void Room::HandleSkill(PlayerRef& player, ServerProtocol::C_SKILL& pkt)
 
     switch (skillData.skillType)
     {
-    case ServerProtocol::SKILL_AUTO:
+    case Common::SKILL_AUTO:
     {
         Vector2Int skillPos = player->GetFrontCellPos(info.posinfo().movedir());
         GameObjectRef target = _map.Find(skillPos);
@@ -482,9 +602,9 @@ void Room::HandleSkill(PlayerRef& player, ServerProtocol::C_SKILL& pkt)
         }
     }
     break;
-    case ServerProtocol::SKILL_PROJECTILE:
+    case Common::SKILL_PROJECTILE:
     {
-        ArrowRef arrow = ObjectManager::GetInstance().Add<Arrow>();
+        ArrowRef arrow = _objmanagers.Add<Arrow>();
         Vector2Int skillPos = player->GetFrontCellPos(info.posinfo().movedir());
         if (arrow == nullptr)
             return;
@@ -492,19 +612,19 @@ void Room::HandleSkill(PlayerRef& player, ServerProtocol::C_SKILL& pkt)
         //posinfo가아닌 object의 info의 posinfo에서 봐야함  
         arrow->SetOwner(player);
         arrow->SetSkillData(skillData);
-        arrow->GetObjectInfo().mutable_posinfo()->set_state(ServerProtocol::MOVING);
+        arrow->GetObjectInfo().mutable_posinfo()->set_state(Common::MOVING);
         arrow->GetObjectInfo().mutable_posinfo()->set_movedir(player->GetMoveDir());
         arrow->GetObjectInfo().mutable_posinfo()->set_posx(skillPos.posx);
         arrow->GetObjectInfo().mutable_posinfo()->set_posy(skillPos.posy);
         arrow->SetSpeed(skillData.projectile.speed);
 
         GameObjectRef gameObject = static_pointer_cast<GameObject>(arrow);
-        DoAsync(&Room::EnterGame, gameObject);
+        DoAsync(&Room::EnterGame, std::move(gameObject));
     }
     break;
-    case ServerProtocol::SKILL_MAGIC:
+    case Common::SKILL_MAGIC:
     {
-        MagicSkillRef magic = ObjectManager::GetInstance().Add<MagicSkill>();
+        MagicSkillRef magic = _objmanagers.Add<MagicSkill>();
         Vector2Int skillPos = player->GetFrontCellPos(info.posinfo().movedir());
 
         if (magic == nullptr)
@@ -519,7 +639,7 @@ void Room::HandleSkill(PlayerRef& player, ServerProtocol::C_SKILL& pkt)
         magic->SetSpeed(skillData.projectile.speed);
 
         GameObjectRef gameObject = static_pointer_cast<GameObject>(magic);
-        DoAsync(&Room::EnterGame, gameObject);
+        DoAsync(&Room::EnterGame, std::move(gameObject));
     }
     break;
     }

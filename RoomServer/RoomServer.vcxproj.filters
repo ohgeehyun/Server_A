@@ -95,7 +95,7 @@
     <ClCompile Include="RedisUtils.cpp">
       <Filter>Utils\Redis</Filter>
     </ClCompile>
-    <ClCompile Include="RedisConnection.cpp">
+    <ClCompile Include="RedisPubSubConnection.cpp">
       <Filter>DB</Filter>
     </ClCompile>
     <ClCompile Include="GlobalObject.cpp">
@@ -106,6 +106,15 @@
     </ClCompile>
     <ClCompile Include="JsonUtils.cpp">
       <Filter>Utils\Json</Filter>
+    </ClCompile>
+    <ClCompile Include="RedisConnection.cpp">
+      <Filter>DB</Filter>
+    </ClCompile>
+    <ClCompile Include="RedisManager.cpp">
+      <Filter>DB</Filter>
+    </ClCompile>
+    <ClCompile Include="Common.pb.cc">
+      <Filter>Protocol</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -164,7 +173,7 @@
     <ClInclude Include="RedisUtils.h">
       <Filter>Utils\Redis</Filter>
     </ClInclude>
-    <ClInclude Include="RedisConnection.h">
+    <ClInclude Include="RedisPubSubConnection.h">
       <Filter>DB</Filter>
     </ClInclude>
     <ClInclude Include="GlobalObject.h">
@@ -176,9 +185,21 @@
     <ClInclude Include="JsonUtils.h">
       <Filter>Utils\Json</Filter>
     </ClInclude>
+    <ClInclude Include="RedisConnection.h">
+      <Filter>DB</Filter>
+    </ClInclude>
+    <ClInclude Include="RedisManager.h">
+      <Filter>DB</Filter>
+    </ClInclude>
+    <ClInclude Include="Common.pb.h">
+      <Filter>Protocol</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Common\Protobuf\bin\ServerProtocol.proto">
+      <Filter>Protocol</Filter>
+    </None>
+    <None Include="..\Common\Protobuf\bin\Common.proto">
       <Filter>Protocol</Filter>
     </None>
   </ItemGroup>

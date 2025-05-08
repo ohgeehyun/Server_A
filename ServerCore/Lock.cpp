@@ -85,6 +85,6 @@ void Lock::ReadUnlock(const char* name)
 #if _DEBUG
     GDeadLockProfiler->PopLock(name);
 #endif
-    //fetch_sub 0ÀÌ¸é flag°¡ -1ÀÌµÈ´Ù´Â ¶æ 
+    //fetch_sub 
     ASSERT_CRASH((_lockFlag.fetch_sub(1) & READ_COUNT_MASK) == 0);
 }

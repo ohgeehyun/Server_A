@@ -4,11 +4,11 @@ c:\users\og\source\repos\server_a\libraries\libs\servercore\debug\servercore.idb
 c:\users\og\source\repos\server_a\servercore\x64\debug\pch.obj
 c:\users\og\source\repos\server_a\servercore\x64\debug\memorypool.obj
 c:\users\og\source\repos\server_a\servercore\x64\debug\memory.obj
-c:\users\og\source\repos\server_a\servercore\x64\debug\lockqueue.obj
 c:\users\og\source\repos\server_a\servercore\x64\debug\lock.obj
 c:\users\og\source\repos\server_a\servercore\x64\debug\listener.obj
-c:\users\og\source\repos\server_a\servercore\x64\debug\jobtimer.obj
 c:\users\og\source\repos\server_a\servercore\x64\debug\jobqueue.obj
+c:\users\og\source\repos\server_a\servercore\x64\debug\lockqueue.obj
+c:\users\og\source\repos\server_a\servercore\x64\debug\jobtimer.obj
 c:\users\og\source\repos\server_a\servercore\x64\debug\job.obj
 c:\users\og\source\repos\server_a\servercore\x64\debug\iocpevent.obj
 c:\users\og\source\repos\server_a\servercore\x64\debug\iocpcore.obj
@@ -26,10 +26,10 @@ c:\users\og\source\repos\server_a\servercore\x64\debug\xmlparser.obj
 c:\users\og\source\repos\server_a\servercore\x64\debug\threadmanager.obj
 c:\users\og\source\repos\server_a\servercore\x64\debug\socketutils.obj
 c:\users\og\source\repos\server_a\servercore\x64\debug\session.obj
+c:\users\og\source\repos\server_a\servercore\x64\debug\service.obj
 c:\users\og\source\repos\server_a\servercore\x64\debug\sendbuffer.obj
 c:\users\og\source\repos\server_a\servercore\x64\debug\recvbuffer.obj
 c:\users\og\source\repos\server_a\servercore\x64\debug\netaddress.obj
-c:\users\og\source\repos\server_a\servercore\x64\debug\service.obj
 c:\users\og\source\repos\server_a\libraries\libs\servercore\debug\servercore.lib
 c:\users\og\source\repos\server_a\servercore\x64\debug\servercore.tlog\cl.command.1.tlog
 c:\users\og\source\repos\server_a\servercore\x64\debug\servercore.tlog\cl.items.tlog

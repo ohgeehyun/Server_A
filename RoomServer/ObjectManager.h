@@ -3,26 +3,16 @@
 class ObjectManager
 {
 public:
-    static ObjectManager& GetInstance() {
-        static ObjectManager instance;
-        return instance;
-    }
-
-
     template <typename T>
     typename std::enable_if<std::is_base_of<GameObject, T>::value, std::shared_ptr<T>>::type Add();
 
     bool Remove(int32 objectId);
     GameObjectRef Find(int32 objectId);
-    int32 GenerateId(ServerProtocol::GameObjectType);
+    int32 GenerateId(Common::GameObjectType);
 
-    static ServerProtocol::GameObjectType GetObjectTypeById(int32 id);
+    static Common::GameObjectType GetObjectTypeById(int32 id);
 
 private:
-    ObjectManager() = default;
-    ObjectManager(const ObjectManager&) = delete;
-    ObjectManager& operator=(const ObjectManager&) = delete;
-
     USE_LOCK;
     HashMap<int32, GameObjectRef> _objects;
 
@@ -39,7 +29,7 @@ typename std::enable_if<std::is_base_of<GameObject, T>::value, std::shared_ptr<T
 
     gameObject->SetObjectId(GenerateId(gameObject->GetGameObjectType()));
 
-    if (gameObject->GetGameObjectType() == ServerProtocol::PLAYER)
+    if (gameObject->GetGameObjectType() == Common::PLAYER)
     {
         _objects[gameObject->GetObjectId()] = gameObject;
     }

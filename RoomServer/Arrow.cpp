@@ -6,13 +6,13 @@
 
 Arrow::Arrow()
 {
-    SetGameObjectType(ServerProtocol::PROJECTTILE);
+    SetGameObjectType(Common::PROJECTTILE);
     //_skillData.id = 0;
 }
 
 Arrow::~Arrow()
 {
-    cout << GetObjectId() << " 아이디 오브젝트 소멸자 호출 완료 " << endl;
+    cout << GetObjectId() << "  오브젝트 소멸자 호출 완료 " << endl;
 }
 
 void Arrow::Update()
@@ -51,9 +51,9 @@ void Arrow::Update()
         movePacket.mutable_posinfo()->set_posx(GetPosx());
         movePacket.mutable_posinfo()->set_posy(GetPosy());
         movePacket.mutable_posinfo()->set_state(GetState());
-
+        movePacket.set_roomid(GetRoom()->GetRoomId());
         auto movePacketBuffer = RoomPacketHandler::MakeSendBuffer(movePacket);
-        GetRoom()->DoAsync(&Room::Broadcast,movePacketBuffer);
+        GetRoom()->DoAsync<Room, void, SendBufferRef>(&Room::Broadcast,std::move(movePacketBuffer));
 
         cout << "Move Arrow" << endl;
     }

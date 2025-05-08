@@ -6,13 +6,13 @@
 
 Arrow::Arrow()
 {
-    SetGameObjectType(Protocol::PROJECTTILE);
+    SetGameObjectType(Common::PROJECTTILE);
     //_skillData.id = 0;
 }
 
 Arrow::~Arrow()
 {
-    cout << GetObjectId() << " 아이디 오브젝트 소멸자 호출 완료 " << endl;
+    cout << GetObjectId() << " 오브젝트 소멸자 호출 완료 " << endl;
 }
 
 void Arrow::Update()

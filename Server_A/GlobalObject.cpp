@@ -2,9 +2,9 @@
 #include "GlobalObject.h"
 #include "MysqlConnectionPool.h"
 #include "Service.h"
-#include "RedisConnection.h"
+#include "RedisManager.h"
+
 MysqlConnectionPool* GDBConnectionPool = nullptr;
-RedisConnection* GRedisConnection = nullptr;
 
 std::shared_ptr<ClientService> GPClientService;
 class ServerGlobal
@@ -20,6 +20,5 @@ public:
     ~ServerGlobal()
     {
         delete GDBConnectionPool;
-        delete GRedisConnection;
     }
 }GServerGlobal;

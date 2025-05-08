@@ -172,6 +172,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Arrow.cpp" />
+    <ClCompile Include="Common.pb.cc">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="ConfigManager.cpp" />
     <ClCompile Include="DataContent.cpp" />
     <ClCompile Include="DataManager.cpp" />
@@ -191,6 +197,8 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="ProjectTile.cpp" />
     <ClCompile Include="RedisConnection.cpp" />
+    <ClCompile Include="RedisManager.cpp" />
+    <ClCompile Include="RedisPubSubConnection.cpp" />
     <ClCompile Include="RedisUtils.cpp" />
     <ClCompile Include="Room.cpp" />
     <ClCompile Include="RoomManager.cpp" />
@@ -208,6 +216,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Arrow.h" />
+    <ClInclude Include="Common.pb.h" />
     <ClInclude Include="ConfigManager.h" />
     <ClInclude Include="DataContent.h" />
     <ClInclude Include="DataManager.h" />
@@ -222,6 +231,8 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="ProjectTile.h" />
     <ClInclude Include="RedisConnection.h" />
+    <ClInclude Include="RedisManager.h" />
+    <ClInclude Include="RedisPubSubConnection.h" />
     <ClInclude Include="RedisUtils.h" />
     <ClInclude Include="Room.h" />
     <ClInclude Include="RoomManager.h" />
@@ -232,6 +243,7 @@
     <ClInclude Include="Utils.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\Common\Protobuf\bin\Common.proto" />
     <None Include="..\Common\Protobuf\bin\ServerProtocol.proto" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

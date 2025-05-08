@@ -12,9 +12,7 @@ public:
 public:
     GameSessionRef& GetSession() { return _session; }
     void SetSession(GameSessionRef session) { _session = session; }
-    void OnDameged(GameObjectRef attacker, int32 damege) override;
-    void OnDead(GameObjectRef attacker) override;
-
+    void RemoveSession() { _session = nullptr; }
 public:
 
 private:

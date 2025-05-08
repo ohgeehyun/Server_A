@@ -1,5 +1,6 @@
 C:\Users\OG\source\repos\Server_A\Server_A\Arrow.cpp;C:\Users\OG\source\repos\Server_A\Server_A\x64\Debug\Arrow.obj
 C:\Users\OG\source\repos\Server_A\Server_A\ClientPacketHandler.cpp;C:\Users\OG\source\repos\Server_A\Server_A\x64\Debug\ClientPacketHandler.obj
+C:\Users\OG\source\repos\Server_A\Server_A\Common.pb.cc;C:\Users\OG\source\repos\Server_A\Server_A\x64\Debug\Common.pb.obj
 C:\Users\OG\source\repos\Server_A\Server_A\ConfigManager.cpp;C:\Users\OG\source\repos\Server_A\Server_A\x64\Debug\ConfigManager.obj
 C:\Users\OG\source\repos\Server_A\Server_A\DataContent.cpp;C:\Users\OG\source\repos\Server_A\Server_A\x64\Debug\DataContent.obj
 C:\Users\OG\source\repos\Server_A\Server_A\DataManager.cpp;C:\Users\OG\source\repos\Server_A\Server_A\x64\Debug\DataManager.obj
@@ -21,12 +22,14 @@ C:\Users\OG\source\repos\Server_A\Server_A\Player.cpp;C:\Users\OG\source\repos\S
 C:\Users\OG\source\repos\Server_A\Server_A\ProjectTile.cpp;C:\Users\OG\source\repos\Server_A\Server_A\x64\Debug\ProjectTile.obj
 C:\Users\OG\source\repos\Server_A\Server_A\Protocol.pb.cc;C:\Users\OG\source\repos\Server_A\Server_A\x64\Debug\Protocol.pb.obj
 C:\Users\OG\source\repos\Server_A\Server_A\RedisConnection.cpp;C:\Users\OG\source\repos\Server_A\Server_A\x64\Debug\RedisConnection.obj
+C:\Users\OG\source\repos\Server_A\Server_A\RedisManager.cpp;C:\Users\OG\source\repos\Server_A\Server_A\x64\Debug\RedisManager.obj
+C:\Users\OG\source\repos\Server_A\Server_A\RedisPubSubConnetion.cpp;C:\Users\OG\source\repos\Server_A\Server_A\x64\Debug\RedisPubSubConnetion.obj
 C:\Users\OG\source\repos\Server_A\Server_A\RedisUtils.cpp;C:\Users\OG\source\repos\Server_A\Server_A\x64\Debug\RedisUtils.obj
 C:\Users\OG\source\repos\Server_A\Server_A\Room.cpp;C:\Users\OG\source\repos\Server_A\Server_A\x64\Debug\Room.obj
 C:\Users\OG\source\repos\Server_A\Server_A\RoomManager.cpp;C:\Users\OG\source\repos\Server_A\Server_A\x64\Debug\RoomManager.obj
 C:\Users\OG\source\repos\Server_A\Server_A\Server.cpp;C:\Users\OG\source\repos\Server_A\Server_A\x64\Debug\Server.obj
 C:\Users\OG\source\repos\Server_A\Server_A\ServerPacketHandler.cpp;C:\Users\OG\source\repos\Server_A\Server_A\x64\Debug\ServerPacketHandler.obj
 C:\Users\OG\source\repos\Server_A\Server_A\ServerProtocol.pb.cc;C:\Users\OG\source\repos\Server_A\Server_A\x64\Debug\ServerProtocol.pb.obj
-C:\Users\OG\source\repos\Server_A\Server_A\ServerSession.cpp;C:\Users\OG\source\repos\Server_A\Server_A\x64\Debug\ServerSession.obj
-C:\Users\OG\source\repos\Server_A\Server_A\ServerSessionManager.cpp;C:\Users\OG\source\repos\Server_A\Server_A\x64\Debug\ServerSessionManager.obj
+C:\Users\OG\source\repos\Server_A\Server_A\RoomSession.cpp;C:\Users\OG\source\repos\Server_A\Server_A\x64\Debug\RoomSession.obj
+C:\Users\OG\source\repos\Server_A\Server_A\RoomSessionManager.cpp;C:\Users\OG\source\repos\Server_A\Server_A\x64\Debug\RoomSessionManager.obj
 C:\Users\OG\source\repos\Server_A\Server_A\Utils.cpp;C:\Users\OG\source\repos\Server_A\Server_A\x64\Debug\Utils.obj

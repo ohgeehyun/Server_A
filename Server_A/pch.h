@@ -32,14 +32,19 @@
 #include <event2/event.h>
 
 #include "GlobalObject.h"
+#include "RedisConnection.h"
+#include "RedisPubSubConnetion.h"
 #include "RedisUtils.h"
 #include "JwtUtils.h"
+#include "JsonUtils.h"
 #include "Utils.h"
+
+
 
 using namespace std;
 
 using GameSessionRef = shared_ptr<class GameSession>;
-using ServerSessionRef = shared_ptr<class ServerSession>;
+using RoomSessionRef = shared_ptr<class RoomSession>;
 using PlayerRef = shared_ptr<class Player>;
 using MonsterRef = shared_ptr<class Monster>;
 using ArrowRef = shared_ptr<class Arrow>;

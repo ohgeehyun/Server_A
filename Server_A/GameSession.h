@@ -4,8 +4,10 @@
 class GameSession : public PacketSession
 {
 public:
-    PlayerRef& GetPlayer() { return _myplayer; }
+    PlayerRef GetPlayer() { return _myplayer; }
+    void SetPlayer(PlayerRef player) { _myplayer = player; }
     void InitPlayer();
+    void RemovePlayer() { _myplayer = nullptr; };
 
 public:
     virtual void OnConnected() override;
@@ -24,9 +26,11 @@ public:
     void SetIsJwtVerify(bool verify) { _isJwtVerify = verify; }
     bool GetIsJwtVerify() { return _isJwtVerify; }
 
-    //c_str()호출시string에 size_max string이 redis비동기호출시 할당되는경우가있어(확실하지 않음 size_max 가 되는건 확실) 추적하기위해 잠시 출력문 삽입
-    string& GetUserId() { cout << "userid size : " << _userid.size() << endl; return _userid; }
+
+    string& GetUserId() {  return _userid; }
     string& GetNickName() { return _nickname; }
+
+    GameSessionRef GetGameSessionRef() {return static_pointer_cast<GameSession>(shared_from_this());}
 
 private:
     PlayerRef _myplayer;

@@ -1,31 +1,40 @@
 #pragma once
 #include <nlohmann/json.hpp>
+
 class JsonUtils
 {
 public:
-    template<typename ...Args>
-    static nlohmann::json createJson(Args&&...args);
+    template<typename... Args>
+    static nlohmann::json createJson(Args&&... args);
 
 private:
     template<typename T>
     static void add_to_json(nlohmann::json& json_obj, T&& arg);
+
     template<typename T, typename... Args>
     static void add_to_json(nlohmann::json& json_obj, T&& arg, Args&&... args);
-
 };
 
-template<typename ...Args>
-inline nlohmann::json JsonUtils::createJson(Args && ...args)
+// JSON 생성 함수: (std::pair<key, value>) 형식으로 여러 개 받음
+template<typename... Args>
+inline nlohmann::json JsonUtils::createJson(Args&&... args)
 {
     nlohmann::json json_obj;
     add_to_json(json_obj, std::forward<Args>(args)...);
     return json_obj;
 }
 
-template<typename T, typename ...Args>
-inline void JsonUtils::add_to_json(nlohmann::json& json_obj, T&& arg, Args && ...args)
+// 마지막 하나 처리
+template<typename T>
+inline void JsonUtils::add_to_json(nlohmann::json& json_obj, T&& arg)
+{
+    json_obj[std::forward<T>(arg).first] = std::forward<T>(arg).second;
+}
+
+// 재귀적으로 JSON에 pair 추가
+template<typename T, typename... Args>
+inline void JsonUtils::add_to_json(nlohmann::json& json_obj, T&& arg, Args&&... args)
 {
     json_obj[std::forward<T>(arg).first] = std::forward<T>(arg).second;
     add_to_json(json_obj, std::forward<Args>(args)...);
 }
-

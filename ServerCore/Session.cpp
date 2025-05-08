@@ -16,6 +16,7 @@ Session::Session() :_recvBuffer(BUFFER_SIZE)
 Session::~Session()
 {
     SocketUtils::Close(_socket);
+    cout << "소켓 소멸자 호출"<<endl;
 }
 
 void Session::Send(SendBufferRef sendBuffer)
@@ -262,7 +263,7 @@ void Session::ProcessRecv(int32 numOfBytes)
     _recvEvent.owner = nullptr; //RELEASE_REF
     if (numOfBytes == 0)
     {
-        DisConnect(L"Recv 0");
+        DisConnect(L"Recv 0");//정상적으로 상대가 close()또는 소켓을 닫아 준 경우 0을 보내줌
         return;
     }
 

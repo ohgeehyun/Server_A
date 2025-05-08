@@ -1,0 +1,65 @@
+syntax = "proto3";
+
+package Common;
+
+enum CreatureState
+{
+      IDLE = 0;
+      MOVING = 1;
+      SKILL = 2;
+      DEAD = 3;
+}
+enum MoveDir
+{
+      UP = 0;
+      DOWN = 1;
+      LEFT = 2;
+      RIGHT = 3;
+}
+
+enum GameObjectType
+{
+    NONE = 0;
+    PLAYER = 1;
+    MONSTER = 2;
+    PROJECTTILE = 3;
+    MAGIC = 4;
+}
+
+enum SkillType
+{
+     SKILL_NONE = 0;
+     SKILL_AUTO = 1;
+     SKILL_PROJECTILE= 2;
+     SKILL_MAGIC = 3;
+}
+
+message OBJECT_INFO 
+{
+    int32 objectId = 1; //플레이어 식별자
+    string name = 2;
+    POSITIONINFO posInfo =3;
+    STATINFO statinfo = 4;
+}
+
+message POSITIONINFO
+{
+   optional CreatureState state = 1;
+   optional MoveDir moveDir = 2;
+   optional int32 posX = 3;
+   optional int32 posY = 4;
+}
+message STATINFO
+{
+    int32 level = 1;
+    int32 hp = 2;
+    int32 maxHp = 3;
+    int32 attack = 4;
+    float speed = 5;
+    int32 totalExp = 6;
+}
+
+message SkillInfo
+{
+    int32 skillId = 1;
+}

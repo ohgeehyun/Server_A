@@ -3,18 +3,25 @@
 #include "UserServerSession.h"
 #include "SessionManager.h"
 #include "RoomPacketHandler.h"
-#include "RedisConnection.h"
+#include "RedisManager.h"
+#include "RoomManager.h"
 #include "ConfigManager.h"
 
-
-void  DoRedisWorkerJob()
+void  DoWorkerJob(ServerServiceRef& service)
 {
-    while (true)
-    {
-        ThreadManager::DistributeReservedJobs();
+   //LEndTickCount = ::GetTickCount64() + WORKER_TICK;
 
-        GRedisConnection->RunEventLoopOnce();
-    }
+   //네트워크 입출력 처리 -> 인게임 로직까지 호출하는 상황이었음(패킷 핸들러에 의해)
+   service->GetIocpCore()->Dispatch(10);
+
+   ThreadManager::DistributeReservedJobs();
+   //글로벌 큐
+   ThreadManager::DoGlobalQueueWork();
+}
+void DoRedisWorkJob()
+{
+    RedisManager::GetInstance().PubSubNode_RunEventLoopOnce();
+    RedisManager::GetInstance().CommandNode_RunEventLoopOnce();
 }
 
 int main()
@@ -27,14 +34,13 @@ int main()
     RoomPacketHandler::Init();
 
     UserServerSessionManager = new SessionManager();
+    GRoomManager = Make_Shared<RoomManager>();
 
     ServerServiceRef service = Make_Shared<ServerService>(
-        NetAddress(L"220.81.12.171",5253),
+        NetAddress(L"125.137.11.149",5253),
         make_shared<IocpCore>(),
         make_shared<UserServerSession>,
         10);
-
-    GRedisConnection = make_shared<RedisConnection>();
 
     ASSERT_CRASH(service->Start());
 
@@ -42,14 +48,21 @@ int main()
     {
         GThreadManager->Launch([&service]() {
             while (true)
-            {
-                service->GetIocpCore()->Dispatch(10);
-            }
+                DoWorkerJob(service);
         });
     }
 
     GThreadManager->Launch([]() {
-        DoRedisWorkerJob();
+        while (true)
+            DoRedisWorkJob();
+    });
+
+    GThreadManager->Launch([]() {
+        while (true)
+        {
+            GRoomManager->DoRoomUpdate();
+            this_thread::sleep_for(chrono::milliseconds(100));
+        }
     });
 
     GThreadManager->Join();

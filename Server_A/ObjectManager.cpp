@@ -6,10 +6,10 @@
 
 bool ObjectManager::Remove(int32 objectId)
 {
-    Protocol::GameObjectType objectType = GetObjectTypeById(objectId);
+    Common::GameObjectType objectType = GetObjectTypeById(objectId);
     WRITE_LOCK
     {
-        if (objectType == Protocol::PLAYER)
+        if (objectType == Common::PLAYER)
          return _objects.erase(objectId);
     }
     return false;
@@ -17,10 +17,10 @@ bool ObjectManager::Remove(int32 objectId)
 
 GameObjectRef ObjectManager::Find(int32 objectId)
 {
-    Protocol::GameObjectType objectType = GetObjectTypeById(objectId);
+    Common::GameObjectType objectType = GetObjectTypeById(objectId);
     WRITE_LOCK
     {
-         if (objectType == Protocol::PLAYER)
+         if (objectType == Common::PLAYER)
          {
              GameObjectRef player = nullptr;
              for (auto it = _objects.begin(); it != _objects.end(); ++it)
@@ -36,16 +36,16 @@ GameObjectRef ObjectManager::Find(int32 objectId)
     return nullptr;
 }
 
-int32 ObjectManager::GenerateId(Protocol::GameObjectType type)
+int32 ObjectManager::GenerateId(Common::GameObjectType type)
 {
     //counter의 경우 하위24비트만 사용
     return ((int32)type << 24) | (_counter++);
 
 }
 
-Protocol::GameObjectType ObjectManager::GetObjectTypeById(int32 id)
+Common::GameObjectType ObjectManager::GetObjectTypeById(int32 id)
 {
     //24비트 밀어주고 0x7F범위 7비트 까지만 사용 16진수로는 0x7F임
     int32 type = (id >> 24) & 0x7F;
-    return static_cast<Protocol::GameObjectType>(type);
+    return static_cast<Common::GameObjectType>(type);
 }

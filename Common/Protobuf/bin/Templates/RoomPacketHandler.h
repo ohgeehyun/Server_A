@@ -11,9 +11,6 @@ enum class ServerPacketType : uint16
 {%- endfor %}
 };
 
-// Custom Handlers
-bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len);
-
 {%- for pkt in parser.recv_pkt %}
 bool Handle_{{pkt.name}}(PacketSessionRef& session, ServerProtocol::{{pkt.name}}& pkt);
 {%- endfor %}
@@ -23,8 +20,8 @@ class {{output}}
 public:
 	static void Init()
 	{
-		for (int32 i = 0; i < UINT16_MAX; i++)
-             GServerPacketHandler[i] = Handle_INVALID;
+		//for (int32 i = 0; i < UINT16_MAX; i++)
+             //GServerPacketHandler[i] = Handle_INVALID;
 
 {%- for pkt in parser.recv_pkt %}
 		GServerPacketHandler[static_cast<uint16>(ServerPacketType::PKT_{{pkt.name}})] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<ServerProtocol::{{pkt.name}}>(Handle_{{pkt.name}}, session, buffer, len); };

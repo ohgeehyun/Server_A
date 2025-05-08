@@ -71,6 +71,7 @@ void Service::ReleaseSession(SessionRef session)
 {
     WRITE_LOCK;
     {
+        //세션의 개수가 맞지 않음.
        ASSERT_CRASH(_sessions.erase(session) != 0);
        _sessionCount--;
     }

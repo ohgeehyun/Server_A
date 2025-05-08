@@ -12,15 +12,15 @@ public:
 *                   stat
 --------------------------------------------*/
 
-class StatData : public ILoader<int, ServerProtocol::STATINFO>
+class StatData : public ILoader<int, Common::STATINFO>
 {
 
 public:
-    HashMap<int, ServerProtocol::STATINFO> MakeDict() override;
+    HashMap<int, Common::STATINFO> MakeDict() override;
     void Deserialize(const nlohmann::json& j);
 
 public:
-    List<ServerProtocol::STATINFO> stats;
+    List<Common::STATINFO> stats;
  
 };
 
@@ -53,7 +53,7 @@ public:
     string name;
     float cooldown;
     int32 damege; 
-    ServerProtocol::SkillType skillType;
+    Common::SkillType skillType;
     ProjectileInfo projectile;
 
     void Deserialize(const nlohmann::json& j) {
@@ -68,7 +68,7 @@ public:
     }
 
 private:
-    ServerProtocol::SkillType ParseSkillType(const std::string& str); // 문자열 -> 열거형 변환
+    Common::SkillType ParseSkillType(const std::string& str); // 문자열 -> 열거형 변환
 };
 
 

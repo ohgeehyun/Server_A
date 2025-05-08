@@ -18,12 +18,8 @@ private:
     void OnConnected(const redisAsyncContext* context, int status);
     void Authenticate(redisAsyncContext* context, const std::string& password);
     void OnAuthenticated(redisAsyncContext* context, void* reply);
-
-    void LoadRoomServers(std::function<void(const std::vector<NetAddress>&)> callback);
-    void FetchRoomServerInfos(const std::vector<std::string>& keys, std::function<void(const std::vector<NetAddress>&)> callback);
-    void OnRoomServerInfoFetched(std::function<void(const std::vector<NetAddress>&)> callback);
-    void SubscribeRoomServerChannel();
 private:
+
     struct EventBaseDeleter {
         void operator()(event_base* base) const { if (base) event_base_free(base); }
     };

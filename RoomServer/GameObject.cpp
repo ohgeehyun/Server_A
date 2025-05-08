@@ -10,22 +10,22 @@ GameObject::GameObject()
 {
 }
 
-Vector2Int GameObject::GetFrontCellPos(ServerProtocol::MoveDir dir)
+Vector2Int GameObject::GetFrontCellPos(Common::MoveDir dir)
 {
     Vector2Int cellPos = GetCellPos();
 
     switch (dir)
     {
-    case ServerProtocol::MoveDir::UP:
+    case Common::MoveDir::UP:
         cellPos += Vector2Int::up();
         break;
-    case ServerProtocol::MoveDir::DOWN:
+    case Common::MoveDir::DOWN:
         cellPos += Vector2Int::down();
         break;
-    case ServerProtocol::MoveDir::LEFT:
+    case Common::MoveDir::LEFT:
         cellPos += Vector2Int::left();
         break;
-    case ServerProtocol::MoveDir::RIGHT:
+    case Common::MoveDir::RIGHT:
         cellPos += Vector2Int::right();
         break;
     }
@@ -38,16 +38,16 @@ Vector2Int GameObject::GetFrontCellPos()
     return GetFrontCellPos(GetMoveDir());
 }
 
-ServerProtocol::MoveDir GameObject::GetDirFromVec(Vector2Int dir)
+Common::MoveDir GameObject::GetDirFromVec(Vector2Int dir)
 {
     if (dir.posx > 0)
-        return ServerProtocol::MoveDir::RIGHT;
+        return Common::MoveDir::RIGHT;
     else if (dir.posx < 0)
-        return ServerProtocol::MoveDir::LEFT;
+        return Common::MoveDir::LEFT;
     else if (dir.posy > 0)
-        return ServerProtocol::MoveDir::UP;
+        return Common::MoveDir::UP;
     else
-        return ServerProtocol::MoveDir::DOWN;
+        return Common::MoveDir::DOWN;
 }
 
 void GameObject::OnDameged(GameObjectRef attacker, int32 damege)
@@ -68,22 +68,24 @@ void GameObject::OnDameged(GameObjectRef attacker, int32 damege)
     ServerProtocol::S_CHANGEHP changehpPacket;
     changehpPacket.set_objectid(GetObjectId());
     changehpPacket.set_hp(GetHp());
+    changehpPacket.set_roomid(GetRoom()->GetRoomId());
     auto changehpPacketBuffer = RoomPacketHandler::MakeSendBuffer(changehpPacket);
 
-    GetRoom()->DoAsync(&Room::Broadcast,changehpPacketBuffer);
+    GetRoom()->DoAsync(&Room::Broadcast,std::move(changehpPacketBuffer));
 }
 
 void GameObject::OnDead(GameObjectRef attacker)
 {
     if (GetRoom() == nullptr)
         return;
-    //TODO : 죽을 때 위치를 초기화해주어야함 특히 몬스터부분 확인 해볼 것
+    // 죽을 때 위치를 초기화해주어야함 특히 몬스터부분 확인 해볼 것
 
     ServerProtocol::S_DIE diePacket;
     diePacket.set_objectid(GetObjectId());
     diePacket.set_attackerid(attacker->GetObjectId());
+    diePacket.set_roomid(GetRoom()->GetRoomId());
     auto diePacketBuffer = RoomPacketHandler::MakeSendBuffer(diePacket);
-    GetRoom()->DoAsync(&Room::Broadcast,diePacketBuffer);
+    GetRoom()->DoAsync(&Room::Broadcast,std::move(diePacketBuffer));
 
     RoomRef room = GetRoom();
 
@@ -92,8 +94,8 @@ void GameObject::OnDead(GameObjectRef attacker)
     GetRoom()->GetMap().ApplyLeave(shared_from_this());
 
     SetHp(GetObjectStat().maxhp());
-    SetState(ServerProtocol::CreatureState::IDLE);
-    SetMoveDir(ServerProtocol::MoveDir::DOWN);
+    SetState(Common::CreatureState::IDLE);
+    SetMoveDir(Common::MoveDir::DOWN);
     SetPosx(0);
     SetPosy(0);
     room->DoAsync(&Room::EnterGame,shared_from_this());

@@ -107,10 +107,10 @@
     <ClCompile Include="ServerProtocol.pb.cc">
       <Filter>Protocol</Filter>
     </ClCompile>
-    <ClCompile Include="ServerSession.cpp">
+    <ClCompile Include="RoomSession.cpp">
       <Filter>Session</Filter>
     </ClCompile>
-    <ClCompile Include="ServerSessionManager.cpp">
+    <ClCompile Include="RoomSessionManager.cpp">
       <Filter>Session</Filter>
     </ClCompile>
     <ClCompile Include="ServerPacketHandler.cpp">
@@ -133,6 +133,15 @@
     </ClCompile>
     <ClCompile Include="Utils.cpp">
       <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="RedisPubSubConnetion.cpp">
+      <Filter>DB</Filter>
+    </ClCompile>
+    <ClCompile Include="RedisManager.cpp">
+      <Filter>DB</Filter>
+    </ClCompile>
+    <ClCompile Include="Common.pb.cc">
+      <Filter>Protocol</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -203,10 +212,10 @@
     <ClInclude Include="ServerProtocol.pb.h">
       <Filter>Protocol</Filter>
     </ClInclude>
-    <ClInclude Include="ServerSession.h">
+    <ClInclude Include="RoomSession.h">
       <Filter>Session</Filter>
     </ClInclude>
-    <ClInclude Include="ServerSessionManager.h">
+    <ClInclude Include="RoomSessionManager.h">
       <Filter>Session</Filter>
     </ClInclude>
     <ClInclude Include="ServerPacketHandler.h">
@@ -227,6 +236,15 @@
     <ClInclude Include="Utils.h">
       <Filter>Utils</Filter>
     </ClInclude>
+    <ClInclude Include="RedisPubSubConnetion.h">
+      <Filter>DB</Filter>
+    </ClInclude>
+    <ClInclude Include="RedisManager.h">
+      <Filter>DB</Filter>
+    </ClInclude>
+    <ClInclude Include="Common.pb.h">
+      <Filter>Protocol</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Common\Protobuf\bin\Protocol.proto">
@@ -236,6 +254,9 @@
       <Filter>Protocol</Filter>
     </None>
     <None Include="..\Common\Protobuf\bin\ServerProtocol.proto">
+      <Filter>Protocol</Filter>
+    </None>
+    <None Include="..\Common\Protobuf\bin\Common.proto">
       <Filter>Protocol</Filter>
     </None>
   </ItemGroup>

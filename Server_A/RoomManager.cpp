@@ -3,9 +3,9 @@
 #include "RoomManager.h"
 #include "RedisConnection.h"
 #include "ServerProtocol.pb.h"
-#include "ServerSessionManager.h"
+#include "RoomSessionManager.h"
 #include "ServerPacketHandler.h"
-#include "ServerSession.h"
+#include "RoomSession.h"
 #include "JsonUtils.h"
 #include "RedisUtils.h"
 
@@ -45,11 +45,13 @@ RoomRef RoomManager::Find(int32 roomId)
     return (it != _rooms.end()) ? it->second : nullptr;
 }
 
-ServerSessionRef RoomManager::FindToSession(int32 roomId)
+const PacketSessionRef& RoomManager::FindToSession(int32 roomId) const
 {
     auto it = _roomIdToServerSession.find(roomId);
     return (it != _roomIdToServerSession.end()) ? it->second : nullptr;
 }
+
+
 
 void RoomManager::FindToRoomServerInfo_Connect(const int32 roomId, const int32& sessionId)
 {
@@ -77,14 +79,14 @@ void RoomManager::FindToRoomServerInfo_Connect(const int32 roomId, const int32& 
         //if (GPClientService->AddRoomServerConnection(roomId,ip, port, sessionId));
     };
 
-    RedisUtils::RAsyncCommandCallback(
+  /*  RedisUtils::RAsyncCommandCallback(
         GRedisConnection->GetContext(),
         onRoomInfoReceived,
         query.c_str()
-    );
+    );*/
 }
 
-void RoomManager::Add_RoomIdToServerSession(const int32& roomId, const ServerSessionRef& session)
+void RoomManager::Add_RoomIdToServerSession(const int32& roomId, const PacketSessionRef& session)
 {
     WRITE_LOCK;
     {
