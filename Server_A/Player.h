@@ -17,6 +17,5 @@ public:
 
 private:
     GameSessionRef _session;
-
 };
 

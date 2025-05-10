@@ -55,7 +55,7 @@ const PacketSessionRef& RoomManager::FindToSession(int32 roomId) const
 
 void RoomManager::FindToRoomServerInfo_Connect(const int32 roomId, const int32& sessionId)
 {
-    //Redis에서 방정보 json에서 ip port를 찾아서 멤버변수 _roomIdToServerSession 에 넣어준다.
+    //Redis에서 방 정보 json에서 ip port를 찾아서 멤버변수 _roomIdToServerSession 에 넣어준다.
     //물론 기존에 없던 roomserver정보면 연결시켜주고 넣어줘야겟지??
     std::string redisKey = "room:" + std::to_string(roomId);
     std::string query = "GET " + redisKey;

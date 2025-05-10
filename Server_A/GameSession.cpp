@@ -2,6 +2,7 @@
 #include "GameSession.h"
 #include "GameSessionManager.h"
 #include "ClientPacketHandler.h"
+#include "ServerPacketHandler.h"
 #include "Player.h"
 #include "ObjectManager.h"
 #include "RoomManager.h"
@@ -29,16 +30,24 @@ void GameSession::OnConnected()
 
 void GameSession::OnDisConnected()
 {
-
-    RoomRef room = RoomManager::GetInstance().Find(1);
-
     const char* query = "EXPIRE user_info:%s %d";
     RedisManager::GetInstance().RAsyncCommand(query, GetUserId().c_str(),60);
 
     GGameSessionManager->SessionClose(GetSessionId(),GetUserId());
 
-    //_myplayer = nullptr;
-    //GGameSessionManager->Remove(GetSessionId());
+    PlayerRef player = GetPlayer();
+    RoomRef room = player->GetRoom();
+    if (room != nullptr && player != nullptr)
+    {
+        //방에 소속되어있는 상태로 종료 된 상황 leavePacket전송
+        ServerProtocol::C_LEAVE_GAME packet;
+        packet.set_exitflag(true);
+        packet.set_objectid(player->GetObjectId());
+        packet.set_roomid(room->GetRoomId());
+        auto Packet = ServerPacketHandler::MakeSendBuffer(packet);
+        PacketSessionRef roomServer = RoomManager::GetInstance().FindToSession(room->GetRoomId());
+        roomServer->Send(Packet);
+    }
 }
 
 void GameSession::OnRecvPacket(BYTE* buffer, int32 len)

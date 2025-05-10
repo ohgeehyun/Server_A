@@ -14,7 +14,7 @@ bool Handle_C_ENTER_GAME(PacketSessionRef& session, ServerProtocol::C_ENTER_GAME
      if (room == nullptr)
          return false;
 
-     //해당 방에 유저가 있는지 검사 없다면 첫 입장(플레이어 객체 생성) 있다면 재접속 또는 Respawn상태
+     //해당 방에 유저가 있는지 검사 없다면 첫 입장(플레이어 객체 생성) 있다면 재접속 
      PlayerRef isPlaying = GRoomManager->GetUserInRoom(pkt.rommid(), pkt.userid());
 
      if (isPlaying)
