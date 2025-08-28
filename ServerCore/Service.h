@@ -18,7 +18,9 @@ using SessionFactory = function<SessionRef(void)>;
 class Service : public enable_shared_from_this<Service>
 {
 public:
-    Service(ServiceType type, NetAddress address, IocpCoreRef core, SessionFactory factory,/*동접자*/int32 maxSessionCount = 1);
+    Service(ServiceType type, NetAddress address, IocpCoreRef core, SessionFactory factory,int32 maxSessionCount = 1);
+    //address를 동적으로 추가하는 형식
+    Service(ServiceType type,IocpCoreRef core, SessionFactory factory, int32 maxSessionCount = 1);
     virtual ~Service();
 
     virtual bool Start() abstract;
@@ -26,9 +28,9 @@ public:
 
     virtual void CloseService();
     void		 SetSessionFactory(SessionFactory func) { _sessionFactory = func; }
-
     void		 Broadcast(SendBufferRef sendBuffer);
     SessionRef	 CreateSession();
+    SessionRef   CreateSession(const NetAddress& address);
     void		 AddSession(SessionRef session);
     void		 ReleaseSession(SessionRef session);
     int32		 GetCurrentSessionCount() { return _sessionCount; }
@@ -57,8 +59,18 @@ class ClientService : public Service
 {
 public:
     ClientService(NetAddress targetAddress, IocpCoreRef core, SessionFactory factory, int32 maxSessionCount = 1);
+    ClientService(IocpCoreRef core, SessionFactory factory, int32 maxSessionCount = 1);
+    
+    void Add_ClientInfo(NetAddress Address);
+    void AddClientInfoAndStart(NetAddress Address);
+
     virtual ~ClientService() {};
     virtual bool Start() override;
+
+private:
+    //주소 정보를 나중에 받기 위한 Service를 구분하기 위한 flag
+    bool _runtimeNetAddress = false;
+    vector<NetAddress> _networkAddressList;
 };
 
 /*----------------------

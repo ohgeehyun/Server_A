@@ -16,6 +16,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{7F4716D9
 EndProject
 Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "PacketGenerator", "PacketGenerator\PacketGenerator.pyproj", "{37555449-2FFF-4F83-AF04-06C7231DE6F9}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RoomServer", "RoomServer\RoomServer.vcxproj", "{94321BBA-241E-4629-91F7-5F883870ACD3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -56,6 +58,18 @@ Global
 		{37555449-2FFF-4F83-AF04-06C7231DE6F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{37555449-2FFF-4F83-AF04-06C7231DE6F9}.Release|x64.ActiveCfg = Release|Any CPU
 		{37555449-2FFF-4F83-AF04-06C7231DE6F9}.Release|x86.ActiveCfg = Release|Any CPU
+		{94321BBA-241E-4629-91F7-5F883870ACD3}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{94321BBA-241E-4629-91F7-5F883870ACD3}.Debug|Any CPU.Build.0 = Debug|x64
+		{94321BBA-241E-4629-91F7-5F883870ACD3}.Debug|x64.ActiveCfg = Debug|x64
+		{94321BBA-241E-4629-91F7-5F883870ACD3}.Debug|x64.Build.0 = Debug|x64
+		{94321BBA-241E-4629-91F7-5F883870ACD3}.Debug|x86.ActiveCfg = Debug|Win32
+		{94321BBA-241E-4629-91F7-5F883870ACD3}.Debug|x86.Build.0 = Debug|Win32
+		{94321BBA-241E-4629-91F7-5F883870ACD3}.Release|Any CPU.ActiveCfg = Release|x64
+		{94321BBA-241E-4629-91F7-5F883870ACD3}.Release|Any CPU.Build.0 = Release|x64
+		{94321BBA-241E-4629-91F7-5F883870ACD3}.Release|x64.ActiveCfg = Release|x64
+		{94321BBA-241E-4629-91F7-5F883870ACD3}.Release|x64.Build.0 = Release|x64
+		{94321BBA-241E-4629-91F7-5F883870ACD3}.Release|x86.ActiveCfg = Release|Win32
+		{94321BBA-241E-4629-91F7-5F883870ACD3}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

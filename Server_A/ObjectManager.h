@@ -14,9 +14,9 @@ public:
 
     bool Remove(int32 objectId);
     GameObjectRef Find(int32 objectId);
-    int32 GenerateId(Protocol::GameObjectType);
+    int32 GenerateId(Common::GameObjectType);
 
-    static Protocol::GameObjectType GetObjectTypeById(int32 id);
+    static Common::GameObjectType GetObjectTypeById(int32 id);
 
 private:
     ObjectManager() = default;
@@ -39,7 +39,7 @@ typename std::enable_if<std::is_base_of<GameObject, T>::value, std::shared_ptr<T
 
     gameObject->SetObjectId(GenerateId(gameObject->GetGameObjectType()));
 
-    if (gameObject->GetGameObjectType() == Protocol::PLAYER)
+    if (gameObject->GetGameObjectType() == Common::PLAYER)
     {
         _objects[gameObject->GetObjectId()] = gameObject;
     }

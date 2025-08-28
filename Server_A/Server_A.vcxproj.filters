@@ -31,30 +31,18 @@
     <Filter Include="Utils\JwtUtils">
       <UniqueIdentifier>{df419935-e445-48f5-b60e-effa9cab710b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Session">
+      <UniqueIdentifier>{13982f13-4eb8-405d-9bc7-438a32bc344c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PacketHandler">
+      <UniqueIdentifier>{e87d376d-b5b6-4783-891e-c6c7f50760b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utils\Json">
+      <UniqueIdentifier>{be2ec07a-8d20-4985-b4d4-36d90edd8cd2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="pch.cpp">
-      <Filter>Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="Server.cpp">
-      <Filter>Main</Filter>
-    </ClCompile>
-    <ClCompile Include="GameSessionManager.cpp">
-      <Filter>Main</Filter>
-    </ClCompile>
-    <ClCompile Include="GameSession.cpp">
-      <Filter>Main</Filter>
-    </ClCompile>
-    <ClCompile Include="ClientPacketHandler.cpp">
-      <Filter>Main</Filter>
-    </ClCompile>
-    <ClCompile Include="Enum.pb.cc">
-      <Filter>Protocol</Filter>
-    </ClCompile>
     <ClCompile Include="Protocol.pb.cc">
-      <Filter>Protocol</Filter>
-    </ClCompile>
-    <ClCompile Include="Struct.pb.cc">
       <Filter>Protocol</Filter>
     </ClCompile>
     <ClCompile Include="RoomManager.cpp">
@@ -93,12 +81,6 @@
     <ClCompile Include="MysqlCommand.cpp">
       <Filter>DB</Filter>
     </ClCompile>
-    <ClCompile Include="GlobalObject.cpp">
-      <Filter>Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="RedisConnectionPool.cpp">
-      <Filter>DB</Filter>
-    </ClCompile>
     <ClCompile Include="RedisConnection.cpp">
       <Filter>DB</Filter>
     </ClCompile>
@@ -107,9 +89,6 @@
     </ClCompile>
     <ClCompile Include="JwtUtils.cpp">
       <Filter>Utils\JwtUtils</Filter>
-    </ClCompile>
-    <ClCompile Include="JsonUtils.cpp">
-      <Filter>Utils</Filter>
     </ClCompile>
     <ClCompile Include="Monster.cpp">
       <Filter>Main\Game\Object</Filter>
@@ -123,24 +102,50 @@
     <ClCompile Include="MagicSkill.cpp">
       <Filter>Main\Game\Object</Filter>
     </ClCompile>
+    <ClCompile Include="pch.cpp" />
+    <ClCompile Include="Server.cpp" />
+    <ClCompile Include="ServerProtocol.pb.cc">
+      <Filter>Protocol</Filter>
+    </ClCompile>
+    <ClCompile Include="RoomSession.cpp">
+      <Filter>Session</Filter>
+    </ClCompile>
+    <ClCompile Include="RoomSessionManager.cpp">
+      <Filter>Session</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerPacketHandler.cpp">
+      <Filter>PacketHandler</Filter>
+    </ClCompile>
+    <ClCompile Include="ClientPacketHandler.cpp">
+      <Filter>PacketHandler</Filter>
+    </ClCompile>
+    <ClCompile Include="GameSessionManager.cpp">
+      <Filter>Session</Filter>
+    </ClCompile>
+    <ClCompile Include="GameSession.cpp">
+      <Filter>Session</Filter>
+    </ClCompile>
+    <ClCompile Include="GlobalObject.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="JsonUtils.cpp">
+      <Filter>Utils\Json</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="RedisPubSubConnetion.cpp">
+      <Filter>DB</Filter>
+    </ClCompile>
+    <ClCompile Include="RedisManager.cpp">
+      <Filter>DB</Filter>
+    </ClCompile>
+    <ClCompile Include="Common.pb.cc">
+      <Filter>Protocol</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GameSessionManager.h">
-      <Filter>Main</Filter>
-    </ClInclude>
-    <ClInclude Include="GameSession.h">
-      <Filter>Main</Filter>
-    </ClInclude>
-    <ClInclude Include="ClientPacketHandler.h">
-      <Filter>Main</Filter>
-    </ClInclude>
-    <ClInclude Include="Enum.pb.h">
-      <Filter>Protocol</Filter>
-    </ClInclude>
     <ClInclude Include="Protocol.pb.h">
-      <Filter>Protocol</Filter>
-    </ClInclude>
-    <ClInclude Include="Struct.pb.h">
       <Filter>Protocol</Filter>
     </ClInclude>
     <ClInclude Include="Room.h">
@@ -179,14 +184,8 @@
     <ClInclude Include="MysqlCommand.h">
       <Filter>DB</Filter>
     </ClInclude>
-    <ClInclude Include="pch.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
     <ClInclude Include="GlobalObject.h">
       <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="RedisConnectionPool.h">
-      <Filter>DB</Filter>
     </ClInclude>
     <ClInclude Include="RedisConnection.h">
       <Filter>DB</Filter>
@@ -196,9 +195,6 @@
     </ClInclude>
     <ClInclude Include="JwtUtils.h">
       <Filter>Utils\JwtUtils</Filter>
-    </ClInclude>
-    <ClInclude Include="JsonUtils.h">
-      <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="Monster.h">
       <Filter>Main\Game\Object</Filter>
@@ -212,18 +208,55 @@
     <ClInclude Include="MagicSkill.h">
       <Filter>Main\Game\Object</Filter>
     </ClInclude>
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="ServerProtocol.pb.h">
+      <Filter>Protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="RoomSession.h">
+      <Filter>Session</Filter>
+    </ClInclude>
+    <ClInclude Include="RoomSessionManager.h">
+      <Filter>Session</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerPacketHandler.h">
+      <Filter>PacketHandler</Filter>
+    </ClInclude>
+    <ClInclude Include="ClientPacketHandler.h">
+      <Filter>PacketHandler</Filter>
+    </ClInclude>
+    <ClInclude Include="GameSessionManager.h">
+      <Filter>Session</Filter>
+    </ClInclude>
+    <ClInclude Include="GameSession.h">
+      <Filter>Session</Filter>
+    </ClInclude>
+    <ClInclude Include="JsonUtils.h">
+      <Filter>Utils\Json</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="RedisPubSubConnetion.h">
+      <Filter>DB</Filter>
+    </ClInclude>
+    <ClInclude Include="RedisManager.h">
+      <Filter>DB</Filter>
+    </ClInclude>
+    <ClInclude Include="Common.pb.h">
+      <Filter>Protocol</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\Common\Protobuf\bin\Enum.proto">
-      <Filter>Protocol</Filter>
-    </None>
     <None Include="..\Common\Protobuf\bin\Protocol.proto">
       <Filter>Protocol</Filter>
     </None>
-    <None Include="..\Common\Protobuf\bin\Struct.proto">
+    <None Include="..\Common\Protobuf\bin\GenPackets.bat">
       <Filter>Protocol</Filter>
     </None>
-    <None Include="..\Common\Protobuf\bin\GenPackets.bat">
+    <None Include="..\Common\Protobuf\bin\ServerProtocol.proto">
+      <Filter>Protocol</Filter>
+    </None>
+    <None Include="..\Common\Protobuf\bin\Common.proto">
       <Filter>Protocol</Filter>
     </None>
   </ItemGroup>

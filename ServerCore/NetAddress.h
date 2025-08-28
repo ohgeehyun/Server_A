@@ -9,9 +9,9 @@ public:
     NetAddress(SOCKADDR_IN sockAddr);
     NetAddress(wstring ip, uint16 port);
 
-    SOCKADDR_IN& GetSockAddr() { return _sockAddr; };
-    wstring GetIpAdress();
-    uint16 GetPort() { return ::ntohs(_sockAddr.sin_port); }
+    const SOCKADDR_IN& GetSockAddr() const { return _sockAddr; };
+    const wstring GetIpAdress() const;
+    const uint16 GetPort() const { return ::ntohs(_sockAddr.sin_port); }
 
 public:
     static IN_ADDR ip2Address(const WCHAR* ip);

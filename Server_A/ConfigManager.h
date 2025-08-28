@@ -10,6 +10,7 @@ public:
     string skillPath;
     string configPath;
     string keyPath;
+    string luaPath;
 };
 
 class ConfigManager
@@ -33,8 +34,5 @@ private:
 
 public:
     ServerConfig _config;
-    
-private:
-
 };
 

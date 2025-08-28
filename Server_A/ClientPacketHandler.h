@@ -1,7 +1,7 @@
 #pragma once
 #include "Protocol.pb.h"
 #include "GameSession.h"
-using PacketHandlerFunc = std::function<bool(PacketSessionRef&, BYTE*, int32)>;
+using PacketHandlerFunc = std::function<bool(GameSessionRef&, BYTE*, int32)>;
 extern PacketHandlerFunc GPacketHandler[UINT16_MAX];
 
 enum : uint16
@@ -28,36 +28,33 @@ enum : uint16
     PKT_C_LEAVE_GAME = 1019,
     PKT_S_EXIT_GAME = 1020,
 };
-
-// Custom Handlers
-bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len);
-bool Handle_C_ENTER_GAME(PacketSessionRef& session, Protocol::C_ENTER_GAME& pkt);
-bool Handle_C_CREATE_ROOM(PacketSessionRef& session, Protocol::C_CREATE_ROOM& pkt);
-bool Handle_C_ROOM_LIST(PacketSessionRef& session, Protocol::C_ROOM_LIST& pkt);
-bool Handle_C_LEAVE_GAME(PacketSessionRef& session, Protocol::C_LEAVE_GAME& pkt);
-bool Handle_C_MOVE(PacketSessionRef& session, Protocol::C_MOVE& pkt);
-bool Handle_C_SKILL(PacketSessionRef& session, Protocol::C_SKILL& pkt);
-bool Handle_C_VERIFY(PacketSessionRef& session, Protocol::C_VERIFY& pkt);
-bool Handle_C_MESSAGE(PacketSessionRef& session, Protocol::C_MESSAGE& pkt);
+bool Handle_C_ENTER_GAME(GameSessionRef& session, Protocol::C_ENTER_GAME& pkt);
+bool Handle_C_CREATE_ROOM(GameSessionRef& session, Protocol::C_CREATE_ROOM& pkt);
+bool Handle_C_ROOM_LIST(GameSessionRef& session, Protocol::C_ROOM_LIST& pkt);
+bool Handle_C_LEAVE_GAME(GameSessionRef& session, Protocol::C_LEAVE_GAME& pkt);
+bool Handle_C_MOVE(GameSessionRef& session, Protocol::C_MOVE& pkt);
+bool Handle_C_SKILL(GameSessionRef& session, Protocol::C_SKILL& pkt);
+bool Handle_C_VERIFY(GameSessionRef& session, Protocol::C_VERIFY& pkt);
+bool Handle_C_MESSAGE(GameSessionRef& session, Protocol::C_MESSAGE& pkt);
 
 class ClientPacketHandler
 {
 public:
 	static void Init()
 	{
-		for (int32 i = 0; i < UINT16_MAX; i++)
-			GPacketHandler[i] = Handle_INVALID;
-		GPacketHandler[PKT_C_ENTER_GAME] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_ENTER_GAME>(Handle_C_ENTER_GAME, session, buffer, len); };
-		GPacketHandler[PKT_C_CREATE_ROOM] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_CREATE_ROOM>(Handle_C_CREATE_ROOM, session, buffer, len); };
-		GPacketHandler[PKT_C_ROOM_LIST] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_ROOM_LIST>(Handle_C_ROOM_LIST, session, buffer, len); };
-		GPacketHandler[PKT_C_LEAVE_GAME] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_LEAVE_GAME>(Handle_C_LEAVE_GAME, session, buffer, len); };
-		GPacketHandler[PKT_C_MOVE] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_MOVE>(Handle_C_MOVE, session, buffer, len); };
-		GPacketHandler[PKT_C_SKILL] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_SKILL>(Handle_C_SKILL, session, buffer, len); };
-		GPacketHandler[PKT_C_VERIFY] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_VERIFY>(Handle_C_VERIFY, session, buffer, len); };
-		GPacketHandler[PKT_C_MESSAGE] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_MESSAGE>(Handle_C_MESSAGE, session, buffer, len); };
+		//for (int32 i = 0; i < UINT16_MAX; i++)
+			//GPacketHandler[i] = Handle_INVALID;
+		GPacketHandler[PKT_C_ENTER_GAME] = [](GameSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_ENTER_GAME>(Handle_C_ENTER_GAME, session, buffer, len); };
+		GPacketHandler[PKT_C_CREATE_ROOM] = [](GameSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_CREATE_ROOM>(Handle_C_CREATE_ROOM, session, buffer, len); };
+		GPacketHandler[PKT_C_ROOM_LIST] = [](GameSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_ROOM_LIST>(Handle_C_ROOM_LIST, session, buffer, len); };
+		GPacketHandler[PKT_C_LEAVE_GAME] = [](GameSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_LEAVE_GAME>(Handle_C_LEAVE_GAME, session, buffer, len); };
+		GPacketHandler[PKT_C_MOVE] = [](GameSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_MOVE>(Handle_C_MOVE, session, buffer, len); };
+		GPacketHandler[PKT_C_SKILL] = [](GameSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_SKILL>(Handle_C_SKILL, session, buffer, len); };
+		GPacketHandler[PKT_C_VERIFY] = [](GameSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_VERIFY>(Handle_C_VERIFY, session, buffer, len); };
+		GPacketHandler[PKT_C_MESSAGE] = [](GameSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_MESSAGE>(Handle_C_MESSAGE, session, buffer, len); };
 	}
 
-	static bool HandlePacket(PacketSessionRef& session, BYTE* buffer, int32 len)
+	static bool HandlePacket(GameSessionRef& session, BYTE* buffer, int32 len)
 	{
         RecvPacketHeader* header = reinterpret_cast<RecvPacketHeader*>(buffer);
 		return GPacketHandler[header->id](session, buffer, len);
@@ -77,7 +74,7 @@ public:
 
 private:
 	template<typename PacketType, typename ProcessFunc>
-	static bool HandlePacket(ProcessFunc func, PacketSessionRef& session, BYTE* buffer, int32 len)
+	static bool HandlePacket(ProcessFunc func, GameSessionRef& session, BYTE* buffer, int32 len)
 	{
         PacketType pkt;
         RecvPacketHeader* header = reinterpret_cast<RecvPacketHeader*>(buffer);

@@ -1,0 +1,141 @@
+syntax = "proto3";
+
+package ServerProtocol;
+import "Common.proto";
+//import "google/protobuf/timestamp.proto";
+
+//C의 경우 유저 서버 가 보내는 패킷 S의 경우 RoomServer가 되겠다.
+enum MsgId {
+  empty_value = 0;
+  S_Enter_Game = 1001;
+  S_Leave_Game = 1002;
+  S_Spawn = 1003;
+  S_Despawn = 1004;
+  C_Move = 1005;
+  S_Move = 1006;
+  C_Skill = 1007;
+  S_Skill = 1008;
+  S_Changehp = 1009;
+  S_Die = 1010;
+  C_Create_Room = 1011;
+  C_Room_List = 1012;
+  S_Create_Room = 1013;
+  C_Enter_Game = 1014;
+  S_Message = 1015;
+  C_Message = 1016;
+  C_Leave_Game = 1017;
+  S_Exit_Game = 1018;
+  S_Get_Roominfo = 1019;
+  C_Get_Roominfo = 1020;
+}
+
+message C_ENTER_GAME {
+   int32 rommId = 1;
+   string roomname = 2;
+   int32 sessionId = 3;
+   string userId = 4;
+   string usernickname = 5;
+}
+
+message S_ENTER_GAME {
+  Common.OBJECT_INFO player = 1;
+  int32 roomId = 2;
+  string roomname = 3;
+  string userId = 4;
+}
+
+message C_LEAVE_GAME {
+    bool exitflag = 1;
+    int32 objectId = 2;
+    int32 roomId = 3;
+}
+
+message S_LEAVE_GAME {
+   bool exit = 1;
+   int32 objectId = 2;
+   int32 roomId = 3;
+}
+
+message S_EXIT_GAME {
+    bool exitflag = 1;
+    int32 objectid= 2;
+    int32 roomid =3;
+}
+
+message S_SPAWN {
+    repeated Common.OBJECT_INFO objects = 1;
+    string userId = 2;
+    int32 roomId = 3 ;
+}
+
+message S_DESPAWN {
+    repeated int32 objectIds = 1;
+    int32 roomId = 2;
+}
+
+message C_MOVE {
+    Common.POSITIONINFO posInfo = 1;
+    int32 objectId = 2;
+    int32 roomId =3;
+}
+
+message S_MOVE {
+    Common.POSITIONINFO posInfo = 1;
+    int32 objectId = 2;
+    int32 roomid = 3;
+}
+
+message C_SKILL {
+     Common.SkillInfo info = 1;
+     int32 objectId =2;
+     int32 roomid =3;
+}
+
+message C_CREATE_ROOM {
+     string roomname = 1;
+     string roompwd = 2;
+     string rootUser = 3;
+     int32 sessionId = 4;
+}
+
+message S_CREATE_ROOM {
+     bool result = 1;
+     int32 roomId = 2;
+     string roomname = 3;
+     string roompwd = 4;
+     bool pwdYn = 5;
+     string rootUser = 6;
+     int32 sessionId = 7;
+}
+
+message S_SKILL {
+    int32 objectId = 1;
+    Common.SkillInfo info = 2;
+    int32 roomId =3;
+}
+
+message C_MESSAGE {
+    int32 rommId = 1;
+    string nickname = 2;
+    string message = 3;
+    int32 objectId =4;
+}
+
+message S_MESSAGE {
+    int32 rommId = 1;
+    string nickname = 2;
+    string message = 3;
+    int32 objectId = 4;
+}
+
+message S_CHANGEHP {
+    int32 objectId = 1;
+    int32 hp = 2;
+    int32 roomId = 3;
+}
+
+message S_DIE {
+    int32 objectId = 1;
+    int32 attackerId = 2;
+    int32 roomId = 3;
+}

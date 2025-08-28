@@ -2,42 +2,27 @@
 #include "GameSession.h"
 #include "GameSessionManager.h"
 #include "ClientPacketHandler.h"
+#include "ServerPacketHandler.h"
 #include "Player.h"
 #include "ObjectManager.h"
 #include "RoomManager.h"
 #include "DataManager.h"
-#include "RedisConnection.h"
+#include "RedisManager.h"
 
-GameSessionManager* SessionManager;
+GameSessionManager* GGameSessionManager;
 
 void GameSession::InitPlayer()
 {
-    _myplayer = ObjectManager::GetInstance().Add<Player>();
-    {
-        _myplayer->GetObjectInfo().set_name("Player_"+to_string(_myplayer->GetObjectInfo().objectid()));
-        _myplayer->SetState(Protocol::CreatureState::IDLE);
-        _myplayer->SetMoveDir(Protocol::MoveDir::DOWN);
-        _myplayer->SetPosx(0);
-        _myplayer->SetPosy(0);
-        _myplayer->SetSession(static_pointer_cast<GameSession>(shared_from_this()));
-
-        auto it = std::find_if(DataManager::GetInstance().GetStatDict().begin(), DataManager::GetInstance().GetStatDict().end(),
-            [](const std::pair<const int32, Protocol::STATINFO>& pair) {
-            return pair.second.level() == 1;
-        });
-
-        if (it == DataManager::GetInstance().GetStatDict().end())
-            return;
-        _myplayer->SetObjectStat(it->second);
-    }
+    _myplayer = Make_Shared<Player>();
+    _myplayer->SetSession(GetGameSessionRef());
 }
 
 void GameSession::OnConnected()
 {
-    SessionManager->Add(static_pointer_cast<GameSession>(shared_from_this()));
+    GGameSessionManager->Add(static_pointer_cast<GameSession>(shared_from_this()));
     cout << "클라이언트 소켓 연결 완료 " <<endl;
 
-    InitPlayer();
+    //InitPlayer();
     //RoomRef room = RoomManager::GetInstance().Find(1);
     //room->EnterGame(_myplayer);
 
@@ -45,22 +30,29 @@ void GameSession::OnConnected()
 
 void GameSession::OnDisConnected()
 {
+    const char* query = "EXPIRE user_info:%s %d";
+    RedisManager::GetInstance().RAsyncCommand(query, GetUserId().c_str(),60);
 
-    RoomRef room = RoomManager::GetInstance().Find(1);
-    int32 objectid = _myplayer->GetObjectId();
+    GGameSessionManager->SessionClose(GetSessionId(),GetUserId());
 
-    const char* query = "HDEL active_user %s";
-    RedisUtils::RAsyncCommand(GRedisConnection->GetContext(), query, _userid.c_str());
-
-    _myplayer = nullptr;
-
-    if (room != nullptr)
-        room->DoAsync(&Room::LeaveGame, objectid);
+    PlayerRef player = GetPlayer();
+    RoomRef room = player->GetRoom();
+    if (room != nullptr && player != nullptr)
+    {
+        //방에 소속되어있는 상태로 종료 된 상황 leavePacket전송
+        ServerProtocol::C_LEAVE_GAME packet;
+        packet.set_exitflag(true);
+        packet.set_objectid(player->GetObjectId());
+        packet.set_roomid(room->GetRoomId());
+        auto Packet = ServerPacketHandler::MakeSendBuffer(packet);
+        PacketSessionRef roomServer = RoomManager::GetInstance().FindToSession(room->GetRoomId());
+        roomServer->Send(Packet);
+    }
 }
 
 void GameSession::OnRecvPacket(BYTE* buffer, int32 len)
 {
-    PacketSessionRef session = GetPacketSessionRef();
+    GameSessionRef session = GetGameSessionRef();
     RecvPacketHeader* header = reinterpret_cast<RecvPacketHeader*>(buffer);
 
 

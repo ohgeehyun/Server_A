@@ -15,6 +15,7 @@ SendBufferManager*  GSendBufferManager = nullptr;
 GlobalQueue*        GGlobalQueue = nullptr;
 DeadLockProfiler*   GDeadLockProfiler = nullptr;
 JobTimer*           GJobTimer = nullptr;
+NetAddress*         GNetAddress = nullptr;
 //DBConnectionPool*   GDBConnectionPool = nullptr;
 class CoreGlobal
 {
@@ -39,6 +40,7 @@ public:
         delete GDeadLockProfiler;
         delete GGlobalQueue;
         delete GJobTimer;
+        delete GNetAddress;
         //delete GDBConnectionPool;
         SocketUtils::Clear();
     }

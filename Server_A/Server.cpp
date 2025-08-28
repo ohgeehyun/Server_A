@@ -1,14 +1,17 @@
 #pragma once
 #include "pch.h"
 #include "GameSession.h"
+#include "RoomSession.h"
 #include "RoomManager.h"
 #include "ClientPacketHandler.h"
+#include "ServerPacketHandler.h"
 #include "GameSessionManager.h"
+#include "RoomSessionManager.h"
 #include "ConfigManager.h"
 #include "DataManager.h"
 #include "Room.h"
 #include "MysqlConnectionPool.h"
-#include "RedisConnection.h"
+#include "RedisManager.h"
 
 enum
 {
@@ -29,11 +32,14 @@ void  DoWorkerJob(ServerServiceRef& service)
         ThreadManager::DoGlobalQueueWork();
     }
 }
+void DoRedisWorkJob()
+{
+    RedisManager::GetInstance().PubSubNode_RunEventLoopOnce();
+    RedisManager::GetInstance().CommandNode_RunEventLoopOnce();
+}
 
 int main()
 {
-    //CALL $(SolutionDir)Common\Protobuf\bin\GenPackets.bat 테스트중에 빌드 전이벤트 잠시 종료
-
     SetConsoleOutputCP(CP_UTF8);
 
     ConfigManager::GetInstance().LoadConfig();
@@ -43,16 +49,27 @@ int main()
     auto  skill = DataManager::GetInstance().GetSkillDict();
     
     ClientPacketHandler::Init();
-    SessionManager = new GameSessionManager();
+    ServerPacketHandler::Init();
+
+    GGameSessionManager = new GameSessionManager();
+    GRoomSessionManager = new RoomSessionManager();
+
 
     ServerServiceRef service = Make_Shared<ServerService>(
-        NetAddress(L"220.81.12.171", 5252),
+        NetAddress(L"125.137.11.149", 5252),
         make_shared<IocpCore>(),
         make_shared<GameSession>,
         100);
 
+    //RoomServer 와 통신을 하기위한 service 클라이언트의 입장
+    //우선은 서버 규모가 켜지면 여러가지의 RoomServer와 연결되겟지만 현재는 클라이언트 소켓은 한대로 운영
+    GPClientService = Make_Shared<ClientService>(
+        //NetAddress(L"220.81.12.171",5253),
+        make_shared<IocpCore>(),
+        make_shared<RoomSession>);
+
+    
     GDBConnectionPool = new MysqlConnectionPool(3);
-    GRedisConnection = new RedisConnection();
 
 
     ASSERT_CRASH(service->Start());
@@ -72,28 +89,25 @@ int main()
         GThreadManager->Launch([]() {
             while (true)
             {
-               GDBConnectionPool->IoContextStart();
+                GPClientService->GetIocpCore()->Dispatch(10);
             }
         });
     }
 
-    GThreadManager->Launch([]() {
-        while (true)
-            GRedisConnection->RunEventLoop();
-    });
+    //현재 MYSQL DB는 node js에서만 처리중이라 만들긴 했는데.. 사용하지는 않음
+    //for (int32 i = 0; i < 2; i++)
+    //{
+    //    GThreadManager->Launch([]() {
+    //        while (true)
+    //        {
+    //           GDBConnectionPool->IoContextStart();
+    //        }
+    //    });
+    //}
 
     GThreadManager->Launch([]() {
         while (true)
-        {
-            //RoomRef room = RoomManager::GetInstance().Find(1);
-            //if (room == nullptr)
-            //    continue;
-            //room->DoTimer(100,std::bind(&Room::Update,room));
-            //room->DoTimer(100, &Room::Update);
-            //room->Update();
-            RoomManager::GetInstance().DoRoomUpdate();
-            this_thread::sleep_for(chrono::milliseconds(100));
-        }
+            DoRedisWorkJob();
     });
 
     GThreadManager->Join();

@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 package Protocol;
+import "Common.proto";
 //import "google/protobuf/timestamp.proto";
 
 
@@ -28,181 +29,102 @@ enum MsgId {
   S_Exit_Game = 1020;
 }
 
- enum CreatureState
- {
-      IDLE = 0;
-      MOVING = 1;
-      SKILL = 2;
-      DEAD = 3;
- }
-  enum MoveDir
- {
-      UP = 0;
-      DOWN = 1;
-      LEFT = 2;
-      RIGHT = 3;
- }
-
- enum GameObjectType
- {
-     NONE = 0;
-     PLAYER = 1;
-     MONSTER = 2;
-     PROJECTTILE = 3;
-     MAGIC = 4;
- }
-
- enum SkillType
- {
-     SKILL_NONE = 0;
-     SKILL_AUTO = 1;
-     SKILL_PROJECTILE= 2;
-     SKILL_MAGIC = 3;
- }
-
-message C_ENTER_GAME
- {
+message C_ENTER_GAME {
    int32 rommId = 1;
    string roomname = 2;
- }
+}
 
-
-message S_ENTER_GAME
-{
-  OBJECT_INFO player = 1;
+message S_ENTER_GAME {
+  Common.OBJECT_INFO player = 1;
   int32 roomId = 2;
   string roomname = 3;
 }
 
-message C_CREATE_ROOM
-{
+message C_CREATE_ROOM {
     string roomname = 1;
     string roompwd = 2;
 }
 
-message S_CREATE_ROOM
-{
-    bool   result =1;
-    int32 roomId =2;
+message S_CREATE_ROOM {
+    bool result = 1;
+    int32 roomId = 2;
 }
 
-message C_ROOM_LIST
-{
+message C_ROOM_LIST {
     string roomname = 1;
 }
 
-message S_LEAVE_GAME
-{
+message S_LEAVE_GAME {
    bool exit = 1;
 }
 
-message C_LEAVE_GAME
-{
+message C_LEAVE_GAME {
     bool exitflag = 1;
 }
 
-message S_EXIT_GAME
-{
+message S_EXIT_GAME {
     bool exitflag = 1;
 }
 
-message S_SPAWN
-{
-    repeated OBJECT_INFO objects = 1;
+message S_SPAWN {
+    repeated Common.OBJECT_INFO objects = 1;
 }
 
-message S_DESPAWN
-{
+message S_DESPAWN {
     repeated int32 objectIds = 1;
+    int32 roomId = 2;
 }
 
-message C_MOVE
-{
-    POSITIONINFO posInfo = 1;
+message C_MOVE {
+    Common.POSITIONINFO posInfo = 1;
 }
 
-message S_MOVE
-{
+message S_MOVE {
     int32 objectId = 1;
-    POSITIONINFO posInfo = 2;
+    Common.POSITIONINFO posInfo = 2;
 }
 
-message C_SKILL
-{
-     SkillInfo info = 1;
+message C_SKILL {
+     Common.SkillInfo info = 1;
 }
 
-message S_SKILL
-{
-    int32  objectId = 1;
-    SkillInfo info = 2;
-
-}
-
-message S_CHANGEHP
-{
+message S_SKILL {
     int32 objectId = 1;
-    int32 hp = 2; //계산이후의 hp
+    Common.SkillInfo info = 2;
+    int32 roomid = 3;
+}
+
+message S_CHANGEHP {
+    int32 objectId = 1;
+    int32 hp = 2;
 }
 
 message S_DIE {
     int32 objectId = 1;
-    int32 attackerId= 2;
+    int32 attackerId = 2;
 }
 
-message S_VERIFY
-{
+message S_VERIFY {
      bool result = 1;
-     string userid =2;
-     string nickname =3;
+     string userid = 2;
+     string nickname = 3;
 }
-message C_VERIFY
-{
+
+message C_VERIFY {
      string jwt = 1;
-     string userid =2;
-     string nickname =3;
+     string userid = 2;
+     string nickname = 3;
 }
 
-message C_MESSAGE
-{
+message C_MESSAGE {
     int32 rommId = 1;
     string nickname = 2;
     string message = 3;
 }
 
-message S_MESSAGE
-{
+message S_MESSAGE {
     int32 rommId = 1;
     string nickname = 2;
     string message = 3;
 }
 
-message OBJECT_INFO 
-{
-    int32 objectId = 1; //플레이어 식별자
-    string name = 2;
-    POSITIONINFO posInfo =3;
-    STATINFO statinfo = 4;
-}
-
-message POSITIONINFO
-{
-   optional CreatureState state = 1;
-   optional MoveDir moveDir = 2;
-   optional int32 posX = 3;
-   optional int32 posY = 4;
-}
-message STATINFO
-{
-    int32 level = 1;
-    int32 hp = 2;
-    int32 maxHp = 3;
-    int32 attack = 4;
-    float speed = 5;
-    int32 totalExp = 6;
-}
-
-message SkillInfo
-{
-    int32 skillId = 1;
-}

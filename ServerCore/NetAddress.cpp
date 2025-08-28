@@ -14,7 +14,7 @@ NetAddress::NetAddress(wstring ip, uint16 port)
     _sockAddr.sin_port = ::htons(port);
 }
 
-wstring NetAddress::GetIpAdress()
+const wstring NetAddress::GetIpAdress() const
 {
     WCHAR buffer[100];
     ::InetNtopW(AF_INET, &_sockAddr.sin_addr, buffer, len32(buffer));

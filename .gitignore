@@ -6,9 +6,12 @@
 /Libraries/Libs/mysql/Debug/vs14/mysqlcppconnx-static.lib
 /Libraries/Libs/OpenSSL/MD/libcrypto_static.lib
 /Libraries/Libs/OpenSSL/MT/libcrypto_static.lib
-/Server_A/x64/Debug/Server_A.ilk
-/Server_A/x64/Release/Server_A.pch
-/Server_A/x64/Debug/Server_A.ilk
 *.log
 *.tlog
 /Server_A/x64/Debug/Server_A.tlog/CL.command.1.tlog
+/Server_A/x64/Release/Server_A.pch
+/RoomServer/x64/Debug/RoomServer.pch 
+/ServerCore/x64/Debug/ServerCore.pch
+/RoomServer/x64/Release/RoomServer.pch 
+/ServerCore/x64/Release/ServerCore.pch
+*.ilk

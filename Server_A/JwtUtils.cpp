@@ -27,10 +27,20 @@ bool JwtUtils::JwtVerify(string token, const char* log)
 
         _verifyStat = true;
         cout << log <<"sucesse jwt token verify! " << endl;
+        return true;
     }
-    catch (const jwt::error::signature_verification_exception& e) {
+    catch (const jwt::error::signature_verification_exception& e)
+    {
+        std::error_code ec = e.code();
 
-        cout << log <<e.what() << endl;
+        if (ec == jwt::error::token_verification_error::token_expired) {
+            // TODO : 토큰 시간 만료 시간 일떄 클라이언트에게 jwt 만료 신호보내주자 클라이언트는 Node server에 jwt재발급을 요청할 것
+            cout << log << " 토큰 시간 만료" << endl;
+            return false;
+        }
+
+        //일반 검증 실패 에러 
+        cout << log << e.what() << endl;
         return false;
     }
     catch (const std::exception& e) {

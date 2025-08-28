@@ -1,0 +1,206 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Main">
+      <UniqueIdentifier>{a27d1fd7-1ca6-4967-b8f4-67559715df40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utils">
+      <UniqueIdentifier>{3375d23c-7919-4075-86e5-55a9809b0e29}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Session">
+      <UniqueIdentifier>{8d10a97c-4011-41c4-92a0-ea129482702b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Protocol">
+      <UniqueIdentifier>{78c0a792-d6f6-462a-a522-31e48f52d1e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PacketHandler">
+      <UniqueIdentifier>{a62e60c1-ecb6-4885-837a-5b27fe5a0241}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Room">
+      <UniqueIdentifier>{cfce113e-533f-4a46-9c0a-60a2b49431e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Map">
+      <UniqueIdentifier>{430ee040-af39-4631-ac7a-584df9fb2bf7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Object">
+      <UniqueIdentifier>{a9ca8b5b-5f3d-4ca0-bee3-0391748ae06d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Data">
+      <UniqueIdentifier>{2ec658bc-69e5-40eb-9e45-a45293af1742}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utils\Redis">
+      <UniqueIdentifier>{a12a4587-c76c-4e6a-832f-917bcc3a8aef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DB">
+      <UniqueIdentifier>{3182a6e4-f208-4431-b990-3f23ed0e0e52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utils\Json">
+      <UniqueIdentifier>{1c467cab-b6e3-4ba2-8d20-282ae93b0a53}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="UserServerSession.cpp">
+      <Filter>Session</Filter>
+    </ClCompile>
+    <ClCompile Include="SessionManager.cpp">
+      <Filter>Session</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp" />
+    <ClCompile Include="RoomPacketHandler.cpp">
+      <Filter>PacketHandler</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerProtocol.pb.cc">
+      <Filter>Protocol</Filter>
+    </ClCompile>
+    <ClCompile Include="RoomServer.cpp" />
+    <ClCompile Include="Room.cpp">
+      <Filter>Main\Room</Filter>
+    </ClCompile>
+    <ClCompile Include="RoomManager.cpp">
+      <Filter>Main\Room</Filter>
+    </ClCompile>
+    <ClCompile Include="MapManager.cpp">
+      <Filter>Main\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="MagicSkill.cpp">
+      <Filter>Main\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Monster.cpp">
+      <Filter>Main\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectManager.cpp">
+      <Filter>Main\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Main\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="ProjectTile.cpp">
+      <Filter>Main\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Arrow.cpp">
+      <Filter>Main\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>Main\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="DataContent.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="DataManager.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="ConfigManager.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="RedisUtils.cpp">
+      <Filter>Utils\Redis</Filter>
+    </ClCompile>
+    <ClCompile Include="RedisPubSubConnection.cpp">
+      <Filter>DB</Filter>
+    </ClCompile>
+    <ClCompile Include="GlobalObject.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="JsonUtils.cpp">
+      <Filter>Utils\Json</Filter>
+    </ClCompile>
+    <ClCompile Include="RedisConnection.cpp">
+      <Filter>DB</Filter>
+    </ClCompile>
+    <ClCompile Include="RedisManager.cpp">
+      <Filter>DB</Filter>
+    </ClCompile>
+    <ClCompile Include="Common.pb.cc">
+      <Filter>Protocol</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="UserServerSession.h">
+      <Filter>Session</Filter>
+    </ClInclude>
+    <ClInclude Include="SessionManager.h">
+      <Filter>Session</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="RoomPacketHandler.h">
+      <Filter>PacketHandler</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerProtocol.pb.h">
+      <Filter>Protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="Room.h">
+      <Filter>Main\Room</Filter>
+    </ClInclude>
+    <ClInclude Include="RoomManager.h">
+      <Filter>Main\Room</Filter>
+    </ClInclude>
+    <ClInclude Include="MapManager.h">
+      <Filter>Main\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>Main\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="MagicSkill.h">
+      <Filter>Main\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Monster.h">
+      <Filter>Main\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectManager.h">
+      <Filter>Main\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Main\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="ProjectTile.h">
+      <Filter>Main\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Arrow.h">
+      <Filter>Main\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="DataContent.h">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="DataManager.h">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="ConfigManager.h">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="RedisUtils.h">
+      <Filter>Utils\Redis</Filter>
+    </ClInclude>
+    <ClInclude Include="RedisPubSubConnection.h">
+      <Filter>DB</Filter>
+    </ClInclude>
+    <ClInclude Include="GlobalObject.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="JsonUtils.h">
+      <Filter>Utils\Json</Filter>
+    </ClInclude>
+    <ClInclude Include="RedisConnection.h">
+      <Filter>DB</Filter>
+    </ClInclude>
+    <ClInclude Include="RedisManager.h">
+      <Filter>DB</Filter>
+    </ClInclude>
+    <ClInclude Include="Common.pb.h">
+      <Filter>Protocol</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Common\Protobuf\bin\ServerProtocol.proto">
+      <Filter>Protocol</Filter>
+    </None>
+    <None Include="..\Common\Protobuf\bin\Common.proto">
+      <Filter>Protocol</Filter>
+    </None>
+  </ItemGroup>
+</Project>

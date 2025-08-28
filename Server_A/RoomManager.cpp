@@ -2,64 +2,34 @@
 #include "Room.h"
 #include "RoomManager.h"
 #include "RedisConnection.h"
+#include "ServerProtocol.pb.h"
+#include "RoomSessionManager.h"
+#include "ServerPacketHandler.h"
+#include "RoomSession.h"
 #include "JsonUtils.h"
+#include "RedisUtils.h"
 
 
-RoomRef RoomManager::Add(int32 mapId, string name, string pwd, string rootUser)
+RoomRef RoomManager::Add(const ServerProtocol::S_CREATE_ROOM& pkt)
 {
     RoomRef gameRoom = Make_Shared<Room>();
-
+    
     WRITE_LOCK
     {
-       int32 _roomid = roomid.GetRoomId();
-       gameRoom->SetRoomId(_roomid);
-       gameRoom->SetRoomName(name);
-       gameRoom->SetRoomPwd(pwd);
-       gameRoom->SetRootUser(rootUser);
-       _rooms[_roomid] = gameRoom;
+        gameRoom->SetRoomId(pkt.roomid());
+        gameRoom->SetRoomName(pkt.roomname());
+        gameRoom->SetRootUser(pkt.rootuser());
+        gameRoom->SetPwdYn(pkt.pwdyn());
 
-       bool pwdYn = false;
+        if (pkt.pwdyn())
+            gameRoom->SetRoomPwd(pkt.roompwd());
+        else
+            gameRoom->SetRoomPwd("");
 
-       if (pwd != "")
-           pwdYn = true;
-           
-       nlohmann::json json_obj = JsonUtils::createJson(
-           std::make_pair("id", _roomid),
-           std::make_pair("pwdYn",pwd != ""),
-           std::make_pair("name", name.c_str()),
-           std::make_pair("password", pwd.c_str()),
-           std::make_pair("rootUser", rootUser.c_str())
-       );
-     
-       std::string json_str = json_obj.dump();
+        _rooms.insert(std::pair(pkt.roomid(),gameRoom));
 
-       const char* query = "SET room:%d %s";
-       RedisUtils::RAsyncCommand(GRedisConnection->GetContext(), query, _roomid, json_str.c_str());
-
-       std::cout << "Room 번호 : " << _roomid << " Room 생성 방 이름 : " << name << " Room pwd : " << pwd << endl;
-
-       gameRoom->Init(mapId);
-
-       roomid.Add_Room();
     }
     return gameRoom;
-}
-
-//이미 만들어저있는 방을 생성하는 add 오버로딩
-void RoomManager::Add(int32 mapId, string name, string pwd, int32 Roomid, string rootUser)
-{
-    RoomRef gameRoom = Make_Shared<Room>();
-
-        gameRoom->SetRoomId(Roomid);
-        gameRoom->SetRoomName(name);
-        gameRoom->SetRoomPwd(pwd);
-        gameRoom->SetRootUser(rootUser);
-
-        _rooms[Roomid] = gameRoom;
-
-        gameRoom->Init(mapId);
-        roomid.Add_Room(Roomid);
-    cout << gameRoom->GetRoomId() << " " << gameRoom->GetRoomName() << "\n";
 }
 
 bool RoomManager::Remove(int32 roomId)
@@ -71,56 +41,61 @@ bool RoomManager::Remove(int32 roomId)
 
 RoomRef RoomManager::Find(int32 roomId)
 {
-   RoomRef gameRoom = nullptr;
-   for (auto it = _rooms.begin(); it != _rooms.end(); ++it)
-   {
-       if (it->first == roomId)
-           gameRoom = it->second;
-   }
-   return gameRoom;
+    auto it = _rooms.find(roomId);
+    return (it != _rooms.end()) ? it->second : nullptr;
+}
+
+const PacketSessionRef& RoomManager::FindToSession(int32 roomId) const
+{
+    auto it = _roomIdToServerSession.find(roomId);
+    return (it != _roomIdToServerSession.end()) ? it->second : nullptr;
+}
+
+
+
+void RoomManager::FindToRoomServerInfo_Connect(const int32 roomId, const int32& sessionId)
+{
+    //Redis에서 방 정보 json에서 ip port를 찾아서 멤버변수 _roomIdToServerSession 에 넣어준다.
+    //물론 기존에 없던 roomserver정보면 연결시켜주고 넣어줘야겟지??
+    std::string redisKey = "room:" + std::to_string(roomId);
+    std::string query = "GET " + redisKey;
+
+    auto onRoomInfoReceived = [&sessionId](void* reply)
+    {
+        redisReply* r = static_cast<redisReply*>(reply);
+        if (!r || r->type != REDIS_REPLY_STRING)
+        {
+            //방 정보가 redis에도 없으므로 클라이언트는 존재하지 않는 방번호에 접근할려고 하는 것
+        }
+
+        std::string json_str = r->str;
+        auto json = nlohmann::json::parse(json_str);
+
+        std::wstring ip = Utils::Utf8ToWstring(json["ip"]);
+        int16 port = json["port"];
+        int32 roomId = json["id"];
+
+        //해당 방정보를 가지고있는 RoomServer에게 연결 요청 연결이 완료되면 비동기로 세션의 OnCnnected()호출하기 때문에 OnConnect()에서 마무리 작업
+        //if (GPClientService->AddRoomServerConnection(roomId,ip, port, sessionId));
+    };
+
+  /*  RedisUtils::RAsyncCommandCallback(
+        GRedisConnection->GetContext(),
+        onRoomInfoReceived,
+        query.c_str()
+    );*/
+}
+
+void RoomManager::Add_RoomIdToServerSession(const int32& roomId, const PacketSessionRef& session)
+{
+    WRITE_LOCK;
+    {
+        _roomIdToServerSession[roomId] = session;
+    }
 }
 
 void RoomManager::DoRoomUpdate()
 {
-    if (_rooms.empty())
-        return;
 
-    for (const auto &item : _rooms)
-    {
-       //item.second->DoAsync(std::bind(&Room::Update, item.second));
-        item.second->Update();
-    }
 }
 
-RoomIdManager::RoomIdManager()
-{
-   for (int32 i = 1; i <= 100; i++)
-       _roomids.insert(i);
-}
-
-RoomIdManager::~RoomIdManager()
-{
-}
-
-int32 RoomIdManager::Add_Room()
-{
-    int32 result;
-
-    result = *_roomids.begin();
-    use_room.insert(result);
-    _roomids.erase(result);
-    return result;
-    
-}
-
-void RoomIdManager::Add_Room(int32 Roomid)
-{
-    _roomids.erase(Roomid);
-    use_room.insert(Roomid); 
-}
-
-void RoomIdManager::Delete_Room(int32 Roomid)
-{
-  use_room.erase(Roomid);
-  _roomids.insert(Roomid);  
-}

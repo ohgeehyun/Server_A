@@ -24,17 +24,19 @@ public:
 public:
     void		Send(SendBufferRef sendBuffer);
     bool		Connect();
+    bool		Connect(const NetAddress& Address);
     void		DisConnect(const WCHAR* cause);
 
     shared_ptr<Service>	GetService() { return _service.lock(); }
     void				SetService(shared_ptr<Service> service) { _service = service; }
 
 public:
-    void		SetNetAddress(NetAddress address) { _netAddress = address; }
+    void		SetNetAddress(const NetAddress& address) { _netAddress = address; }
     NetAddress  GetAddress() { return _netAddress; }
     SOCKET		GetSocket() { return _socket; }
     bool		IsConnected() { return _connected; }
     SessionRef  GetSessionRef() { return static_pointer_cast<Session>(shared_from_this()); }
+
 private:
     virtual HANDLE GetHandle() override;
     virtual void Dispatch(class IocpEvent* iocpEvent, int32 numOfByte = 0) override;
@@ -42,6 +44,7 @@ private:
 private:
     /*전송관련*/
     bool		 RegisterConnect();
+    bool		 RegisterConnect(const NetAddress& address);
     bool		 RegisterDisConnect();
     void		 RegisterRecv();
     void		 RegisterSend();
@@ -65,7 +68,6 @@ private:
     SOCKET				_socket = INVALID_SOCKET;
     NetAddress			_netAddress = {};
     Atomic<bool>		_connected = false;
-
 
 private:
     USE_LOCK;
@@ -108,5 +110,4 @@ public:
 protected:
     virtual int32 OnRecv(BYTE* buffer, int32 len) final;
     virtual void OnRecvPacket(BYTE* buffer, int32 len)abstract;
-
 };
